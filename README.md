@@ -1,6 +1,10 @@
 # SOEN390-WebMapEditor
 Project for 390, to make an online map editor for the museum
 
+
+----------
+
+
 The editor should be developed in pure JavaScript (server-side scripting languages, such as PHP, JSP, Java servlets, ASP.net are not allowed) and should run in a web browser.
 
 1.	Load floor plans from SVG images or PDF files (the floor plan serves as an underlay to help the user enter data points in the appropriate locations)
