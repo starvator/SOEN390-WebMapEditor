@@ -11,9 +11,11 @@
 	<br>
 	<canvas id="floorPlan" width="500" height="500">
 	</canvas>
-    
-		<input type="file" id="file" accept=".svg" />
-		<output id="list"></output>
+        <form id="newFloor">
+            <input id="floorNumUpload"type="number" placeholder="Floor number" />
+            <input id="fileUpload" type="file" accept=".svg" />
+            <input type="submit" value="Add Floor" />
+        </form>
 	
 	</body>
 </html>
