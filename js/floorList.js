@@ -33,7 +33,7 @@ function addSvgToList(file,floorNum){
     reader.onload = (function() {
 		return function(e) {
 			addToCanvas(e.target.result);
-            $("#floorList").append('<li>Floor '+floorNum+'</li>');
+            $("#floorList").append('<li>Floor '+floorNum, file.name+'</li>');
 		};
     })(file);
 
