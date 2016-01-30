@@ -1,19 +1,26 @@
 $(function(){
     //handle the new floor submit
     $('#newFloor').submit(function () {
-        
+        //if no floor number
+        if (!$("#floorNumUpload").val()){
+            alert("you must enter a floor number");
+            return false;
+        }
         //if no file selected
         if (!$("#fileUpload")[0].files[0]){
             alert("you must select a file");
             return false;
         }
-        addSvgToList($("#fileUpload")[0].files[0]);
+        //add the svg to the list and canvas
+        addSvgToList($("#fileUpload")[0].files[0],$("#floorNumUpload").val());
+        //clear the form
+        $("#newFloor")[0].reset();
         return false;
     });
 });
 
 //Browse for a svg file and add it to the list of images, inspired by http://www.html5rocks.com/en/tutorials/file/dndfiles/
-function addSvgToList(file){
+function addSvgToList(file,floorNum){
 
     // Only process svg files.
     if (!file.type.match('.svg')) {
@@ -26,7 +33,7 @@ function addSvgToList(file){
     reader.onload = (function() {
 		return function(e) {
 			addToCanvas(e.target.result);
-            $("#floorList").append('<li><img src="' +e.target.result+ '" width="100"/></li>');
+            $("#floorList").append('<li>Floor '+floorNum+'</li>');
 		};
     })(file);
 
