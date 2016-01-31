@@ -1,0 +1,7 @@
+/*
+	All styles that modify and override bootstrap defined identifiers must go here
+*/
+
+.container {
+	width:100%;
+}
