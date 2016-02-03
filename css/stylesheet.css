@@ -3,5 +3,22 @@
 */
 
 #floorList {
-	min-height:300px;
+	min-height:200px;
+}
+
+#mainMenu {
+	padding-top:200px;
+}
+
+#mainMenu div, #nodeEditorMenu div {
+	margin-bottom:20px;
+}
+
+#floorEditorMenu {
+	display:none;
+}
+
+#nodeEditorMenu {
+	display:none;
+	padding-top:200px;
 }
