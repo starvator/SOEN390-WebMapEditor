@@ -23,3 +23,5 @@ The editor should be developed in pure JavaScript (server-side scripting languag
 4.	Export Path graph and storylines
   1.	All data points (along with their associated meta-information), edges connecting the data points (along with their weights), and the storylines, should be exported in JSON format.
   2.	The JSON file should be imported to allow the user to resume his/her previous work. After importing the data points, edges, and storylines should appear on the floor plans.
+
+  
