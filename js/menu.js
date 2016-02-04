@@ -12,10 +12,13 @@ function showNodesMenu()
 {
 	$("#mainMenu").hide();
 	$("#nodeEditorMenu").show();
+	nodeDrawMode = true;
 }
 
 function showMainMenu()
 {
 	$("#sidebarMenu > div").hide();
 	$("#mainMenu").show();
+	
+	nodeDrawMode = false;
 }
