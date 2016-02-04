@@ -12,7 +12,6 @@ function showNodesMenu()
 {
 	$("#mainMenu").hide();
 	$("#nodeEditorMenu").show();
-	nodeDrawMode = true;
 }
 
 function showMainMenu()
@@ -20,5 +19,18 @@ function showMainMenu()
 	$("#sidebarMenu > div").hide();
 	$("#mainMenu").show();
 	
-	nodeDrawMode = false;
+	// Reset drawing modes
+	placingNodes = false;
+	$("#placeNodeButton").removeClass("active");
+}
+
+function placeNodes()
+{
+	if(placingNodes) {
+		placingNodes = false;
+		$("#placeNodeButton").removeClass("active");
+	} else {
+		placingNodes = true;
+		$("#placeNodeButton").addClass("active");
+	}
 }
