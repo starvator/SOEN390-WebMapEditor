@@ -48,6 +48,7 @@ function addToCanvas(svgFile){
 
 	img = new Image();
 	img.onload = function() {
+		nodeList = [];
 		redraw();		
 	}
 	img.src = svgFile;
