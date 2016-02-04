@@ -48,7 +48,7 @@ function addToCanvas(svgFile){
 
 	img = new Image();
 	img.onload = function() {
-		ctx.drawImage(img, 0, 0);
+		redraw();		
 	}
 	img.src = svgFile;
 }
