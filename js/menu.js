@@ -23,4 +23,5 @@ function showMainMenu()
 	
 	// Reset drawing modes
 	nodeEditingMode = false;
+	lastSelectedNode = null;
 }

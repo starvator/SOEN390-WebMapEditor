@@ -5,9 +5,14 @@ function Point(x,y) {
 	this.y = y;
 }
 
+function Edge(origin, destination) {
+	this.origin = origin;
+	this.destination = destination;
+}
 
 // End Classes
 
+var NODE_SNAPE_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
 
 var canvas;
 var ctx;
@@ -15,8 +20,9 @@ var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
-var mouseOnNode;
-var NODE_SNAPE_DIST_SQUARED = 75;
+var mouseOnNode;					// The node that the mouse is currently hovering over
+var edgeList = [];					// List of edges between transition points
+var lastSelectedNode;				// During edge creation, the first selected node
 
 $(function(){
 	canvas = document.getElementById('floorPlan');
@@ -44,6 +50,18 @@ function redraw() {
 	// Clear the currently stored node
 	mouseOnNode = null;
 	
+	// Set line styles
+	ctx.strokeStyle = '#FFFF00';
+	ctx.lineWidth = 5;
+	
+	// Draw all the edges
+	jQuery.each(edgeList,function(i,anedge){
+		ctx.beginPath();
+		ctx.moveTo(anedge.origin.x,anedge.origin.y);
+		ctx.lineTo(anedge.destination.x,anedge.destination.y);
+		ctx.stroke();
+	});
+	
 	// Draw all stored transition nodes on the map
 	jQuery.each(nodeList,function(i,anode){
 
@@ -59,19 +77,52 @@ function redraw() {
 			ctx.fillStyle="#FFFF00";
 		}
 	
+		// The last selected node during edge creation is a different colour
+		if(anode == lastSelectedNode) {
+			ctx.fillStyle="#0000FF";
+		}
+	
 		// Draw a point
 		ctx.beginPath();
 		ctx.arc(anode.x,anode.y,7,0,2*Math.PI);
 		ctx.fill();
-	});
+	});	
 	
-	// When placing a node, draw temporary node at the cursor's location if not hovering ontop of a node
-	if(nodeEditingMode && !mouseOnNode)
+	// When placing a node
+	if(nodeEditingMode)
 	{
-		ctx.beginPath();
-		ctx.fillStyle="#FF0000";
-		ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-		ctx.fill();
+		// Draw a temporary point at the cursor's location when over empty space and not creating an edge
+		if(!lastSelectedNode && !mouseOnNode)
+		{
+			ctx.beginPath();
+			ctx.fillStyle="#FF0000";
+			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+			ctx.fill();
+		}
+		// When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
+		else if(lastSelectedNode && !mouseOnNode)
+		{
+			ctx.strokeStyle = '#0000FF';
+			ctx.beginPath();
+			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+			ctx.lineTo(mouseLocation.x,mouseLocation.y);
+			ctx.stroke();
+		
+			ctx.beginPath();
+			ctx.fillStyle="#0000FF";
+			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+			ctx.fill();
+		}
+		// When creating an edge and hovering on top of a node, draw a line to that node
+		else if (lastSelectedNode && mouseOnNode)
+		{
+			ctx.strokeStyle = '#0000FF';
+			ctx.beginPath();
+			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
+			ctx.stroke();
+		}
+		
 	}	
 }
 
@@ -88,11 +139,38 @@ function mouseMove(evt) {
 
 function mouseClick(evt) {
 	// Only create a new node when in node editing mode and not ontop of an already existing node
-	if(nodeEditingMode && !mouseOnNode) {
+	if(nodeEditingMode) {
 		var x = evt.pageX - $(canvas).offset().left;
 		var y = evt.pageY - $(canvas).offset().top;
 		
-		// Store a new node in the list of transition nodes
-		nodeList.push(new Point(x, y));
+		// If clicking on empty space
+		if(!mouseOnNode && !lastSelectedNode) {			
+			// Store a new node in the list of transition nodes
+			nodeList.push(new Point(x, y));
+		}
+		// If clicking on a node and not yet starting an edge
+		else if(mouseOnNode && !lastSelectedNode) {
+			// Select this first node for edge creation
+			lastSelectedNode = mouseOnNode;	
+		} 
+		// If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
+		else if (mouseOnNode && lastSelectedNode && mouseOnNode != lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+			// Create a new edge
+			edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
+			lastSelectedNode = null; // Clear the selected node
+		}
 	}
+}
+
+// Check to see if the set of nodes is in the current list of nodes
+function nodesInEdges(a,b) {
+	
+	for (var i = 0; i < edgeList.length; i++) {
+		if((edgeList[i].origin == a && edgeList[i].destination == b) || (edgeList[i].origin == b && edgeList[i].destination == a))
+		{	
+			return true;
+		}
+	}
+	
+	return false;
 }
