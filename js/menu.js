@@ -12,6 +12,8 @@ function showNodesMenu()
 {
 	$("#mainMenu").hide();
 	$("#nodeEditorMenu").show();
+	
+	nodeEditingMode = true;
 }
 
 function showMainMenu()
@@ -20,17 +22,5 @@ function showMainMenu()
 	$("#mainMenu").show();
 	
 	// Reset drawing modes
-	placingNodes = false;
-	$("#placeNodeButton").removeClass("active");
-}
-
-function placeNodes()
-{
-	if(placingNodes) {
-		placingNodes = false;
-		$("#placeNodeButton").removeClass("active");
-	} else {
-		placingNodes = true;
-		$("#placeNodeButton").addClass("active");
-	}
+	nodeEditingMode = false;
 }
