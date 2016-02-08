@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<title>Map Editor</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+		
+		<!-- Bootstrap includes -->
+		<script src="bootstrap/js/bootstrap.min.js"></script>		
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">		
+		<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="css/bootstrap.override.css">
+		
+		<link rel="stylesheet" href="css/stylesheet.css">
+		
+		<script src="js/canvas.js"></script>
+		<script src="js/floorList.js"></script>
+		<script src="js/menu.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-2">
+					<div id="sidebarMenu">
+						<div id="mainMenu">
+							<!-- MAIN MENU -->
+							<div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></br>
+							<div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div>
+						</div>
+						<div id="floorEditorMenu">
+							<!-- FLOOR EDITOR MENU -->
+							<ul id="floorList">
+							</ul>
+							
+							<div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div></br></br>
+							
+							<form id="newFloor">
+								<div class="form-group">
+									<label for="floorNumUpload">Floor number</label>
+									<input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
+								</div>
+								<div class="form-group">
+									<label for="fileUpload">Floor map svg image</label>
+									<input id="fileUpload" type="file" accept=".svg" />
+								</div>
+								<input type="submit" class="btn btn-default" value="Add Floor" />
+							</form>
+						</div>
+						<div id="nodeEditorMenu">
+							<!-- NODE EDITOR MENU -->
+							<div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div></br>
+							
+							<div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div></br>
+							<div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+						</div>
+					</div>
+					
+				</div>
+				<div class="col-sm-10">
+					<canvas id="floorPlan" width="500" height="500">
+					</canvas>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
