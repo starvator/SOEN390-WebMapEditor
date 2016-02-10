@@ -14,6 +14,7 @@
 		<script src="js/canvas.js"></script>
 		<script src="js/floorList.js"></script>
 		<script src="js/menu.js"></script>
+		<script src="ckeditor/ckeditor.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -60,5 +61,12 @@
 				</div>
 			</div>
 		</div>
+			<!-- HTML EDITOR -->
+            <textarea name="editor1" id="editor1" rows="10" cols="80">
+                This is my textarea to be replaced with CKEditor.
+            </textarea>
+            <script>
+                CKEDITOR.replace( 'editor1' );
+            </script>
 	</body>
 </html>
