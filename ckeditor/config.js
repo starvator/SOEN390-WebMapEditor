@@ -19,7 +19,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'others', groups: [ 'others' ] }
 	];
 
-	config.removeButtons = 'Save,NewPage,Print,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Flash,PageBreak,Iframe,About,Language,Anchor';
+	config.removeButtons = 'Save,NewPage,Print,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Flash,PageBreak,Iframe,About,Language,Anchor,Smiley';
 	config.language = 'en';
 	//config.language = 'fr-ca';
 	};
