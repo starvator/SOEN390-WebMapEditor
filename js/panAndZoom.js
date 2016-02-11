@@ -50,7 +50,7 @@ function mouseUp(evt) {
 // Zoom functions
 var scaleFactor = 1.1;
 var zoom = function(clicks){
-	var pt = ctx.transformedPoint(lastX,lastY);
+	var pt = mouseLocation;
 	ctx.translate(pt.x,pt.y);
 	var factor = Math.pow(scaleFactor,clicks);
 	ctx.scale(factor,factor);
