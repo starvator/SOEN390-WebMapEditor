@@ -1,3 +1,9 @@
+/*
+	This file contains code related to panning and zooming the map
+	Code has been mostly adapted from http://phrogz.net/tmp/canvas_zoom_to_cursor.html
+
+*/
+
 var dragStart,dragged;
 
 function mouseMove(evt) {
