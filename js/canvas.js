@@ -138,14 +138,15 @@ function redraw() {
 function mouseMove(evt) {
 	
 	// Store the location of the mouse relative to the canvas
-	mouseLocation.x = evt.pageX - $(canvas).offset().left;
-	mouseLocation.y = evt.pageY - $(canvas).offset().top;
+	var x = evt.pageX - $(canvas).offset().left;
+	var y = evt.pageY - $(canvas).offset().top;
+		
+	mouseLocation = ctx.transformedPoint(x,y);
 		
 	dragged = true;
 	
 	if (dragStart){
-		var pt = ctx.transformedPoint(mouseLocation.x,mouseLocation.y);
-		ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+		ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
 		redraw();
 	}
 
@@ -165,7 +166,9 @@ function mouseClick(evt) {
 	var x = evt.pageX - $(canvas).offset().left;
 	var y = evt.pageY - $(canvas).offset().top;
 	
-	dragStart = ctx.transformedPoint(mouseLocation.x,mouseLocation.y);
+	mouseLocation = ctx.transformedPoint(x,y);
+	dragStart = ctx.transformedPoint(x,y);
+	
 	dragged = false;
 	
 	/*
