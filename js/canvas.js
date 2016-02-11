@@ -138,8 +138,8 @@ function redraw() {
 function mouseMove(evt) {
 	
 	// Store the location of the mouse relative to the canvas
-	var x = evt.pageX - $(canvas).offset().left;
-	var y = evt.pageY - $(canvas).offset().top;
+	mouseLocation.x = evt.pageX - $(canvas).offset().left;
+	mouseLocation.y = evt.pageY - $(canvas).offset().top;
 		
 	dragged = true;
 	
