@@ -12,7 +12,7 @@ function Edge(origin, destination) {
 
 // End Classes
 
-var NODE_SNAPE_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
+var NODE_SNAP_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
 
 var canvas;
 var ctx;
@@ -75,7 +75,7 @@ function redraw() {
 	jQuery.each(nodeList,function(i,anode){
 
 		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if(nodeEditingMode && !mouseOnNode && NODE_SNAPE_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+		if(nodeEditingMode && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
 		{
 			// If the mouse is near, set the node and change its colour
 			mouseOnNode = anode;
@@ -135,47 +135,8 @@ function redraw() {
 	}	
 }
 
-function mouseMove(evt) {
-	
-	// Store the location of the mouse relative to the canvas
-	var x = evt.pageX - $(canvas).offset().left;
-	var y = evt.pageY - $(canvas).offset().top;
-		
-	mouseLocation = ctx.transformedPoint(x,y);
-		
-	dragged = true;
-	
-	if (dragStart){
-		ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
-		redraw();
-	}
-
-	if(nodeEditingMode)
-	{
-		// Store the location of the mouse relative to the canvas
-		//mouseLocation.x = evt.pageX - $(canvas).offset().left;
-		//mouseLocation.y = evt.pageY - $(canvas).offset().top;
-		
-		redraw();
-	}	
-}
-
-function mouseClick(evt) {
-	document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-	
-	var x = evt.pageX - $(canvas).offset().left;
-	var y = evt.pageY - $(canvas).offset().top;
-	
-	mouseLocation = ctx.transformedPoint(x,y);
-	dragStart = ctx.transformedPoint(x,y);
-	
-	dragged = false;
-	
-	/*
-	// Only create a new node when in node editing mode and not ontop of an already existing node
+function canvasClick(x,y) {
 	if(nodeEditingMode) {
-		var x = evt.pageX - $(canvas).offset().left;
-		var y = evt.pageY - $(canvas).offset().top;
 		
 		// If clicking on empty space
 		if(!mouseOnNode && !lastSelectedNode) {			
@@ -193,11 +154,7 @@ function mouseClick(evt) {
 			edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
 			lastSelectedNode = null; // Clear the selected node
 		}
-	}*/
-}
-
-function mouseUp(evt) {
-	dragStart = null;
+	}
 }
 
 // Check to see if the set of nodes is in the current list of nodes

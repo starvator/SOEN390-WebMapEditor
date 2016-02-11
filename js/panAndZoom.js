@@ -1,13 +1,53 @@
 var dragStart,dragged;
 
-$(function(){
-	lastX=canvas.width/2;
-	lastY=canvas.height/2;
-});
+function mouseMove(evt) {
+	
+	// Store the location of the mouse relative to the canvas
+	var x = evt.pageX - $(canvas).offset().left;
+	var y = evt.pageY - $(canvas).offset().top;
+	mouseLocation = ctx.transformedPoint(x,y);
+		
+	dragged = true;
+	
+	// Redraw if panning or in node editing mode
+	
+	if (dragStart){
+		ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
+		redraw();
+	}
 
+	if(nodeEditingMode)		
+	{		
+		redraw();
+	}	
+}
 
+function mouseClick(evt) {
+	document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+	
+	// Store the location of the mouse relative to the canvas
+	var x = evt.pageX - $(canvas).offset().left;
+	var y = evt.pageY - $(canvas).offset().top;
+	mouseLocation = ctx.transformedPoint(x,y);
+	dragStart = mouseLocation;
+	
+	dragged = false;
+}
 
+function mouseUp(evt) {	
+	// If we did not perform a drag, forward the click event to the canvas
+	if(!dragged) {
+		var x = evt.pageX - $(canvas).offset().left;
+		var y = evt.pageY - $(canvas).offset().top;
+		var pt = ctx.transformedPoint(x,y);
+	
+		canvasClick(pt.x,pt.y);
+	}
 
+	dragStart = null;
+}
+
+// Zoom functions
 var scaleFactor = 1.1;
 var zoom = function(clicks){
 	var pt = ctx.transformedPoint(lastX,lastY);
