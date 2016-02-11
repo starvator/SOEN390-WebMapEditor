@@ -37,12 +37,21 @@ $(function(){
 	// Register events
 	document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
 	canvas.addEventListener('mousedown', mouseClick, false);
+	document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
+	
+	trackTransforms(ctx);
+				
+	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+	canvas.addEventListener('mousewheel',handleScroll,false);
+	
 });
 
 // Main canvas drawing method
 function redraw() {	
 	// Clear the canvas
-	ctx.clearRect(0,0,canvas.width,canvas.height);
+	var p1 = ctx.transformedPoint(0,0);
+	var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+	ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 	
 	// Draw the background image
 	ctx.drawImage(img, -1000, -1000);
@@ -127,17 +136,39 @@ function redraw() {
 }
 
 function mouseMove(evt) {
+	
+	// Store the location of the mouse relative to the canvas
+	var x = evt.pageX - $(canvas).offset().left;
+	var y = evt.pageY - $(canvas).offset().top;
+		
+	dragged = true;
+	
+	if (dragStart){
+		var pt = ctx.transformedPoint(mouseLocation.x,mouseLocation.y);
+		ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+		redraw();
+	}
+
 	if(nodeEditingMode)
 	{
 		// Store the location of the mouse relative to the canvas
-		mouseLocation.x = evt.pageX - $(canvas).offset().left;
-		mouseLocation.y = evt.pageY - $(canvas).offset().top;
+		//mouseLocation.x = evt.pageX - $(canvas).offset().left;
+		//mouseLocation.y = evt.pageY - $(canvas).offset().top;
 		
 		redraw();
 	}	
 }
 
 function mouseClick(evt) {
+	document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+	
+	var x = evt.pageX - $(canvas).offset().left;
+	var y = evt.pageY - $(canvas).offset().top;
+	
+	dragStart = ctx.transformedPoint(mouseLocation.x,mouseLocation.y);
+	dragged = false;
+	
+	/*
 	// Only create a new node when in node editing mode and not ontop of an already existing node
 	if(nodeEditingMode) {
 		var x = evt.pageX - $(canvas).offset().left;
@@ -159,7 +190,11 @@ function mouseClick(evt) {
 			edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
 			lastSelectedNode = null; // Clear the selected node
 		}
-	}
+	}*/
+}
+
+function mouseUp(evt) {
+	dragStart = null;
 }
 
 // Check to see if the set of nodes is in the current list of nodes
