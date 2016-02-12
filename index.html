@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">		
 		<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/bootstrap.override.css">
+		<link rel="stylesheet" href="css/textEditor.css">
 		
 		<link rel="stylesheet" href="css/stylesheet.css">
 		
@@ -16,6 +17,7 @@
 		<script src="js/menu.js"></script>
 		<script src="ckeditor/ckeditor.js"></script>
 		<script src="js/panAndZoom.js"></script>
+		<script src="js/textEditor.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -62,12 +64,31 @@
 				</div>
 			</div>
 		</div>
+		<button id="fakeStoryPoint">Fake Story Point</button>
+		<input type="hidden" id="fakeStoryPointText" value="<p>the info that i<strong>s in the js<u>on</u></strong><u> whateve</u>r</p>" />
+		<div id="textEditorDiv" hidden>
+			title<input type="text" id="title">
+			autotrigger
+			<label class="c-input c-radio">
+			  <input id="radio1" name="radio" type="radio">
+			  <span class="c-indicator"></span>
+			  yes
+			</label>
+			<label class="c-input c-radio">
+			  <input id="radio2" name="radio" type="radio">
+			  <span class="c-indicator"></span>
+			  no
+			</label>			
+			beaconid<input type="text" id="beaconid">
 			<!-- HTML EDITOR -->
             <textarea name="editor1" id="editor1" rows="10" cols="80">
-                This is my textarea to be replaced with CKEditor.
+                
             </textarea>
             <script>
                 CKEDITOR.replace( 'editor1' );
             </script>
+						<button>attach doc</button>
+			<button>save</button>
+		</div>
 	</body>
 </html>
