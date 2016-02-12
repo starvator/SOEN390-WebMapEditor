@@ -66,20 +66,27 @@
 		</div>
 		<button id="fakeStoryPoint">Fake Story Point</button>
 		<input type="hidden" id="fakeStoryPointText" value="<p>the info that i<strong>s in the js<u>on</u></strong><u> whateve</u>r</p>" />
-		<div id="textEditorDiv" hidden>
-			title<input type="text" id="title">
-			autotrigger
-			<label class="c-input c-radio">
-			  <input id="radio1" name="radio" type="radio">
-			  <span class="c-indicator"></span>
-			  yes
-			</label>
-			<label class="c-input c-radio">
-			  <input id="radio2" name="radio" type="radio">
-			  <span class="c-indicator"></span>
-			  no
-			</label>			
-			beaconid<input type="text" id="beaconid">
+		
+		<div id="textEditorDiv">
+			
+			<div class="input-group">
+			  <span class="input-group-addon leftGrey">Title</span>
+			  <input type="text" id="spTitle" class="form-control" placeholder="title here">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon leftGrey">iBeacon ID</span>
+				<input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
+			</div>
+			<br>
+			<div class="btn-group" data-toggle="buttons">
+				<label class="btn btn-default">
+					<input type="radio" name="autoTrig">Yes</input>
+				  </label>
+				  <label class="btn btn-default">
+					<input type="radio" name="autoTrig">No</input>
+				  </label>
+			</div>			
 			<!-- HTML EDITOR -->
             <textarea name="editor1" id="editor1" rows="10" cols="80">
                 

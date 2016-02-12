@@ -1,4 +1,8 @@
 #textEditorDiv {
 	width:400px;
-	background-color:magenta;
+	background-color:lightgrey;
+}
+
+.leftGrey{
+	width:94px;
 }
