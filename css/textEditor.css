@@ -1,8 +1,26 @@
 #textEditorDiv {
-	width:400px;
+	width:520px;
 	background-color:lightgrey;
+	padding:2px;
+	border:1px solid black;
 }
 
-.leftGrey{
+.leftAddOn{
 	width:94px;
+}
+
+.toggleWrapper{
+	height:34px;/* height of the toggle button */
+}
+
+.floatLeftAddOn{
+	width:40%;
+	float:left;
+	height:100%;/* gives it identical height to toggle buttons */
+	line-height: 150%;
+}
+
+.saveWrapper{
+	text-align:right;
+	padding-right:5%;
 }

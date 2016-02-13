@@ -68,25 +68,28 @@
 		<input type="hidden" id="fakeStoryPointText" value="<p>the info that i<strong>s in the js<u>on</u></strong><u> whateve</u>r</p>" />
 		
 		<div id="textEditorDiv">
-			
+			<h4>Storypoint Editor</h4>
 			<div class="input-group">
-			  <span class="input-group-addon leftGrey">Title</span>
+			  <span class="input-group-addon leftAddOn">Title</span>
 			  <input type="text" id="spTitle" class="form-control" placeholder="title here">
 			</div>
 			<br>
 			<div class="input-group">
-				<span class="input-group-addon leftGrey">iBeacon ID</span>
+				<span class="input-group-addon leftAddOn">iBeacon ID</span>
 				<input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
 			</div>
 			<br>
-			<div class="btn-group" data-toggle="buttons">
-				<label class="btn btn-default">
-					<input type="radio" name="autoTrig">Yes</input>
-				  </label>
-				  <label class="btn btn-default">
-					<input type="radio" name="autoTrig">No</input>
-				  </label>
-			</div>			
+			<div class = "toggleWrapper">
+				<span class="input-group-addon floatLeftAddOn"><p>Auto-Trigger on iBeacon?</p></span>
+				<div class="btn-group button-toggle" data-toggle="buttons">
+					<label class="btn btn-primary">
+						<input type="radio" name="autoTrig">Yes</input>
+					  </label>
+					  <label class="btn btn-primary active">
+						<input type="radio" name="autoTrig">No</input>
+					  </label>
+				</div>
+			</div>
 			<!-- HTML EDITOR -->
             <textarea name="editor1" id="editor1" rows="10" cols="80">
                 
@@ -94,8 +97,14 @@
             <script>
                 CKEDITOR.replace( 'editor1' );
             </script>
-						<button>attach doc</button>
-			<button>save</button>
+			<div class = "saveWrapper">
+				<div class="btn-group" data-toggle="attachButton">
+					<button type="button" class="btn btn-info">Attach Doc</button>
+				</div>
+				<div class="btn-group" data-toggle="SaveButton">
+					<button type="button" class="btn btn-success">Save</button>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
