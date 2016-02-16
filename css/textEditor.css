@@ -1,26 +1,21 @@
-#textEditorDiv {
+#infoEditingForm {
 	width:520px;
 	background-color:lightgrey;
 	padding:2px;
 	border:1px solid black;
 }
 
-.leftAddOn{
-	width:94px;
+.input-group-addon {
+    min-width:188px;
+    text-align:left;
 }
 
-.toggleWrapper{
-	height:34px;/* height of the toggle button */
-}
-
-.floatLeftAddOn{
-	width:40%;
-	float:left;
-	height:100%;/* gives it identical height to toggle buttons */
-	line-height: 150%;
-}
-
-.saveWrapper{
-	text-align:right;
-	padding-right:5%;
+#infoEditingFormTitle {
+    font-size: 18pt;
+    padding: 3px;
+    -webkit-margin-before: 1.33em;
+    -webkit-margin-after: 1.33em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
 }

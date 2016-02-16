@@ -1,110 +1,121 @@
 <html>
-	<head>
-		<title>Map Editor</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-		
-		<!-- Bootstrap includes -->
-		<script src="bootstrap/js/bootstrap.min.js"></script>		
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">		
-		<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="css/bootstrap.override.css">
-		<link rel="stylesheet" href="css/textEditor.css">
-		
-		<link rel="stylesheet" href="css/stylesheet.css">
-		
-		<script src="js/canvas.js"></script>
-		<script src="js/floorList.js"></script>
-		<script src="js/menu.js"></script>
-		<script src="ckeditor/ckeditor.js"></script>
-		<script src="js/panAndZoom.js"></script>
-		<script src="js/textEditor.js"></script>
-	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-2">
-					<div id="sidebarMenu">
-						<div id="mainMenu">
-							<!-- MAIN MENU -->
-							<div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></br>
-							<div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div>
-						</div>
-						<div id="floorEditorMenu">
-							<!-- FLOOR EDITOR MENU -->
-							<ul id="floorList">
-							</ul>
-							
-							<div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div></br></br>
-							
-							<form id="newFloor">
-								<div class="form-group">
-									<label for="floorNumUpload">Floor number</label>
-									<input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
-								</div>
-								<div class="form-group">
-									<label for="fileUpload">Floor map svg image</label>
-									<input id="fileUpload" type="file" accept=".svg" />
-								</div>
-								<input type="submit" class="btn btn-default" value="Add Floor" />
-							</form>
-						</div>
-						<div id="nodeEditorMenu">
-							<!-- NODE EDITOR MENU -->
-							<div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div></br>
-							
-							<div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div></br>
-							<div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
-						</div>
-					</div>
-					
-				</div>
-				<div class="col-sm-10">
-					<canvas id="floorPlan" width="500" height="500">
-					</canvas>
-				</div>
-			</div>
-		</div>
-		<button id="fakeStoryPoint">Fake Story Point</button>
-		<input type="hidden" id="fakeStoryPointText" value="<p>the info that i<strong>s in the js<u>on</u></strong><u> whateve</u>r</p>" />
-		
-		<div id="textEditorDiv">
-			<h4>Storypoint Editor</h4>
-			<div class="input-group">
-			  <span class="input-group-addon leftAddOn">Title</span>
-			  <input type="text" id="spTitle" class="form-control" placeholder="title here">
-			</div>
-			<br>
-			<div class="input-group">
-				<span class="input-group-addon leftAddOn">iBeacon ID</span>
-				<input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
-			</div>
-			<br>
-			<div class = "toggleWrapper">
-				<span class="input-group-addon floatLeftAddOn"><p>Auto-Trigger on iBeacon?</p></span>
-				<div class="btn-group button-toggle" data-toggle="buttons">
-					<label class="btn btn-primary">
-						<input type="radio" name="autoTrig">Yes</input>
-					  </label>
-					  <label class="btn btn-primary active">
-						<input type="radio" name="autoTrig">No</input>
-					  </label>
-				</div>
-			</div>
-			<!-- HTML EDITOR -->
-            <textarea name="editor1" id="editor1" rows="10" cols="80">
-                
-            </textarea>
+
+<head>
+    <title>Map Editor</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+    <!-- Bootstrap includes -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/bootstrap.override.css">
+    <link rel="stylesheet" href="css/textEditor.css">
+
+    <link rel="stylesheet" href="css/stylesheet.css">
+
+    <script src="js/canvas.js"></script>
+    <script src="js/floorList.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="ckeditor/ckeditor.js"></script>
+    <script src="js/panAndZoom.js"></script>
+    <script src="js/textEditor.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2">
+                <div id="sidebarMenu">
+                    <div id="mainMenu">
+                        <!-- MAIN MENU -->
+                        <div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        </div>
+                        </br>
+                        <div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div id="floorEditorMenu">
+                        <!-- FLOOR EDITOR MENU -->
+                        <ul id="floorList">
+                        </ul>
+
+                        <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
+                        </br>
+                        </br>
+
+                        <form id="newFloor">
+                            <div class="form-group">
+                                <label for="floorNumUpload">Floor number</label>
+                                <input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
+                            </div>
+                            <div class="form-group">
+                                <label for="fileUpload">Floor map svg image</label>
+                                <input id="fileUpload" type="file" accept=".svg" />
+                            </div>
+                            <input type="submit" class="btn btn-default" value="Add Floor" />
+                        </form>
+                    </div>
+                    <div id="nodeEditorMenu">
+                        <!-- NODE EDITOR MENU -->
+                        <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
+                        </br>
+
+                        <div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
+                        </br>
+                        <div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-10">
+                <canvas id="floorPlan" width="500" height="500">
+                </canvas>
+            </div>
+        </div>
+    </div>
+    <button id="fakeStoryPoint">Fake Story Point</button>
+    <input type="hidden" id="fakeStoryPointText" value="<p>the info that i<strong>s in the js<u>on</u></strong><u> whateve</u>r</p>" />
+
+    <div id="infoEditingForm" hidden>
+        <div class="form-group">
+        <span id="infoEditingFormTitle">Storypoint Editor</span>
+        <button id="infoEditingFormClose" class="btn btn-danger pull-right">x</button>
+            </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Title</span>
+            <input type="text" id="spTitle" class="form-control" placeholder="Title Here">
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Auto-Trigger on iBeacon?</span>
+                    <div class="btn-group button-toggle pull-right" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="autoTrig">On</input>
+                          </label>
+                          <label class="btn btn-default active">
+                            <input type="radio" name="autoTrig">Off</input>
+                          </label>
+                    </div>
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">iBeacon ID</span>
+            <input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
+        </div>
+        <!-- HTML EDITOR -->
+        <div class="form-group">
+            <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
             <script>
-                CKEDITOR.replace( 'editor1' );
+                CKEDITOR.replace('editor1');
             </script>
-			<div class = "saveWrapper">
-				<div class="btn-group" data-toggle="attachButton">
-					<button type="button" class="btn btn-info">Attach Doc</button>
-				</div>
-				<div class="btn-group" data-toggle="SaveButton">
-					<button type="button" class="btn btn-success">Save</button>
-				</div>
-			</div>
-		</div>
-	</body>
+        </div>
+        <div class="button-group form-group input-group">
+            <span class="input-group-addon" id="attachedDoc"></span>
+            <button type="button" class="btn btn-default">Attach Doc</button>
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-success pull-right">Save</button>
+            <span>&nbsp;</span>
+        </div>
+    </div>
+</body>
+
 </html>
