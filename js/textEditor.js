@@ -14,7 +14,7 @@ $(document).ready(function(){
 		$("#infoEditingForm").show();
     });
     
-    //The x
+    //The x at the top
     $("#infoEditingFormClose").click(function(){
         $("#infoEditingForm").hide();
     });
@@ -39,4 +39,17 @@ $(document).ready(function(){
         $("#attachedDocName").text("");
     });
     
+    //The save button
+    $("#SaveStoryPointInfo").click(function(){
+        //store the info
+        alert($("#spTitle").val());
+        alert($("input[name=autoTrig]:checked").val());
+        alert($("#spBeaconID").val());     
+		alert(CKEDITOR.instances["editor1"].getData());
+        alert($("#attachedDocName").text());
+        
+        
+        //close the window
+        $("#infoEditingForm").hide();
+    });
 });
