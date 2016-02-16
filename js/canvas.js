@@ -10,6 +10,15 @@ function Edge(origin, destination) {
 	this.destination = destination;
 }
 
+//A StoryPoint is a point that also contains HTML text
+function StoryPoint(point) {
+	this.text = "";
+	this.point = point;
+	this.updateDescription = function(text){
+		this.text=text;
+	}
+}
+
 // End Classes
 
 var NODE_SNAP_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
