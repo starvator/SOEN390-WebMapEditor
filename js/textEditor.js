@@ -8,7 +8,6 @@ $(document).ready(function(){
     //The x
     $("#infoEditingFormClose").click(function(){
         $("#infoEditingForm").hide();
-        alert($("#uploadFile").val());
     });
     
     //When you click the attach button
