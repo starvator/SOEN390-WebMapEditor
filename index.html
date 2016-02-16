@@ -74,7 +74,6 @@
         </div>
     </div>
     <button id="fakeStoryPoint">Fake Story Point</button>
-    <input type="hidden" id="fakeStoryPointText" value="<p>the info that i<strong>s in the js<u>on</u></strong><u> whateve</u>r</p>" />
 
     <div id="infoEditingForm">
         <div class="form-group">
@@ -89,10 +88,10 @@
             <span class="input-group-addon">Auto-Trigger on iBeacon?</span>
                     <div class="btn-group button-toggle pull-right" data-toggle="buttons">
                         <label class="btn btn-default">
-                            <input type="radio" name="autoTrig">On</input>
+                            <input type="radio" name="autoTrig" id="autoOn">On</input>
                           </label>
                           <label class="btn btn-default active">
-                            <input type="radio" name="autoTrig">Off</input>
+                            <input type="radio" name="autoTrig" id="autoOff">Off</input>
                           </label>
                     </div>
         </div>
@@ -109,6 +108,7 @@
         </div>
         <div class="button-group form-group input-group">
             <span class="input-group-addon" id="attachedDocName"></span>
+            <button class="btn btn-danger" id="clearAttachField">x</button>
             <button type="button" id="attachADoc" class="btn btn-default" >Attach Doc</button>
             <input id="uploadFile" type="file"/>
         </div>

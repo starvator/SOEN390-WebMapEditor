@@ -1,7 +1,16 @@
 $(document).ready(function(){
     //The open button
-    $("#fakeStoryPoint").click(function(){
-		CKEDITOR.instances["editor1"].setData($('#fakeStoryPointText').val());
+    $("#fakeStoryPoint").click(function(){  
+        
+        //fill the info
+        $("#spTitle").val("Title");
+        $("#autoOn").click();
+        //$("#autoOff").click();
+        $("#spBeaconID").val("beacon id");     
+		CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
+        $("#attachedDocName").text("Oldfilename.txt");
+        
+        //show the form
 		$("#infoEditingForm").show();
     });
     
@@ -20,10 +29,14 @@ $(document).ready(function(){
         try{
         $("#attachedDocName").text($('#uploadFile')[0].files[0].name);
         }
-        //if you click cancel in a dialog, it will clear the input, so clear the field
+        //if you click cancel in a dialog, it will clear the input, so catch and ignore
         catch (e){
-            $("#attachedDocName").text("");
         }
+    });
+    
+    //When you click the x on the attach file
+    $("#clearAttachField").click(function(){
+        $("#attachedDocName").text("");
     });
     
 });
