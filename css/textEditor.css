@@ -19,3 +19,7 @@
     -webkit-margin-end: 0px;
     font-weight: bold;
 }
+
+#uploadFile{
+    display: none;
+}
