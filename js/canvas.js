@@ -10,18 +10,9 @@ function Edge(origin, destination) {
 	this.destination = destination;
 }
 
-//A StoryPoint is a point that also contains HTML text
-function StoryPoint(point) {
-	this.text = "";
-	this.point = point;
-	this.updateDescription = function(text){
-		this.text=text;
-	}
-}
-
 // End Classes
 
-var NODE_SNAP_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
+var NODE_SNAPE_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
 
 var canvas;
 var ctx;
@@ -46,21 +37,12 @@ $(function(){
 	// Register events
 	document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
 	canvas.addEventListener('mousedown', mouseClick, false);
-	document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
-	
-	trackTransforms(ctx);
-				
-	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
-	canvas.addEventListener('mousewheel',handleScroll,false);
-	
 });
 
 // Main canvas drawing method
 function redraw() {	
 	// Clear the canvas
-	var p1 = ctx.transformedPoint(0,0);
-	var p2 = ctx.transformedPoint(canvas.width,canvas.height);
-	ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+	ctx.clearRect(0,0,canvas.width,canvas.height);
 	
 	// Draw the background image
 	ctx.drawImage(img, -1000, -1000);
@@ -84,7 +66,7 @@ function redraw() {
 	jQuery.each(nodeList,function(i,anode){
 
 		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if(nodeEditingMode && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+		if(nodeEditingMode && !mouseOnNode && NODE_SNAPE_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
 		{
 			// If the mouse is near, set the node and change its colour
 			mouseOnNode = anode;
@@ -144,8 +126,22 @@ function redraw() {
 	}	
 }
 
-function canvasClick(x,y) {
+function mouseMove(evt) {
+	if(nodeEditingMode)
+	{
+		// Store the location of the mouse relative to the canvas
+		mouseLocation.x = evt.pageX - $(canvas).offset().left;
+		mouseLocation.y = evt.pageY - $(canvas).offset().top;
+		
+		redraw();
+	}	
+}
+
+function mouseClick(evt) {
+	// Only create a new node when in node editing mode and not ontop of an already existing node
 	if(nodeEditingMode) {
+		var x = evt.pageX - $(canvas).offset().left;
+		var y = evt.pageY - $(canvas).offset().top;
 		
 		// If clicking on empty space
 		if(!mouseOnNode && !lastSelectedNode) {			
