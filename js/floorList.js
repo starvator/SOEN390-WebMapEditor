@@ -1,3 +1,6 @@
+
+var floorList = [];
+
 $(function(){
     //handle the new floor submit
     $('#newFloor').submit(function () {
@@ -11,8 +14,20 @@ $(function(){
             alert("you must select a file");
             return false;
         }
+		if(floorList[$("#floorNumUpload").val()]){
+			if(!confirm("replace floor?")){
+				return false
+			}
+		}
         //add the svg to the list and canvas
         addSvgToList($("#fileUpload")[0].files[0],$("#floorNumUpload").val());
+		//add to array
+		floorList[$("#floorNumUpload").val()] = $("#fileUpload")[0].files[0];
+		//add floor list from array
+		$("#floorList").empty();
+		for(val in floorList){
+			$("#floorList").append('<li>Floor '+ val, floorList[val].name+'</li>');
+		}
         //clear the form
         $("#newFloor")[0].reset();
         return false;
@@ -33,7 +48,7 @@ function addSvgToList(file,floorNum){
     reader.onload = (function() {
 		return function(e) {
 			addToCanvas(e.target.result);
-            $("#floorList").append('<li>Floor '+floorNum, file.name+'</li>');
+            //$("#floorList").append('<li>Floor '+floorNum, file.name+'</li>');
 		};
     })(file);
 
