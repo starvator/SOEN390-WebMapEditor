@@ -4,13 +4,15 @@
 
 function showFloorsMenu()
 {
-	$("#mainMenu").hide();
+	$("#nodeEditorMenu").hide();
 	$("#floorEditorMenu").show();
+	
+	nodeEditingMode = false;
 }
 
 function showNodesMenu()
 {
-	$("#mainMenu").hide();
+	$("#floorEditorMenu").hide();
 	$("#nodeEditorMenu").show();
 	
 	nodeEditingMode = true;
@@ -24,4 +26,25 @@ function showMainMenu()
 	// Reset drawing modes
 	nodeEditingMode = false;
 	lastSelectedNode = null;
+}
+
+function showMapLayoutMenu()
+{
+	$("#StorylinesMenu").hide();
+	$("#StorylinesTab").removeClass('active');
+	$("#MapLayoutMenu").show();
+	$("#MapLayoutTab").addClass('active');
+	
+	nodeEditingMode = false;
+}
+
+function showStorylinesMenu()
+{
+	$("#MapLayoutMenu").hide();
+	$("#MapLayoutTab").removeClass('active');
+	$("#StorylinesMenu").show();
+	$("#StorylinesTab").addClass('active');
+	
+	storylinesEditingMode = true;
+	nodeEditingMode = false;
 }
