@@ -19,15 +19,17 @@ QUnit.test( "Sprint 2 user story 1.3: zooming", function( assert ) {
 });
 
 QUnit.test( "Sprint 2 user story 1.4: panning", function( assert ) {
-	mouseClick();
-	assert.ok( 1 == "1", "Passed!" );
+	//this works but I can't get a visible coordinate just out of the canvas
+	$('#floorPlan').simulate("drag-n-drop",{dx:500});
+	$('#floorPlan').simulate("drag-n-drop",{dy:200});
+	assert.ok( 1 == "0", "TODO: confirm change in position via 'assert' for automation" );
 });
 QUnit.test( "Sprint 2 user story 4.2", function( assert ) {
-	assert.ok( 1 == "1", "Passed!" );
+	assert.ok( 1 == "0", "Unwritten test" );
 });
 QUnit.test( "Sprint 2 user story 5.1", function( assert ) {
-	assert.ok( 1 == "1", "Passed!" );
+	assert.ok( 1 == "0", "Unwritten test" );
 });
 QUnit.test( "Sprint 2 user story 6.2", function( assert ) {
-	assert.ok( 1 == "1", "Passed!" );
+	assert.ok( 1 == "0", "Unwritten test" );
 });
