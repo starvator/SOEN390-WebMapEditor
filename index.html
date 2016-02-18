@@ -33,11 +33,17 @@
 							  <li id="MapLayoutTab" onclick="showMapLayoutMenu()"><a href="#">Map Layout</a></li>
 						</ul>
 						<!-- STORYLINES MENU -->
-						<div id="StorylinesMenu">
+						<div id="StorylinesMenu" class="">
 						WELCOME TO THE STORYLINES MENU!
 						</div>
 						<!-- MAP LAYOUT MENU -->
 		<div id="MapLayoutMenu" hidden>
+		
+						<ul id="floorList" class="nav nav-pills nav-stacked">
+						<li id="floor3"class="active" onclick="changeFloor(this)"><a href="#">Floor 3 DEFAULT</a></li>
+						<!--floor3.svg-->
+                        </ul>
+		
                         <div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         </div>
                         </br>
@@ -46,8 +52,9 @@
                     
                     <div id="floorEditorMenu">
                         <!-- FLOOR EDITOR MENU -->
-                        <ul id="floorList">
-                        </ul>
+						FLOOR EDITING MENU
+						</br>
+                        
 
                         <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
                         </br>
@@ -67,6 +74,8 @@
                     </div>
                     <div id="nodeEditorMenu">
                         <!-- NODE EDITOR MENU -->
+						POINT EDITING MENU
+						</br>
                         <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
                         </br>
 						Click map to add points!</br>

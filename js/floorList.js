@@ -33,7 +33,7 @@ function addSvgToList(file,floorNum){
     reader.onload = (function() {
 		return function(e) {
 			addToCanvas(e.target.result);
-            $("#floorList").append('<li>Floor '+floorNum, file.name+'</li>');
+            $("#floorList").append('<li id="floor'+floorNum+'" onclick="changeFloor(this)"><a href="#">Floor '+floorNum+'</a></li>');
 		};
     })(file);
 
@@ -52,4 +52,10 @@ function addToCanvas(svgFile){
 		redraw();		
 	}
 	img.src = svgFile;
+}
+
+function changeFloor(elem){
+	var id = $(elem).attr("id");
+	addToCanvas();
+	// do stuff
 }
