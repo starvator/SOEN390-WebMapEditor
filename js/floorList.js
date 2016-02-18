@@ -1,4 +1,3 @@
-
 var floorList = [];
 
 $(function(){
@@ -24,35 +23,17 @@ $(function(){
 		//add floor list from array
 		$("#floorList").empty();
 		for(val in floorList){
-			$("#floorList").append('<li>Floor '+ val, floorList[val].name+'</li>');
+			$("#floorList").append('<li id="'+floorList[val].name+'" class="active" onclick="changeFloor(this)"><a href="#">Floor '+val+'</a></li>');
 		}
         //clear the form
         $("#newFloor")[0].reset();
         return false;
+		//change floor
+		var id = floorList[val].name
+		var $d = $('#'+id);
+		changeFloor($d);
     });
 });
-
-//Browse for a svg file and add it to the list of images, inspired by http://www.html5rocks.com/en/tutorials/file/dndfiles/
-function addSvgToList(file,floorNum){
-
-    // Only process svg files.
-    if (!file.type.match('.svg')) {
-		return;
-    }
-
-    var reader = new FileReader();
-	
-    // Closure to capture the file information.
-    reader.onload = (function() {
-		return function(e) {
-			addToCanvas(e.target.result);
-            $("#floorList").append('<li id="floor'+floorNum+'" onclick="changeFloor(this)"><a href="#">Floor '+floorNum+'</a></li>');
-		};
-    })(file);
-
-    // Read in the image file as a data URL.
-    reader.readAsDataURL(file);   
-}
 
 //take a svg string and add it to the canvas
 function addToCanvas(svgFile){
@@ -68,7 +49,7 @@ function addToCanvas(svgFile){
 }
 
 function changeFloor(elem){
-	var id = $(elem).attr("id");
-	addToCanvas();
-	// do stuff
+	var svgFile = $(elem).attr("id");
+	changeIMGsource('floor_plans/'+svgFile);
+	redraw();
 }
