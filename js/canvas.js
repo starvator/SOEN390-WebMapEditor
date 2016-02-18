@@ -3,12 +3,20 @@
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
+	this.toJSON = function() {
+    return {x:this.x, y:this.y};
+  }
 }
 
 function Edge(origin, destination) {
 	this.origin = origin;
 	this.destination = destination;
+	this.toJSON = function() {
+		//TODO: finish and add appropriate methods
+		return {startNode: this.origin, endNode:this.destination, floorNumber:'to be retrieved', distance:'to be computed by method'};
+	}
 }
+
 
 //A StoryPoint is a point that also contains HTML text
 function StoryPoint(point) {
