@@ -23,33 +23,25 @@ $(function(){
 		//add floor list from array
 		$("#floorList").empty();
 		for(val in floorList){
-			$("#floorList").append('<li id="'+floorList[val].name+'" class="active" onclick="changeFloor(this)"><a href="#">Floor '+val+'</a></li>');
+			$("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
 		}
-        //clear the form
-        $("#newFloor")[0].reset();
-        return false;
 		//change floor
-		var id = floorList[val].name
-		var $d = $('#'+id);
-		changeFloor($d);
+		changeFloor($("#floorNumUpload").val());
+		//clear the form
+        $("#newFloor")[0].reset();
+		return false;
     });
 });
 
-//take a svg string and add it to the canvas
-function addToCanvas(svgFile){
-	var can = document.getElementById('floorPlan');
-	var ctx = can.getContext('2d');
-
-	img = new Image();
-	img.onload = function() {
-		nodeList = [];
-		redraw();		
-	}
-	img.src = svgFile;
+function changeFloor(val){
+	changeIMGsource("floor_plans/"+floorList[val].name);
+	$("#floor"+val).addClass("active");
+	redraw();	
 }
 
-function changeFloor(elem){
-	var svgFile = $(elem).attr("id");
-	changeIMGsource('floor_plans/'+svgFile);
-	redraw();
-}
+function floorClicked(elem){
+	var id = $(elem).attr("id");
+    $("#floorList").find(".active").removeClass("active");
+    $("#"+id).addClass("active");
+	changeFloor(id.substring(5));
+};
