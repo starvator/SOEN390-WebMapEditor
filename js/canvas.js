@@ -38,9 +38,33 @@ function IBeacon(uuid, major, minor) {
 	this.minor = minor;
 }
 
-//TODO: TBD
-function Media(type){
+function Media(){
+	this.image = [];
+	this.video = [];
+	this.audio = [];
+	this.addMedia = function(file) {
+		switch(file.type) {
+			case "image":
+				this.image.push(file);
+				break;
+			case "video":
+				this.video.push(file);
+				break;
+			case "audio":
+				this.audio.push(file);
+				break;
+			default:
+				alert('Something went wrong while adding your file (Type not recognized).');
+				break;
+		}
+	}
+}
+
+function File(type) {
 	this.type = type;
+	this.path = "";
+	this.language = "";
+	this.caption = "";
 }
 
 function POI(point) {
@@ -49,7 +73,8 @@ function POI(point) {
 	this.description = new LanguageText('description');
 	this.point = point;
 	this.ibeacon = "";
-	this.media = [];
+	//TODO: verify autotrigger toggle functionality
+	this.media = new Media();
 	this.storypoint = [];
 	
 	this.toJSON = function() {
@@ -82,6 +107,23 @@ function POT(point) {
 			floorID:'TODO to be retrieved'
 		};
 	}
+}
+
+function FloorPlan() {
+	this.floorID = 0;
+	this.imagePath = "";
+	this.imageWidth = 0;
+	this.imageHeight = 0;
+}
+
+function Storyline(){
+	this.ID = "TODO:generate";
+	this.title = new LanguageText('title');
+	this.description = new LanguageText('description');
+	this.path = [];
+	this.thumbnail = "";
+	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
+	this.floorsCovered = 0;
 }
 
 //A StoryPoint is a point that also contains HTML text
