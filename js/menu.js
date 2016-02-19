@@ -20,6 +20,9 @@ function showNodesMenu()
 
 function showMainMenu()
 {
+	// main menu back button action
+	$("#floorEditorMenu").hide();
+	$("#nodeEditorMenu").hide();
 	$("#sidebarMenu > div").hide();
 	$("#mainMenu").show();
 	

@@ -58,6 +58,10 @@ $(function(){
 	
 });
 
+function changeIMGsource(source){
+	img.src = source;
+}
+
 // Main canvas drawing method
 function redraw() {	
 	// Clear the canvas
