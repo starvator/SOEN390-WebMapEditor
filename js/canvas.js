@@ -27,11 +27,14 @@ var canvas;
 var ctx;
 var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
+var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
 var lastSelectedNode;				// During edge creation, the first selected node
+var nodeColor = "#808080";
+var confirmedColor = "#0000FF"; 
 
 $(function(){
 	canvas = document.getElementById('floorPlan');
@@ -69,7 +72,7 @@ function redraw() {
 	mouseOnNode = null;
 	
 	// Set line styles
-	ctx.strokeStyle = '#FFFF00';
+	ctx.strokeStyle = nodeColor;
 	ctx.lineWidth = 5;
 	
 	// Draw all the edges
@@ -84,20 +87,20 @@ function redraw() {
 	jQuery.each(nodeList,function(i,anode){
 
 		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if(nodeEditingMode && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+		if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
 		{
 			// If the mouse is near, set the node and change its colour
 			mouseOnNode = anode;
-			ctx.fillStyle="#0000FF";
+			ctx.fillStyle=confirmedColor;
 		}
 		else
 		{
-			ctx.fillStyle="#FFFF00";
+			ctx.fillStyle= nodeColor;
 		}
 	
 		// The last selected node during edge creation is a different colour
 		if(anode == lastSelectedNode) {
-			ctx.fillStyle="#0000FF";
+			ctx.fillStyle=confirmedColor;
 		}
 	
 		// Draw a point
@@ -113,40 +116,49 @@ function redraw() {
 		if(!lastSelectedNode && !mouseOnNode)
 		{
 			ctx.beginPath();
-			ctx.fillStyle="#FF0000";
+			ctx.fillStyle= nodeColor;
 			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
 			ctx.fill();
 		}
 		// When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
 		else if(lastSelectedNode && !mouseOnNode)
 		{
-			ctx.strokeStyle = '#0000FF';
+			ctx.strokeStyle = confirmedColor;
 			ctx.beginPath();
 			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
 			ctx.lineTo(mouseLocation.x,mouseLocation.y);
 			ctx.stroke();
 		
 			ctx.beginPath();
-			ctx.fillStyle="#0000FF";
+			ctx.fillStyle=confirmedColor;
 			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
 			ctx.fill();
 		}
 		// When creating an edge and hovering on top of a node, draw a line to that node
 		else if (lastSelectedNode && mouseOnNode)
 		{
-			ctx.strokeStyle = '#0000FF';
+			ctx.strokeStyle = confirmedColor;
 			ctx.beginPath();
 			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
 			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
 			ctx.stroke();
 		}
 		
-	}	
+	}
+    if (storylinesEditingMode){
+        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+		if(!mouseOnNode)
+		{
+			ctx.beginPath();
+			ctx.fillStyle= nodeColor;
+			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+			ctx.fill();
+		}
+    }
 }
 
 function canvasClick(x,y) {
 	if(nodeEditingMode) {
-		
 		// If clicking on empty space
 		if(!mouseOnNode && !lastSelectedNode) {			
 			// Store a new node in the list of transition nodes
@@ -164,6 +176,16 @@ function canvasClick(x,y) {
 			lastSelectedNode = null; // Clear the selected node
 		}
 	}
+    else if (storylinesEditingMode){
+        if(mouseOnNode) {			
+			//open the editor
+            fillEditor();
+		}
+        else{
+        }
+    }
+    else{
+    }
 }
 
 // Check to see if the set of nodes is in the current list of nodes
