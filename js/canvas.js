@@ -8,15 +8,128 @@ function Point(x,y) {
 function Edge(origin, destination) {
 	this.origin = origin;
 	this.destination = destination;
+	this.toJSON = function() {
+	//TODO: finish and add appropriate methods
+		return {
+			startNode: this.origin,
+			endNode:this.destination,
+			floorNumber:'TODO to be retrieved',
+			distance:distance(this.origin, this.destination)
+			};
+	}
 }
 
-//A StoryPoint is a point that also contains HTML text
-function StoryPoint(point) {
-	this.text = "";
-	this.point = point;
-	this.updateDescription = function(text){
-		this.text=text;
+//TODO refactor and place in appropriate location later
+//This class is for any Language Text pairing such as descriptions or titles
+function LanguageText() {
+	this.pairs = [];
+	this.addPair = function(lang, value){
+		this.pairs.push({'language':lang, 'value':value});
 	}
+	this.toJSON = function() {
+		return this.pairs;
+	}
+}
+
+function IBeacon(uuid, major, minor) {
+	this.uuid = uuid;
+	this.major = major;
+	this.minor = minor;
+}
+
+function Media(){
+	this.image = [];
+	this.video = [];
+	this.audio = [];
+	this.addMedia = function(file) {
+		switch(file.type) {
+			case "image":
+				this.image.push(file);
+				break;
+			case "video":
+				this.video.push(file);
+				break;
+			case "audio":
+				this.audio.push(file);
+				break;
+			default:
+				alert('Something went wrong while adding your file (Type not recognized).');
+				break;
+		}
+	}
+}
+
+function File(type) {
+	this.type = type;
+	this.path = "";
+	this.language = "";
+	this.caption = "";
+}
+
+function POI(point) {
+	this.ID = "barfoodID"; //TODO generate or find
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.point = point;
+	this.ibeacon = "";
+	//TODO: verify autotrigger toggle functionality
+	this.media = new Media();
+	this.storypoint = [];
+	
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			title: this.title,
+			description: this.description,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:'TODO retrieve',
+			iBeacon:this.ibeacon,
+			media:this.media, //TODO
+			storyPoint:this.storyPoint //TODO
+		};
+	}
+}
+
+function POT(point) {
+	this.ID = "foobarID"; //TODO GENERATED appropriately
+	this.label = new LanguageText();
+	this.point = point;
+	
+	//TODO
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			label: this.label,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:'TODO to be retrieved'
+		};
+	}
+}
+
+function FloorPlan() {
+	this.floorID = 0;
+	this.imagePath = "";
+	this.imageWidth = 0;
+	this.imageHeight = 0;
+}
+
+function Storyline(){
+	this.ID = "TODO:generate";
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.path = [];
+	this.thumbnail = "";
+	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
+	this.floorsCovered = 0;
+}
+
+function StoryPoint() {
+	this.storylineID = "";
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.media = new Media();
 }
 
 // End Classes
@@ -34,6 +147,11 @@ var edgeList = [];					// List of edges between transition points
 var lastSelectedNode;				// During edge creation, the first selected node
 var nodeColor = "#808080";
 var confirmedColor = "#0000FF"; 
+
+//For JSON use
+var floorList = [];
+var pointList = [];
+var storylineList = [];
 
 $(function(){
 	canvas = document.getElementById('floorPlan');
