@@ -147,6 +147,11 @@ var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
 var lastSelectedNode;				// During edge creation, the first selected node
 
+//For JSON use
+var floorList = [];
+var pointList = [];
+var storylineList = [];
+
 $(function(){
 	canvas = document.getElementById('floorPlan');
 	ctx = canvas.getContext('2d');
