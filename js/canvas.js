@@ -36,7 +36,8 @@ var lastSelectedNode;				// During edge creation, the first selected node
 $(function(){
 	canvas = document.getElementById('floorPlan');
 	ctx = canvas.getContext('2d');
-
+	resizeCanvas();
+	
 	img = new Image();
 	img.onload = function() {
 		ctx.drawImage(img, -1000, -1000);
@@ -52,7 +53,6 @@ $(function(){
 				
 	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
 	canvas.addEventListener('mousewheel',handleScroll,false);
-	
 });
 
 // Main canvas drawing method
@@ -140,7 +140,6 @@ function redraw() {
 			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
 			ctx.stroke();
 		}
-		
 	}	
 }
 
@@ -178,3 +177,20 @@ function nodesInEdges(a,b) {
 	
 	return false;
 }
+
+function resizeCanvas(){
+	var con = $("#floorPlanContainer");
+	if(con.width() > con.height()) {
+		canvas.width = con.width();
+		canvas.height = con.width();
+	} else {
+		canvas.width = con.height();
+		canvas.height = con.height();
+	}
+}
+
+//resize the canvas whenever its container is resized.
+$(window).on('resize', function(){
+	resizeCanvas();
+	redraw();
+});
