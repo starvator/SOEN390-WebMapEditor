@@ -182,7 +182,6 @@ function canvasClick(x,y) {
             fillEditor();
 		}
         else{
-            alert("asd");
         }
     }
     else{
