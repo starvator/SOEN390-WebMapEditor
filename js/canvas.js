@@ -126,13 +126,11 @@ function Storyline(){
 	this.floorsCovered = 0;
 }
 
-//A StoryPoint is a point that also contains HTML text
-function StoryPoint(point) {
-	this.text = "";
-	this.point = point;
-	this.updateDescription = function(text){
-		this.text=text;
-	}
+function StoryPoint() {
+	this.storylineID = "";
+	this.title = new LanguageText('text');
+	this.description = new LanguageText('description');
+	this.media = new Media();
 }
 
 // End Classes
