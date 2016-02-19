@@ -14,21 +14,20 @@ function Edge(origin, destination) {
 			startNode: this.origin,
 			endNode:this.destination,
 			floorNumber:'TODO to be retrieved',
-			distance:distance(origin, destination)
+			distance:distance(this.origin, this.destination)
 			};
 	}
 }
 
 //TODO refactor and place in appropriate location later
 //This class is for any Language Text pairing such as descriptions or titles
-function LanguageText(contentType) {
-	this.contentType = contentType;
+function LanguageText() {
 	this.pairs = [];
 	this.addPair = function(lang, value){
-		this.pairs.push({'language':lang, contentType:value});
+		this.pairs.push({'language':lang, 'value':value});
 	}
 	this.toJSON = function() {
-		return {contentType:pairs};
+		return this.pairs;
 	}
 }
 
@@ -38,18 +37,43 @@ function IBeacon(uuid, major, minor) {
 	this.minor = minor;
 }
 
-//TODO: TBD
-function Media(type){
+function Media(){
+	this.image = [];
+	this.video = [];
+	this.audio = [];
+	this.addMedia = function(file) {
+		switch(file.type) {
+			case "image":
+				this.image.push(file);
+				break;
+			case "video":
+				this.video.push(file);
+				break;
+			case "audio":
+				this.audio.push(file);
+				break;
+			default:
+				alert('Something went wrong while adding your file (Type not recognized).');
+				break;
+		}
+	}
+}
+
+function File(type) {
 	this.type = type;
+	this.path = "";
+	this.language = "";
+	this.caption = "";
 }
 
 function POI(point) {
 	this.ID = "barfoodID"; //TODO generate or find
-	this.title = new LanguageText('title');
-	this.description = new LanguageText('description');
+	this.title = new LanguageText();
+	this.description = new LanguageText();
 	this.point = point;
 	this.ibeacon = "";
-	this.media = [];
+	//TODO: verify autotrigger toggle functionality
+	this.media = new Media();
 	this.storypoint = [];
 	
 	this.toJSON = function() {
@@ -60,7 +84,7 @@ function POI(point) {
 			x:this.point.x,
 			y:this.point.y,
 			floorID:'TODO retrieve',
-			iBeacon:ibeacon,
+			iBeacon:this.ibeacon,
 			media:this.media, //TODO
 			storyPoint:this.storyPoint //TODO
 		};
@@ -69,7 +93,7 @@ function POI(point) {
 
 function POT(point) {
 	this.ID = "foobarID"; //TODO GENERATED appropriately
-	this.label = new LanguageText('label');
+	this.label = new LanguageText();
 	this.point = point;
 	
 	//TODO
@@ -84,13 +108,28 @@ function POT(point) {
 	}
 }
 
-//A StoryPoint is a point that also contains HTML text
-function StoryPoint(point) {
-	this.text = "";
-	this.point = point;
-	this.updateDescription = function(text){
-		this.text=text;
-	}
+function FloorPlan() {
+	this.floorID = 0;
+	this.imagePath = "";
+	this.imageWidth = 0;
+	this.imageHeight = 0;
+}
+
+function Storyline(){
+	this.ID = "TODO:generate";
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.path = [];
+	this.thumbnail = "";
+	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
+	this.floorsCovered = 0;
+}
+
+function StoryPoint() {
+	this.storylineID = "";
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.media = new Media();
 }
 
 // End Classes
@@ -110,10 +149,16 @@ var lastSelectedNode;				// During edge creation, the first selected node
 var nodeColor = "#808080";
 var confirmedColor = "#0000FF"; 
 
+//For JSON use
+var floorList = [];
+var pointList = [];
+var storylineList = [];
+
 $(function(){
 	canvas = document.getElementById('floorPlan');
 	ctx = canvas.getContext('2d');
-
+	resizeCanvas();
+	
 	img = new Image();
 	img.onload = function() {
 		ctx.drawImage(img, -1000, -1000);
@@ -129,7 +174,6 @@ $(function(){
 				
 	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
 	canvas.addEventListener('mousewheel',handleScroll,false);
-	
 });
 
 function changeIMGsource(source){
@@ -221,7 +265,6 @@ function redraw() {
 			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
 			ctx.stroke();
 		}
-		
 	}
     if (storylinesEditingMode){
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
@@ -278,3 +321,20 @@ function nodesInEdges(a,b) {
 	
 	return false;
 }
+
+function resizeCanvas(){
+	var con = $("#floorPlanContainer");
+	if(con.width() > con.height()) {
+		canvas.width = con.width();
+		canvas.height = con.width();
+	} else {
+		canvas.width = con.height();
+		canvas.height = con.height();
+	}
+}
+
+//resize the canvas whenever its container is resized.
+$(window).on('resize', function(){
+	resizeCanvas();
+	redraw();
+});
