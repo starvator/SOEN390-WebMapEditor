@@ -1,8 +1,13 @@
 // Classes
 
+//the id generator
+var i=0;
+
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
+    this.id=i;
+    i++;
 }
 
 function Edge(origin, destination) {
@@ -44,7 +49,7 @@ function Media(type){
 }
 
 function POI(point) {
-	this.ID = "barfoodID"; //TODO generate or find
+	this.ID = point.id;
 	this.title = new LanguageText('title');
 	this.description = new LanguageText('description');
 	this.point = point;
@@ -103,6 +108,7 @@ var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
 var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
+var POILIST = [];
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
@@ -257,8 +263,11 @@ function canvasClick(x,y) {
     else if (storylinesEditingMode){
         if(mouseOnNode) {
             //TODOTYLER: get the id of the current point of interest
+            //alert(mouseOnNode.id);
             //TODOTYLER: get the id of the currently selected storyline
+            //alert(active_id);
             //TODOTYLER: look for an object in the array of objects at this point of interest that has a storylineID that matches the id of the storyline
+            // CHECK POILIST[] FOR AN OBJECT WITH THE ID OR SOMETHING
             //TODOTYLER: if not found, create new object. If found, return this object
             //TODOTYLER: fill editor with this info (call fillEditor(object) ) also need to remake fillEditor to take in an object
             //TODOTYLER: 
