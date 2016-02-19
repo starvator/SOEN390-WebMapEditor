@@ -8,6 +8,80 @@ function Point(x,y) {
 function Edge(origin, destination) {
 	this.origin = origin;
 	this.destination = destination;
+	this.toJSON = function() {
+	//TODO: finish and add appropriate methods
+		return {
+			startNode: this.origin,
+			endNode:this.destination,
+			floorNumber:'TODO to be retrieved',
+			distance:distance(origin, destination)
+			};
+	}
+}
+
+//TODO refactor and place in appropriate location later
+//This class is for any Language Text pairing such as descriptions or titles
+function LanguageText(contentType) {
+	this.contentType = contentType;
+	this.pairs = [];
+	this.addPair = function(lang, value){
+		this.pairs.push({'language':lang, contentType:value});
+	}
+	this.toJSON = function() {
+		return {contentType:pairs};
+	}
+}
+
+function IBeacon(uuid, major, minor) {
+	this.uuid = uuid;
+	this.major = major;
+	this.minor = minor;
+}
+
+//TODO: TBD
+function Media(type){
+	this.type = type;
+}
+
+function POI(point) {
+	this.ID = "barfoodID"; //TODO generate or find
+	this.title = new LanguageText('title');
+	this.description = new LanguageText('description');
+	this.point = point;
+	this.ibeacon = "";
+	this.media = [];
+	this.storypoint = [];
+	
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			title: this.title,
+			description: this.description,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:'TODO retrieve',
+			iBeacon:ibeacon,
+			media:this.media, //TODO
+			storyPoint:this.storyPoint //TODO
+		};
+	}
+}
+
+function POT(point) {
+	this.ID = "foobarID"; //TODO GENERATED appropriately
+	this.label = new LanguageText('label');
+	this.point = point;
+	
+	//TODO
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			label: this.label,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:'TODO to be retrieved'
+		};
+	}
 }
 
 //A StoryPoint is a point that also contains HTML text
