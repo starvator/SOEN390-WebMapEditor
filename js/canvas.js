@@ -27,6 +27,7 @@ var canvas;
 var ctx;
 var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
+var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
@@ -86,7 +87,7 @@ function redraw() {
 	jQuery.each(nodeList,function(i,anode){
 
 		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if(nodeEditingMode && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+		if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
 		{
 			// If the mouse is near, set the node and change its colour
 			mouseOnNode = anode;
@@ -143,12 +144,21 @@ function redraw() {
 			ctx.stroke();
 		}
 		
-	}	
+	}
+    if (storylinesEditingMode){
+        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+		if(!mouseOnNode)
+		{
+			ctx.beginPath();
+			ctx.fillStyle= nodeColor;
+			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+			ctx.fill();
+		}
+    }
 }
 
 function canvasClick(x,y) {
 	if(nodeEditingMode) {
-		
 		// If clicking on empty space
 		if(!mouseOnNode && !lastSelectedNode) {			
 			// Store a new node in the list of transition nodes
@@ -166,6 +176,17 @@ function canvasClick(x,y) {
 			lastSelectedNode = null; // Clear the selected node
 		}
 	}
+    else if (storylinesEditingMode){
+        if(mouseOnNode) {			
+			//open the editor
+            fillEditor();
+		}
+        else{
+            alert("asd");
+        }
+    }
+    else{
+    }
 }
 
 // Check to see if the set of nodes is in the current list of nodes

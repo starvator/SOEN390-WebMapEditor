@@ -36,6 +36,7 @@ function showMapLayoutMenu()
 	$("#MapLayoutTab").addClass('active');
 	
 	nodeEditingMode = false;
+    storylinesEditingMode = false;
 }
 
 function showStorylinesMenu()

@@ -22,7 +22,7 @@ function mouseMove(evt) {
 		redraw();
 	}
 
-	if(nodeEditingMode)		
+	if(nodeEditingMode || storylinesEditingMode)		
 	{		
 		redraw();
 	}	
