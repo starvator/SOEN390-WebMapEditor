@@ -1,9 +1,4 @@
 $(document).ready(function(){
-    //The open button
-    $("#fakeStoryPoint").click(function(){  
-        fillEditor();
-    });
-    
     //The x at the top
     $("#infoEditingFormClose").click(function(){
         $("#infoEditingForm").hide();
@@ -44,15 +39,19 @@ $(document).ready(function(){
     });
 });
 
-function fillEditor(){
-            //fill the info
-        $("#spTitle").val("Title");
-        $("#autoOn").click();
-        //$("#autoOff").click();
-        $("#spBeaconID").val("beacon id");     
-		CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
-        $("#attachedDocName").text("Oldfilename.txt");
-        
+function fillEditor(POI poi){
+        //fill the info
+		if(poi.isSet){
+			//populate
+		}
+		else{
+			$("#spTitle").val("Title");
+			$("#autoOn").click();
+			//$("#autoOff").click();
+			$("#spBeaconID").val("beacon id");     
+			CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
+			$("#attachedDocName").text("Oldfilename.txt");
+        }
         //show the form
 		$("#infoEditingForm").show();
 }

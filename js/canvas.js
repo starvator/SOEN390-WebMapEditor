@@ -50,6 +50,7 @@ function Media(type){
 
 function POI(point) {
 	this.ID = point.id;
+	this.isSet = false;
 	this.title = new LanguageText('title');
 	this.description = new LanguageText('description');
 	this.point = point;
@@ -108,7 +109,7 @@ var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
 var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
-var POILIST = [];
+var POIList = [];
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
@@ -266,17 +267,33 @@ function canvasClick(x,y) {
             //alert(mouseOnNode.id);
             //TODOTYLER: get the id of the currently selected storyline
             //alert(active_id);
-            //TODOTYLER: look for an object in the array of objects at this point of interest that has a storylineID that matches the id of the storyline
-            // CHECK POILIST[] FOR AN OBJECT WITH THE ID OR SOMETHING
-            //TODOTYLER: if not found, create new object. If found, return this object
-            //TODOTYLER: fill editor with this info (call fillEditor(object) ) also need to remake fillEditor to take in an object
-            //TODOTYLER: 
-            //TODOTYLER: add it to the array/update it in the array to save it
-            //TODOTYLER: after save, append it to the list under the storyline
-            //TODOTYLER: possibly do something with the color
-            //TODOTYLER: 
-            //TODOTYLER: make the links in the menu clickable so they bring up the editor and change the node color on the map
-			//open the editor
+			var found = false;
+			
+			//find point in list and fill editor
+			if(POIList.length == 0){
+				var newPOI = new POI(mouseOnNode);
+				POIList.push(newPOI);
+				//fill editor with newPOI
+			}else{
+				for(val in POIList){
+					if(POIList[val].ID == mouseOnNode.id){
+					//fill editor with val
+					found = true;
+					break;
+					}
+				}
+				if(!found){
+					var newPOI = new POI(mouseOnNode);
+					POIList.push(newPOI);
+					//fill editor with newPOI
+				}
+			}
+			
+			//click save in editor update object in POI list
+			//update story line list (LEFT SIDE LIST) with point
+			//click point in list, open editor + filleditor(POI)
+			
+            //refactor fillEditor to accept a POI
             fillEditor();
 		}
         else{
