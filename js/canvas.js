@@ -255,7 +255,18 @@ function canvasClick(x,y) {
 		}
 	}
     else if (storylinesEditingMode){
-        if(mouseOnNode) {			
+        if(mouseOnNode) {
+            //TODOTYLER: get the id of the current point of interest
+            //TODOTYLER: get the id of the currently selected storyline
+            //TODOTYLER: look for an object in the array of objects at this point of interest that has a storylineID that matches the id of the storyline
+            //TODOTYLER: if not found, create new object. If found, return this object
+            //TODOTYLER: fill editor with this info (call fillEditor(object) ) also need to remake fillEditor to take in an object
+            //TODOTYLER: 
+            //TODOTYLER: add it to the array/update it in the array to save it
+            //TODOTYLER: after save, append it to the list under the storyline
+            //TODOTYLER: possibly do something with the color
+            //TODOTYLER: 
+            //TODOTYLER: make the links in the menu clickable so they bring up the editor and change the node color on the map
 			//open the editor
             fillEditor();
 		}
