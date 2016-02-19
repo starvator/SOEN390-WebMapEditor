@@ -14,21 +14,20 @@ function Edge(origin, destination) {
 			startNode: this.origin,
 			endNode:this.destination,
 			floorNumber:'TODO to be retrieved',
-			distance:distance(origin, destination)
+			distance:distance(this.origin, this.destination)
 			};
 	}
 }
 
 //TODO refactor and place in appropriate location later
 //This class is for any Language Text pairing such as descriptions or titles
-function LanguageText(contentType) {
-	this.contentType = contentType;
+function LanguageText() {
 	this.pairs = [];
 	this.addPair = function(lang, value){
-		this.pairs.push({'language':lang, contentType:value});
+		this.pairs.push({'language':lang, 'value':value});
 	}
 	this.toJSON = function() {
-		return {contentType:pairs};
+		return this.pairs;
 	}
 }
 
@@ -69,8 +68,8 @@ function File(type) {
 
 function POI(point) {
 	this.ID = "barfoodID"; //TODO generate or find
-	this.title = new LanguageText('title');
-	this.description = new LanguageText('description');
+	this.title = new LanguageText();
+	this.description = new LanguageText();
 	this.point = point;
 	this.ibeacon = "";
 	//TODO: verify autotrigger toggle functionality
@@ -85,7 +84,7 @@ function POI(point) {
 			x:this.point.x,
 			y:this.point.y,
 			floorID:'TODO retrieve',
-			iBeacon:ibeacon,
+			iBeacon:this.ibeacon,
 			media:this.media, //TODO
 			storyPoint:this.storyPoint //TODO
 		};
@@ -94,7 +93,7 @@ function POI(point) {
 
 function POT(point) {
 	this.ID = "foobarID"; //TODO GENERATED appropriately
-	this.label = new LanguageText('label');
+	this.label = new LanguageText();
 	this.point = point;
 	
 	//TODO
@@ -118,8 +117,8 @@ function FloorPlan() {
 
 function Storyline(){
 	this.ID = "TODO:generate";
-	this.title = new LanguageText('title');
-	this.description = new LanguageText('description');
+	this.title = new LanguageText();
+	this.description = new LanguageText();
 	this.path = [];
 	this.thumbnail = "";
 	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
@@ -128,8 +127,8 @@ function Storyline(){
 
 function StoryPoint() {
 	this.storylineID = "";
-	this.title = new LanguageText('text');
-	this.description = new LanguageText('description');
+	this.title = new LanguageText();
+	this.description = new LanguageText();
 	this.media = new Media();
 }
 
