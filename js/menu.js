@@ -53,9 +53,3 @@ function showStorylinesMenu()
 	nodeEditingMode = false;
 }
 
-$(document).ready(function(){
-    $("#StorylinesMenu a").on("click", function(){
-       $("#StorylinesMenu").find(".active").removeClass("active");
-       $(this).parent().addClass("active");
-    });
-});
