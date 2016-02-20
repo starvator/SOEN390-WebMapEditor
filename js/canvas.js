@@ -1,8 +1,13 @@
 // Classes
 
+//the id generator
+var i=0;
+
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
+    this.id=i;
+    i++;
 }
 
 function Edge(origin, destination) {
@@ -67,9 +72,11 @@ function File(type) {
 }
 
 function POI(point) {
-	this.ID = "barfoodID"; //TODO generate or find
-	this.title = new LanguageText();
-	this.description = new LanguageText();
+	this.ID = point.id;
+	this.isSet = false;
+	this.title = new LanguageText('title');
+	this.description = new LanguageText('description');
+
 	this.point = point;
 	this.ibeacon = "";
 	//TODO: verify autotrigger toggle functionality
@@ -140,7 +147,9 @@ var canvas;
 var ctx;
 var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
+var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
+var POIList = [];
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
@@ -175,6 +184,10 @@ $(function(){
 	canvas.addEventListener('mousewheel',handleScroll,false);
 });
 
+function changeIMGsource(source){
+	img.src = source;
+}
+
 // Main canvas drawing method
 function redraw() {	
 	// Clear the canvas
@@ -204,7 +217,7 @@ function redraw() {
 	jQuery.each(nodeList,function(i,anode){
 
 		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if(nodeEditingMode && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+		if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
 		{
 			// If the mouse is near, set the node and change its colour
 			mouseOnNode = anode;
@@ -260,12 +273,21 @@ function redraw() {
 			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
 			ctx.stroke();
 		}
-	}	
+	}
+    if (storylinesEditingMode){
+        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+		if(!mouseOnNode)
+		{
+			ctx.beginPath();
+			ctx.fillStyle= nodeColor;
+			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+			ctx.fill();
+		}
+    }
 }
 
 function canvasClick(x,y) {
 	if(nodeEditingMode) {
-		
 		// If clicking on empty space
 		if(!mouseOnNode && !lastSelectedNode) {			
 			// Store a new node in the list of transition nodes
@@ -283,6 +305,39 @@ function canvasClick(x,y) {
 			lastSelectedNode = null; // Clear the selected node
 		}
 	}
+    else if (storylinesEditingMode){
+	//*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
+        if(mouseOnNode) {
+            //TODOTYLER: get the id of the current point of interest
+            //alert(mouseOnNode.id);
+            //TODOTYLER: get the id of the currently selected storyline
+            //alert(active_id);
+			var found = false;
+			//find point in list and fill editor
+			if(POIList.length == 0){
+				var newPOI = new POI(mouseOnNode);
+				POIList.push(newPOI);
+				fillEditor(newPOI);
+			}else{
+				for(val in POIList){
+					if(POIList[val].ID == mouseOnNode.id){
+					fillEditor(POIList[val]);
+					found = true;
+					break;
+					}
+				}
+				if(!found){
+					var newPOI = new POI(mouseOnNode);
+					POIList.push(newPOI);
+					fillEditor(newPOI);
+				}
+			}
+		}
+        else{
+        }
+    }
+    else{
+    }
 }
 
 // Check to see if the set of nodes is in the current list of nodes
