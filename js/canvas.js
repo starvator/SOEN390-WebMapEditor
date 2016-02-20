@@ -1,8 +1,13 @@
 // Classes
 
+//the id generator
+var i=0;
+
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
+    this.id=i;
+    i++;
 }
 
 function Edge(origin, destination) {
@@ -67,9 +72,11 @@ function File(type) {
 }
 
 function POI(point) {
-	this.ID = "barfoodID"; //TODO generate or find
-	this.title = new LanguageText();
-	this.description = new LanguageText();
+	this.ID = point.id;
+	this.isSet = false;
+	this.title = new LanguageText('title');
+	this.description = new LanguageText('description');
+
 	this.point = point;
 	this.ibeacon = "";
 	//TODO: verify autotrigger toggle functionality
@@ -142,6 +149,7 @@ var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
 var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
+var POIList = [];
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
@@ -298,9 +306,32 @@ function canvasClick(x,y) {
 		}
 	}
     else if (storylinesEditingMode){
-        if(mouseOnNode) {			
-			//open the editor
-            fillEditor();
+	//*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
+        if(mouseOnNode) {
+            //TODOTYLER: get the id of the current point of interest
+            //alert(mouseOnNode.id);
+            //TODOTYLER: get the id of the currently selected storyline
+            //alert(active_id);
+			var found = false;
+			//find point in list and fill editor
+			if(POIList.length == 0){
+				var newPOI = new POI(mouseOnNode);
+				POIList.push(newPOI);
+				fillEditor(newPOI);
+			}else{
+				for(val in POIList){
+					if(POIList[val].ID == mouseOnNode.id){
+					fillEditor(POIList[val]);
+					found = true;
+					break;
+					}
+				}
+				if(!found){
+					var newPOI = new POI(mouseOnNode);
+					POIList.push(newPOI);
+					fillEditor(newPOI);
+				}
+			}
 		}
         else{
         }
