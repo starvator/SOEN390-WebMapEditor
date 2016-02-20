@@ -76,7 +76,6 @@ function POI(point) {
 	this.isSet = false;
 	this.title = new LanguageText('title');
 	this.description = new LanguageText('description');
-
 	this.point = point;
 	this.ibeacon = "";
 	//TODO: verify autotrigger toggle functionality

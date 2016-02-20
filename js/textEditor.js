@@ -40,11 +40,17 @@ $(document).ready(function(){
 			POIList[val].ibeacon = $("#spBeaconID").val();
 			POIList[val].description = CKEDITOR.instances["editor1"].getData();
 			POIList[val].media = $("#attachedDocName").text();
-			POIList[val].isSet = true;
 			POIList[val].storypoint.push(active_id);
 			
 			//Adding the point to the storyline list.
-			$("#"+active_id+"_pointList").append('<li><a onClick = "openEditorByPointID('+ POIList[val].ID +')">'+ POIList[val].title +'</a></li>');	
+			if(POIList[val].isSet){
+				//get into <a> and change POIList[val].title
+				$("#"+POIList[val].ID+"_a").text(POIList[val].title);
+			}
+			else{
+				$("#"+active_id+"_pointList").append('<li><a id = "' + POIList[val].ID + '_a"onClick = "openEditorByPointID('+ POIList[val].ID +')">'+ POIList[val].title +'</a></li>');	
+				POIList[val].isSet = true;
+			}
 			break;
 		}
 	}
