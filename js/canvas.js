@@ -262,22 +262,22 @@ function canvasClick(x,y) {
 		}
 	}
     else if (storylinesEditingMode){
+	//*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
         if(mouseOnNode) {
             //TODOTYLER: get the id of the current point of interest
             //alert(mouseOnNode.id);
             //TODOTYLER: get the id of the currently selected storyline
             //alert(active_id);
 			var found = false;
-			
 			//find point in list and fill editor
 			if(POIList.length == 0){
 				var newPOI = new POI(mouseOnNode);
 				POIList.push(newPOI);
-				//fill editor with newPOI
+				fillEditor(newPOI);
 			}else{
 				for(val in POIList){
 					if(POIList[val].ID == mouseOnNode.id){
-					//fill editor with val
+					fillEditor(POIList[val]);
 					found = true;
 					break;
 					}
@@ -285,16 +285,9 @@ function canvasClick(x,y) {
 				if(!found){
 					var newPOI = new POI(mouseOnNode);
 					POIList.push(newPOI);
-					//fill editor with newPOI
+					fillEditor(newPOI);
 				}
 			}
-			
-			//click save in editor update object in POI list
-			//update story line list (LEFT SIDE LIST) with point
-			//click point in list, open editor + filleditor(POI)
-			
-            //refactor fillEditor to accept a POI
-            fillEditor();
 		}
         else{
         }

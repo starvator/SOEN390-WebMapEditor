@@ -7,7 +7,8 @@ function addNewStoryLine(){
 	var name;
 	name = $("#storylineField").val();
 	if(name != false){
-		$("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</a></li>');
+		$("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</a></li>' +
+		'<ul id="'+ current_id +'_pointList"></ul>');
 		$("#StorylinesList").find(".active").removeClass("active");
 		$("#"+current_id).addClass("active");
 		active_id = current_id;

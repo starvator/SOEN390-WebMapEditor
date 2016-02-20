@@ -1,3 +1,4 @@
+var currentPOIID;
 $(document).ready(function(){
     //The x at the top
     $("#infoEditingFormClose").click(function(){
@@ -27,31 +28,60 @@ $(document).ready(function(){
     //The save button
     $("#SaveStoryPointInfo").click(function(){
         //store the info
-        alert($("#spTitle").val());
-        alert($("input[name=autoTrig]:checked").val());
-        alert($("#spBeaconID").val());     
-		alert(CKEDITOR.instances["editor1"].getData());
-        alert($("#attachedDocName").text());
+        //alert($("#spTitle").val());
+        //alert($("input[name=autoTrig]:checked").val());
+		//alert($("#spBeaconID").val());     
+		//alert(CKEDITOR.instances["editor1"].getData());
+        //alert($("#attachedDocName").text());
         
+		for(val in POIList){
+		if(POIList[val].ID == currentPOIID){
+			POIList[val].title = $("#spTitle").val();
+			POIList[val].ibeacon = $("#spBeaconID").val();
+			POIList[val].description = CKEDITOR.instances["editor1"].getData();
+			POIList[val].media = $("#attachedDocName").text();
+			POIList[val].isSet = true;
+			POIList[val].storypoint.push(active_id);
+			
+			//Adding the point to the storyline list.
+			$("#"+active_id+"_pointList").append('<li><a onClick = "openEditorByPointID('+ POIList[val].ID +')">'+ POIList[val].title +'</a></li>');	
+			break;
+		}
+	}
         
         //close the window
         $("#infoEditingForm").hide();
     });
 });
-
-function fillEditor(POI poi){
-        //fill the info
-		if(poi.isSet){
-			//populate
+//Open editor of of point of a given id
+function openEditorByPointID(id){
+	for(val in POIList){
+		if(POIList[val].ID == id){
+			fillEditor(POIList[val]);
+			break;
 		}
-		else{
-			$("#spTitle").val("Title");
-			$("#autoOn").click();
-			//$("#autoOff").click();
-			$("#spBeaconID").val("beacon id");     
-			CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
-			$("#attachedDocName").text("Oldfilename.txt");
-        }
-        //show the form
-		$("#infoEditingForm").show();
+	}
+}
+
+function fillEditor(poi){
+	currentPOIID = poi.ID;
+    //fill the info
+	if(poi.isSet){
+		$("#spTitle").val(poi.title);
+		$("#autoOn").click();
+		//$("#autoOff").click();
+		$("#spBeaconID").val(poi.ibeacon);     
+		CKEDITOR.instances["editor1"].setData(poi.description);
+		$("#attachedDocName").text(poi.media);
+	}
+	else{
+		$("#spTitle").val("Title");
+		$("#autoOn").click();
+		//$("#autoOff").click();
+		$("#spBeaconID").val("beacon id");     
+		CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
+		$("#attachedDocName").text("Oldfilename.txt");
+	}
+    //show the form
+	$("#infoEditingForm").show();
 }
