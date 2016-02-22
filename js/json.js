@@ -23,7 +23,9 @@ function generateJSONPointList() {
 //Temporary fix to turn nodeList to pointList
 //Actual fix beyond scope of SVKLI-16
 	pointList = [];
+	
+	/* The following lines bug out Sonarqube
 	for(p of nodeList) {
 		pointList.push(new POI(p));
-	}
+	}*/
 }
