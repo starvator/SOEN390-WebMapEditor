@@ -153,7 +153,7 @@ var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
 var lastSelectedNode;				// During edge creation, the first selected node
-var nodeColor = "#808080";
+var nodeColor = "#660066";
 var confirmedColor = "#0000FF"; 
 
 //For JSON use
