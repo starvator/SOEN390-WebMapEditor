@@ -287,6 +287,7 @@ function redraw() {
 
 function canvasClick(x,y) {
 	if(nodeEditingMode) {
+		
 		// If clicking on empty space
 		if(!mouseOnNode && !lastSelectedNode) {			
 			// Store a new node in the list of transition nodes
