@@ -1,64 +1,152 @@
 <html>
-	<head>
-		<title>Map Editor</title>
-		<script src="js/jquery-2.2.0.min.js"></script>
-		
-		<!-- Bootstrap includes -->
-		<script src="bootstrap/js/bootstrap.min.js"></script>		
-		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">		
-		<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" href="css/bootstrap.override.css">
-		
-		<link rel="stylesheet" href="css/stylesheet.css">
-		
-		<script src="js/canvas.js"></script>
-		<script src="js/floorList.js"></script>
-		<script src="js/menu.js"></script>
-	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-2">
-					<div id="sidebarMenu">
-						<div id="mainMenu">
-							<!-- MAIN MENU -->
-							<div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div></br>
-							<div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></div>
+
+<head>
+    <title>Map Editor</title>
+    <script src="js/jquery-2.2.0.min.js"></script>
+
+    <!-- Bootstrap includes -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/bootstrap.override.css">
+    <link rel="stylesheet" href="css/textEditor.css">
+
+    <link rel="stylesheet" href="css/stylesheet.css">
+	<link rel="stylesheet" href="css/canvas.css">
+
+	<script src="js/compute.js"></script>
+	<script src="js/json.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/floorList.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="ckeditor/ckeditor.js"></script>
+    <script src="js/panAndZoom.js"></script>
+    <script src="js/textEditor.js"></script>
+	<script src="js/storylines.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-5">
+                <div id="sidebarMenu">
+                    <div id="mainMenu">
+                        <!-- MAIN MENU -->
+						<ul class="nav nav-tabs">
+							  <li id="StorylinesTab" class="active" onclick="showStorylinesMenu()"><a href="#">Storylines</a></li>
+							  <li id="MapLayoutTab" onclick="showMapLayoutMenu()"><a href="#">Map Layout</a></li>
+						</ul>
+						<!-- STORYLINES MENU -->
+						<div id="StorylinesMenu">
+                            <ul id="StorylinesList"class="nav nav-pills nav-stacked">
+                            </ul>
+                            <ul class="nav nav-pills nav-stacked">
+                                <li><a><input id="storylineField" type="text" placeholder="Add New Storyline" /></a></li>
+								<li onclick="addNewStoryLine()"><a href="#">Submit</a></li>
+                            </ul>
 						</div>
-						<div id="floorEditorMenu">
-							<!-- FLOOR EDITOR MENU -->
-							<ul id="floorList">
-							</ul>
-							
-							<div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div></br></br>
-							
-							<form id="newFloor">
-								<div class="form-group">
-									<label for="floorNumUpload">Floor number</label>
-									<input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
-								</div>
-								<div class="form-group">
-									<label for="fileUpload">Floor map svg image</label>
-									<input id="fileUpload" type="file" accept=".svg" />
-								</div>
-								<input type="submit" class="btn btn-default" value="Add Floor" />
-							</form>
-						</div>
-						<div id="nodeEditorMenu">
-							<!-- NODE EDITOR MENU -->
-							<div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div></br>
-							
-							<div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div></br>
-							<div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
-						</div>
-					</div>
-					
+						<!-- MAP LAYOUT MENU -->
+		<div id="MapLayoutMenu" hidden>
+		
+						<ul id="floorList" class="nav nav-pills nav-stacked">
+                        </ul>
+		
+                        <div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        </div>
+                        </br>
+                        <div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        </div>
+						</br>
+						<!-- TODO: offer the user to name the file? -->
+                        <div class="btn btn-default" onclick="download('mapData.json',createJSON())">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div id="floorEditorMenu">
+                        <!-- FLOOR EDITOR MENU -->
+						FLOOR EDITING MENU
+						</br>
+                        
+
+                        <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
+                        </br>
+                        </br>
+
+                        <form id="newFloor">
+                            <div class="form-group">
+                                <label for="floorNumUpload">Floor number</label>
+                                <input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
+                            </div>
+                            <div class="form-group">
+                                <label for="fileUpload">Floor map svg image</label>
+                                <input id="fileUpload" type="file" accept=".svg" />
+                            </div>
+                            <input type="submit" class="btn btn-default" value="Add Floor" />
+                        </form>
+                    </div>
+                    <div id="nodeEditorMenu">
+                        <!-- NODE EDITOR MENU -->
+						POINT EDITING MENU
+						</br>
+                        <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
+                        </br>
+						Click map to add points!</br>
+                        <div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
+                        </br>
+                        <div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                    </div>
 				</div>
-				<div class="col-sm-10">
-					<canvas id="floorPlan" width="500" height="500">
-					</canvas>
-				</div>
-			</div>
 		</div>
-	</body>
+                </div>
+            <div class="col-lg-9 col-md-8 col-sm-7" id="floorPlanContainer">
+				<canvas id="floorPlan" width="1" height="1">
+				</canvas>
+                
+            </div>
+        </div>
+    </div>
+
+    <div id="infoEditingForm" hidden>
+        <div class="form-group">
+            <span id="infoEditingFormTitle">Storypoint Editor</span>
+            <div id="infoEditingFormClose" class="btn btn-danger pull-right">x</div>
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Title</span>
+            <input type="text" id="spTitle" class="form-control" placeholder="Title Here">
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Auto-Trigger on iBeacon?</span>
+            <div class="btn-group button-toggle pull-right" data-toggle="buttons">
+                <label class="btn btn-default">
+                    <input type="radio" name="autoTrig" id="autoOn" value="1">On</input>
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="autoTrig" id="autoOff" value="0">Off</input>
+                </label>
+            </div>
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">iBeacon ID</span>
+            <input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
+        </div>
+        <!-- HTML EDITOR -->
+        <div class="form-group">
+            <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
+            <script>
+                CKEDITOR.replace('editor1');
+            </script>
+        </div>
+        <div class="button-group form-group input-group">
+            <span class="input-group-addon" id="attachedDocName"></span>
+            <div class="btn btn-danger" id="clearAttachField">x</div>
+            <div type="button" id="attachADoc" class="btn btn-default">Attach Doc</div>
+            <input id="uploadFile" type="file" />
+        </div>
+        <div class="form-group">
+            <div type="button" class="btn btn-success pull-right" id="SaveStoryPointInfo">Save</div>
+            <span>&nbsp;</span>
+        </div>
+    </div>
+</body>
+
 </html>
