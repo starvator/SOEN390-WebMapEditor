@@ -5,6 +5,7 @@
 */
 
 var dragStart,dragged;
+var MOUSE_DRAG_GRACE_DIST_SQUARED = 4; // The distance the mouse must move (squared) to count as a drag
 
 function mouseMove(evt) {
 	
@@ -12,15 +13,19 @@ function mouseMove(evt) {
 	var x = evt.pageX - $(canvas).offset().left;
 	var y = evt.pageY - $(canvas).offset().top;
 	mouseLocation = ctx.transformedPoint(x,y);
+	
+	if(dragStart && (mouseLocation.x - dragStart.x) * (mouseLocation.x - dragStart.x) + (mouseLocation.y - dragStart.y) * (mouseLocation.y - dragStart.y) > MOUSE_DRAG_GRACE_DIST_SQUARED)
+	{
+		dragged = true;
+	
+		// Redraw if panning or in node editing mode
 		
-	dragged = true;
-	
-	// Redraw if panning or in node editing mode
-	
-	if (dragStart){
-		ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
-		redraw();
+		if (dragStart){
+			ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
+			redraw();
+		}
 	}
+	
 
 	if(nodeEditingMode || storylinesEditingMode)		
 	{		
