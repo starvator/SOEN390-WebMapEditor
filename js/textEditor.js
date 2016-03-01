@@ -83,7 +83,6 @@ function fillEditor(poi){
 	else{
 		$("#spTitle").val("");
 		$("#autoOn").click();
-		//$("#autoOff").click();
 		$("#spBeaconID").val("");     
 		CKEDITOR.instances["editor1"].setData("");
 		$("#attachedDocName").text("");
