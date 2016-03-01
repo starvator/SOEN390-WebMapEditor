@@ -81,6 +81,7 @@ function POI(point) {
 	//TODO: verify autotrigger toggle functionality
 	this.media = new Media();
 	this.storypoint = [];
+	this.storyline = active_id;
 	
 	this.toJSON = function() {
 		return {
@@ -93,6 +94,7 @@ function POI(point) {
 			iBeacon:this.ibeacon,
 			media:this.media, //TODO
 			storyPoint:this.storyPoint //TODO
+			//TODO add storyline in JSON
 		};
 	}
 }
