@@ -81,12 +81,12 @@ function fillEditor(poi){
 		$("#attachedDocName").text(poi.media);
 	}
 	else{
-		$("#spTitle").val("Title");
+		$("#spTitle").val("");
 		$("#autoOn").click();
 		//$("#autoOff").click();
-		$("#spBeaconID").val("beacon id");     
-		CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
-		$("#attachedDocName").text("Oldfilename.txt");
+		$("#spBeaconID").val("");     
+		CKEDITOR.instances["editor1"].setData("");
+		$("#attachedDocName").text("");
 	}
     //show the form
 	$("#infoEditingForm").show();
