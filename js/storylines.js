@@ -16,10 +16,12 @@ function addNewStoryLine(){
 		active_id = current_id;
 		storyline.ID = current_id;
 		storyline.title.addPair('en', name);
+		storyline.floorsCovered.push(current_floor);
 		
 		current_id++;
 		$("#storylineField").val("");
 		storylineList.push(storyline);
+		highlightPOI(active_id);
 	}
 	else{
 		alert("Enter a name for the storyline.");
@@ -33,4 +35,5 @@ function storylineClicked(elem){
     $("#"+active_id).removeClass("active");
 	$("#"+id).addClass("active");
 	active_id = id;
+	highlightPOI(active_id);
 };

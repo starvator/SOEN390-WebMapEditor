@@ -72,30 +72,37 @@ function File(type) {
 }
 
 function POI(point) {
-	this.ID = point.id;
-	this.isSet = false;
-	this.title = new LanguageText('title');
-	this.description = new LanguageText('description');
-	this.point = point;
-	this.ibeacon = "";
-	//TODO: verify autotrigger toggle functionality
-	this.media = new Media();
-	this.storypoint = [];
-	this.storyline = active_id;
-	
-	this.toJSON = function() {
-		return {
-			id: this.ID,
-			title: this.title,
-			description: this.description,
-			x:this.point.x,
-			y:this.point.y,
-			floorID:'TODO retrieve',
-			iBeacon:this.ibeacon,
-			media:this.media, //TODO
-			storyPoint:this.storyPoint //TODO
-			//TODO add storyline in JSON
-		};
+	if(storylineList.length < 1){
+		alert("Please create a Storyline before linking a POI.");
+	}
+	else{
+		this.ID = point.id;
+		this.isSet = false;
+		this.title = new LanguageText('title');
+		this.description = new LanguageText('description');
+		this.point = point;
+		this.floorID = current_floor;
+		this.ibeacon = "";
+		//TODO: verify autotrigger toggle functionality
+		this.media = new Media();
+		this.storypoint = [];
+		this.storyline = active_id;
+		storylineList[this.storyline].floorsCovered.push(this.floorID);
+		
+		this.toJSON = function() {
+			return {
+				id: this.ID,
+				title: this.title,
+				description: this.description,
+				x:this.point.x,
+				y:this.point.y,
+				floorID:this.floorID,
+				iBeacon:this.ibeacon,
+				media:this.media, //TODO
+				storyPoint:this.storyPoint //TODO
+				//TODO add storyline in JSON
+			};
+		}
 	}
 }
 
@@ -103,6 +110,10 @@ function POT(point) {
 	this.ID = "foobarID"; //TODO GENERATED appropriately
 	this.label = new LanguageText();
 	this.point = point;
+	this.floorID = current_floor;
+	//I think these two are needed
+	this.storyline = active_id;
+	storylineList[storyline].floorsCovered.push(this.floorID);
 	
 	//TODO
 	this.toJSON = function() {
@@ -111,7 +122,7 @@ function POT(point) {
 			label: this.label,
 			x:this.point.x,
 			y:this.point.y,
-			floorID:'TODO to be retrieved'
+			floorID:this.floorID
 		};
 	}
 }
@@ -124,17 +135,17 @@ function FloorPlan() {
 }
 
 function Storyline(){
-	this.ID = "TODO:generate";
+	this.ID = "";//gets defined in storylines.js
 	this.title = new LanguageText();
 	this.description = new LanguageText();
 	this.path = [];
 	this.thumbnail = "";
 	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
-	this.floorsCovered = 0;
+	this.floorsCovered = [];
 }
 
 function StoryPoint() {
-	this.storylineID = "";
+	this.storylineID = active_id;
 	this.title = new LanguageText();
 	this.description = new LanguageText();
 	this.media = new Media();
@@ -156,12 +167,14 @@ var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
 var lastSelectedNode;				// During edge creation, the first selected node
 var nodeColor = "#660066";
+var hlColor = "#009900";
 var confirmedColor = "#0000FF"; 
 
 //For JSON use
 var floorList = [];
 var pointList = [];
 var storylineList = [];
+var hlPointList = [];
 
 $(function(){
 	canvas = document.getElementById('floorPlan');
@@ -208,6 +221,21 @@ function redraw() {
 	
 	// Draw all the edges
 	jQuery.each(edgeList,function(i,anedge){
+		var pointsTrue = 0;
+			for(val in hlPointList){
+				if(hlPointList[val].id == anedge.origin.id){
+					pointsTrue++;
+				}
+				if(hlPointList[val].id == anedge.destination.id){
+					pointsTrue++;
+				}
+				if(pointsTrue == 2){
+					ctx.strokeStyle = hlColor;
+				}
+				else{
+					ctx.strokeStyle = nodeColor;
+				}
+			}
 		ctx.beginPath();
 		ctx.moveTo(anedge.origin.x,anedge.origin.y);
 		ctx.lineTo(anedge.destination.x,anedge.destination.y);
@@ -226,7 +254,13 @@ function redraw() {
 		}
 		else
 		{
+			//Add condition to take into account storyline
 			ctx.fillStyle= nodeColor;
+			for (val in hlPointList){
+				if (anode.id == hlPointList[val].id){
+					ctx.fillStyle = hlColor;
+				}
+			}
 		}
 	
 		// The last selected node during edge creation is a different colour
@@ -268,7 +302,21 @@ function redraw() {
 		// When creating an edge and hovering on top of a node, draw a line to that node
 		else if (lastSelectedNode && mouseOnNode)
 		{
-			ctx.strokeStyle = confirmedColor;
+			var pointsTrue = 0;
+			for(val in hlPointList){
+				if(hlPointList[val].id == lastSelectedNode.id){
+					pointsTrue++;
+				}
+				if(hlPointList[val].id == mouseOnNode.id){
+					pointsTrue++;
+				}
+				if(pointsTrue == 2){
+					ctx.strokeStyle = hlColor;
+				}
+				else{
+					ctx.strokeStyle = confirmedColor;
+				}
+			}
 			ctx.beginPath();
 			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
 			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
@@ -318,7 +366,6 @@ function canvasClick(x,y) {
 			//find point in list and fill editor
 			if(POIList.length == 0){
 				var newPOI = new POI(mouseOnNode);
-				POIList.push(newPOI);
 				fillEditor(newPOI);
 			}else{
 				for(val in POIList){
@@ -330,7 +377,6 @@ function canvasClick(x,y) {
 				}
 				if(!found){
 					var newPOI = new POI(mouseOnNode);
-					POIList.push(newPOI);
 					fillEditor(newPOI);
 				}
 			}
@@ -367,6 +413,16 @@ function resizeCanvas(){
 	
 	// Realign the canvas' transform
 	trackTransforms(ctx);
+}
+
+function highlightPOI(story){
+	//resets highlight list
+	hlPointList = [];
+	for(val in POIList){
+		if(POIList[val].storyline == story){
+			hlPointList.push(POIList[val].point);
+		}
+	}
 }
 
 //resize the canvas whenever its container is resized.

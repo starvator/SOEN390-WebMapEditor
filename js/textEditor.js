@@ -1,4 +1,4 @@
-var currentPOIID;
+var currentPOI;
 $(document).ready(function(){
     //The x at the top
     $("#infoEditingFormClose").click(function(){
@@ -33,9 +33,11 @@ $(document).ready(function(){
 		//alert($("#spBeaconID").val());     
 		//alert(CKEDITOR.instances["editor1"].getData());
         //alert($("#attachedDocName").text());
-        
+		
+		POIList.push(currentPOI);
+		
 		for(val in POIList){
-		if(POIList[val].ID == currentPOIID){
+		if(POIList[val].ID == currentPOI.ID){
 			POIList[val].title = $("#spTitle").val();
 			POIList[val].ibeacon = $("#spBeaconID").val();
 			POIList[val].description = CKEDITOR.instances["editor1"].getData();
@@ -57,6 +59,7 @@ $(document).ready(function(){
         
         //close the window
         $("#infoEditingForm").hide();
+		highlightPOI(active_id);
     });
 });
 //Open editor of of point of a given id
@@ -70,7 +73,7 @@ function openEditorByPointID(id){
 }
 
 function fillEditor(poi){
-	currentPOIID = poi.ID;
+	currentPOI = poi;
     //fill the info
 	if(poi.isSet){
 		$("#spTitle").val(poi.title);
