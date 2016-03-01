@@ -362,6 +362,9 @@ function resizeCanvas(){
 		canvas.width = con.height();
 		canvas.height = con.height();
 	}
+	
+	// Realign the canvas' transform
+	trackTransforms(ctx);
 }
 
 //resize the canvas whenever its container is resized.
