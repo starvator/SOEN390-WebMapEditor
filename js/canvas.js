@@ -173,6 +173,9 @@ $(function(){
     img = new Image();
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
+		trackTransforms(ctx);
+		imageFillWindow();
+		redraw();
     };
     img.src = "floor_plans/floor3.svg";
 	
@@ -184,8 +187,6 @@ $(function(){
     canvas.addEventListener('mousedown', mouseClick, false);
     document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
 
-    trackTransforms(ctx);
-
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
 });
@@ -194,6 +195,7 @@ function changeIMGsource(source){
     img.src = source;
 	xPanLimits = [0, img.width];
 	yPanLimits = [0, img.height];
+	imageFillWindow();
 }
 
 // Main canvas drawing method

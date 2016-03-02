@@ -70,6 +70,12 @@ var zoom = function(clicks){
     redraw();
 }
 
+//Allow background image to fill the entire canvas
+var imageFillWindow = function() {
+	var scaleFactor = Math.min(canvas.width / img.width, canvas.height / img.height);
+    ctx.scale(scaleFactor,scaleFactor);
+}
+
 var handleScroll = function(evt){
     var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
     if (delta) zoom(delta);
