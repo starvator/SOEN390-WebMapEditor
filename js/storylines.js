@@ -11,7 +11,7 @@ function addNewStoryLine(){
     if(name != false){
         var storyline = new Storyline();
 		if(description != false){
-		$("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</a><a href="#">' + description +'</a></li>' +
+		$("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</br>' + description +'</a></li>' +
         '<ul id="'+ current_id +'_pointList"></ul>');
 		}
 		else{
@@ -33,6 +33,21 @@ function addNewStoryLine(){
     else{
         alert("Enter a name for the storyline.");
     }
+}
+
+function editStoryLine(){
+
+    var name;
+	var description;
+	var storyline;
+	for(var i = 0; i < storylineList.length; i++)
+	{
+		if(storylineList[i].ID == active_id)
+		{
+			storyline = storylineList[i];
+		}
+	}
+	$("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.getByLanguage("en") +'"/><input id="storylineDescription" type="text" placeholder="' + storyline.title.getByLanguage("en") +'" /></a>');
 }
 
 //variable for active storyline id

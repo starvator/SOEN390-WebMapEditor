@@ -34,6 +34,15 @@ function LanguageText() {
     this.toJSON = function() {
         return this.pairs;
     };
+	this.getByLanguage = function(lang){
+		for(var i = 0; i < this.pairs.length; i++)
+		{
+			if(this.pairs[i].language === lang)
+			{
+				return this.pairs[i].value;
+			}
+		}
+	};
 }
 
 function IBeacon(uuid, major, minor) {
