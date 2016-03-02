@@ -34,24 +34,24 @@ function LanguageText() {
     this.toJSON = function() {
         return this.pairs;
     };
-	this.getByLanguage = function(lang){
-		for(var i = 0; i < this.pairs.length; i++)
-		{
-			if(this.pairs[i].language === lang)
-			{
-				return this.pairs[i].value;
-			}
-		}
-	};	
-	this.setByLanguage = function(lang, value){
-		for(var i = 0; i < this.pairs.length; i++)
-		{
-			if(this.pairs[i].language === lang)
-			{
-				this.pairs[i].value = value;
-			}
-		}
-	};
+    this.getByLanguage = function(lang){
+        for(var i = 0; i < this.pairs.length; i++)
+        {
+            if(this.pairs[i].language === lang)
+            {
+                return this.pairs[i].value;
+            }
+        }
+    };  
+    this.setByLanguage = function(lang, value){
+        for(var i = 0; i < this.pairs.length; i++)
+        {
+            if(this.pairs[i].language === lang)
+            {
+                this.pairs[i].value = value;
+            }
+        }
+    };
 }
 
 function IBeacon(uuid, major, minor) {
@@ -292,11 +292,11 @@ function redraw() {
         }
     }
     if (storylinesEditingMode && !mouseOnNode){
-		// Draw a temporary point at the cursor's location when over empty space and not creating an edge
-		ctx.beginPath();
-		ctx.fillStyle= nodeColor;
-		ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-		ctx.fill();
+        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+        ctx.beginPath();
+        ctx.fillStyle= nodeColor;
+        ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+        ctx.fill();
     }
 }
 
