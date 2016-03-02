@@ -7,7 +7,6 @@
 }
 
 #mainMenu {
-	padding-top:200px;
 }
 
 #mainMenu div, #nodeEditorMenu div {
@@ -22,3 +21,9 @@
 	display:none;
 	padding-top:200px;
 }
+
+/*
+#MapLayoutMenu {
+	visibility: hidden;
+}
+*/

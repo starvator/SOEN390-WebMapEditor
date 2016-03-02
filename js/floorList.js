@@ -1,4 +1,3 @@
-
 var floorList = [];
 
 $(function(){
@@ -20,14 +19,34 @@ $(function(){
 			}
 		}
 		//add to array
-		floorList[$("#floorNumUpload").val()] = $("#fileUpload")[0].files[0];
+		var floor = new FloorPlan();
+		floor.floorID = $("#floorNumUpload").val();
+		floor.imagePath = $("#fileUpload")[0].files[0]; //TODO verify
+		floor.imageWidth = 0;//TODO
+		floor.imageHeight = 0;//TODO
+		floorList[$("#floorNumUpload").val()] = floor;
 		//add floor list from array
 		$("#floorList").empty();
 		for(val in floorList){
-			$("#floorList").append('<li>Floor '+ val, floorList[val].name+'</li>');
+			$("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
 		}
-        //clear the form
+		//change floor
+		changeFloor($("#floorNumUpload").val());
+		//clear the form
         $("#newFloor")[0].reset();
-        return false;
+		return false;
     });
 });
+
+function changeFloor(val){
+	changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
+	$("#floor"+val).addClass("active");
+	redraw();	
+}
+
+function floorClicked(elem){
+	var id = $(elem).attr("id");
+    $("#floorList").find(".active").removeClass("active");
+    $("#"+id).addClass("active");
+	changeFloor(id.substring(5));
+};

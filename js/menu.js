@@ -4,13 +4,15 @@
 
 function showFloorsMenu()
 {
-	$("#mainMenu").hide();
+	$("#nodeEditorMenu").hide();
 	$("#floorEditorMenu").show();
+	
+	nodeEditingMode = false;
 }
 
 function showNodesMenu()
 {
-	$("#mainMenu").hide();
+	$("#floorEditorMenu").hide();
 	$("#nodeEditorMenu").show();
 	
 	nodeEditingMode = true;
@@ -18,6 +20,9 @@ function showNodesMenu()
 
 function showMainMenu()
 {
+	// main menu back button action
+	$("#floorEditorMenu").hide();
+	$("#nodeEditorMenu").hide();
 	$("#sidebarMenu > div").hide();
 	$("#mainMenu").show();
 	
@@ -25,3 +30,26 @@ function showMainMenu()
 	nodeEditingMode = false;
 	lastSelectedNode = null;
 }
+
+function showMapLayoutMenu()
+{
+	$("#StorylinesMenu").hide();
+	$("#StorylinesTab").removeClass('active');
+	$("#MapLayoutMenu").show();
+	$("#MapLayoutTab").addClass('active');
+	
+	nodeEditingMode = false;
+    storylinesEditingMode = false;
+}
+
+function showStorylinesMenu()
+{
+	$("#MapLayoutMenu").hide();
+	$("#MapLayoutTab").removeClass('active');
+	$("#StorylinesMenu").show();
+	$("#StorylinesTab").addClass('active');
+	
+	storylinesEditingMode = true;
+	nodeEditingMode = false;
+}
+

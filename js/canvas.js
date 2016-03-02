@@ -1,22 +1,141 @@
 // Classes
 
+//the id generator
+var i=0;
+
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
+    this.id=i;
+    i++;
 }
 
 function Edge(origin, destination) {
 	this.origin = origin;
 	this.destination = destination;
+	this.toJSON = function() {
+	//TODO: finish and add appropriate methods
+		return {
+			startNode: this.origin,
+			endNode:this.destination,
+			floorNumber:'TODO to be retrieved',
+			distance:distance(this.origin, this.destination)
+			};
+	}
 }
 
-//A StoryPoint is a point that also contains HTML text
-function StoryPoint(point) {
-	this.text = "";
-	this.point = point;
-	this.updateDescription = function(text){
-		this.text=text;
+//TODO refactor and place in appropriate location later
+//This class is for any Language Text pairing such as descriptions or titles
+function LanguageText() {
+	this.pairs = [];
+	this.addPair = function(lang, value){
+		this.pairs.push({'language':lang, 'value':value});
 	}
+	this.toJSON = function() {
+		return this.pairs;
+	}
+}
+
+function IBeacon(uuid, major, minor) {
+	this.uuid = uuid;
+	this.major = major;
+	this.minor = minor;
+}
+
+function Media(){
+	this.image = [];
+	this.video = [];
+	this.audio = [];
+	this.addMedia = function(file) {
+		switch(file.type) {
+			case "image":
+				this.image.push(file);
+				break;
+			case "video":
+				this.video.push(file);
+				break;
+			case "audio":
+				this.audio.push(file);
+				break;
+			default:
+				alert('Something went wrong while adding your file (Type not recognized).');
+				break;
+		}
+	}
+}
+
+function File(type) {
+	this.type = type;
+	this.path = "";
+	this.language = "";
+	this.caption = "";
+}
+
+function POI(point) {
+	this.ID = point.id;
+	this.isSet = false;
+	this.title = new LanguageText('title');
+	this.description = new LanguageText('description');
+	this.point = point;
+	this.ibeacon = "";
+	//TODO: verify autotrigger toggle functionality
+	this.media = new Media();
+	this.storypoint = [];
+	
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			title: this.title,
+			description: this.description,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:'TODO retrieve',
+			iBeacon:this.ibeacon,
+			media:this.media, //TODO
+			storyPoint:this.storyPoint //TODO
+		};
+	}
+}
+
+function POT(point) {
+	this.ID = "foobarID"; //TODO GENERATED appropriately
+	this.label = new LanguageText();
+	this.point = point;
+	
+	//TODO
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			label: this.label,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:'TODO to be retrieved'
+		};
+	}
+}
+
+function FloorPlan() {
+	this.floorID = 0;
+	this.imagePath = "";
+	this.imageWidth = 0;
+	this.imageHeight = 0;
+}
+
+function Storyline(){
+	this.ID = "TODO:generate";
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.path = [];
+	this.thumbnail = "";
+	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
+	this.floorsCovered = 0;
+}
+
+function StoryPoint() {
+	this.storylineID = "";
+	this.title = new LanguageText();
+	this.description = new LanguageText();
+	this.media = new Media();
 }
 
 // End Classes
@@ -27,18 +146,26 @@ var canvas;
 var ctx;
 var img;							// The background floor image
 var nodeEditingMode = false;		// True when in place node mode
+var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];					// List of transition nodes to draw to the canvas
+var POIList = [];
 var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
 var mouseOnNode;					// The node that the mouse is currently hovering over
 var edgeList = [];					// List of edges between transition points
 var lastSelectedNode;				// During edge creation, the first selected node
-var nodeColor = "#808080";
+var nodeColor = "#660066";
 var confirmedColor = "#0000FF"; 
+
+//For JSON use
+var floorList = [];
+var pointList = [];
+var storylineList = [];
 
 $(function(){
 	canvas = document.getElementById('floorPlan');
 	ctx = canvas.getContext('2d');
-
+	resizeCanvas();
+	
 	img = new Image();
 	img.onload = function() {
 		ctx.drawImage(img, -1000, -1000);
@@ -54,8 +181,11 @@ $(function(){
 				
 	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
 	canvas.addEventListener('mousewheel',handleScroll,false);
-	
 });
+
+function changeIMGsource(source){
+	img.src = source;
+}
 
 // Main canvas drawing method
 function redraw() {	
@@ -86,7 +216,7 @@ function redraw() {
 	jQuery.each(nodeList,function(i,anode){
 
 		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if(nodeEditingMode && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+		if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
 		{
 			// If the mouse is near, set the node and change its colour
 			mouseOnNode = anode;
@@ -142,8 +272,17 @@ function redraw() {
 			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
 			ctx.stroke();
 		}
-		
-	}	
+	}
+    if (storylinesEditingMode){
+        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+		if(!mouseOnNode)
+		{
+			ctx.beginPath();
+			ctx.fillStyle= nodeColor;
+			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+			ctx.fill();
+		}
+    }
 }
 
 function canvasClick(x,y) {
@@ -166,6 +305,39 @@ function canvasClick(x,y) {
 			lastSelectedNode = null; // Clear the selected node
 		}
 	}
+    else if (storylinesEditingMode){
+	//*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
+        if(mouseOnNode) {
+            //TODOTYLER: get the id of the current point of interest
+            //alert(mouseOnNode.id);
+            //TODOTYLER: get the id of the currently selected storyline
+            //alert(active_id);
+			var found = false;
+			//find point in list and fill editor
+			if(POIList.length == 0){
+				var newPOI = new POI(mouseOnNode);
+				POIList.push(newPOI);
+				fillEditor(newPOI);
+			}else{
+				for(val in POIList){
+					if(POIList[val].ID == mouseOnNode.id){
+					fillEditor(POIList[val]);
+					found = true;
+					break;
+					}
+				}
+				if(!found){
+					var newPOI = new POI(mouseOnNode);
+					POIList.push(newPOI);
+					fillEditor(newPOI);
+				}
+			}
+		}
+        else{
+        }
+    }
+    else{
+    }
 }
 
 // Check to see if the set of nodes is in the current list of nodes
@@ -180,3 +352,23 @@ function nodesInEdges(a,b) {
 	
 	return false;
 }
+
+function resizeCanvas(){
+	var con = $("#floorPlanContainer");
+	if(con.width() > con.height()) {
+		canvas.width = con.width();
+		canvas.height = con.width();
+	} else {
+		canvas.width = con.height();
+		canvas.height = con.height();
+	}
+	
+	// Realign the canvas' transform
+	trackTransforms(ctx);
+}
+
+//resize the canvas whenever its container is resized.
+$(window).on('resize', function(){
+	resizeCanvas();
+	redraw();
+});
