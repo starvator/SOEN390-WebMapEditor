@@ -67,7 +67,7 @@ var zoom = function(clicks){
     ctx.scale(factor,factor);
     ctx.translate(-pt.x,-pt.y);
     redraw();
-}
+};
 
 var handleScroll = function(evt){
     var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;

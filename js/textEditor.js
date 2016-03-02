@@ -34,26 +34,26 @@ $(document).ready(function(){
         //alert(CKEDITOR.instances["editor1"].getData());
         //alert($("#attachedDocName").text());
 
-        for(val in POIList){
-        if(POIList[val].ID == currentPOIID){
-            POIList[val].title = $("#spTitle").val();
-            POIList[val].ibeacon = $("#spBeaconID").val();
-            POIList[val].description = CKEDITOR.instances["editor1"].getData();
-            POIList[val].media = $("#attachedDocName").text();
-            POIList[val].storypoint.push(active_id);
+        for(var val in POIList){
+            if(POIList[val].ID === currentPOIID){
+                POIList[val].title = $("#spTitle").val();
+                POIList[val].ibeacon = $("#spBeaconID").val();
+                POIList[val].description = CKEDITOR.instances["editor1"].getData();
+                POIList[val].media = $("#attachedDocName").text();
+                POIList[val].storypoint.push(active_id);
 
-            //Adding the point to the storyline list.
-            if(POIList[val].isSet){
-                //get into <a> and change POIList[val].title
-                $("#"+POIList[val].ID+"_a").text(POIList[val].title);
+                //Adding the point to the storyline list.
+                if(POIList[val].isSet){
+                    //get into <a> and change POIList[val].title
+                    $("#"+POIList[val].ID+"_a").text(POIList[val].title);
+                }
+                else{
+                    $("#"+active_id+"_pointList").append('<li><a id = "' + POIList[val].ID + '_a"onClick = "openEditorByPointID('+ POIList[val].ID +')">'+ POIList[val].title +'</a></li>');
+                    POIList[val].isSet = true;
+                }
+                break;
             }
-            else{
-                $("#"+active_id+"_pointList").append('<li><a id = "' + POIList[val].ID + '_a"onClick = "openEditorByPointID('+ POIList[val].ID +')">'+ POIList[val].title +'</a></li>');
-                POIList[val].isSet = true;
-            }
-            break;
         }
-    }
 
         //close the window
         $("#infoEditingForm").hide();
@@ -62,7 +62,7 @@ $(document).ready(function(){
 //Open editor of of point of a given id
 function openEditorByPointID(id){
     for(val in POIList){
-        if(POIList[val].ID == id){
+        if(POIList[val].ID === id){
             fillEditor(POIList[val]);
             break;
         }

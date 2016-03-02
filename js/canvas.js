@@ -316,7 +316,7 @@ function canvasClick(x,y) {
                 POIList.push(newPOI);
                 fillEditor(newPOI);
             }else{
-                for(val in POIList){
+                for(var val in POIList){
                     if(POIList[val].ID === mouseOnNode.id){
                     fillEditor(POIList[val]);
                     found = true;
@@ -330,10 +330,6 @@ function canvasClick(x,y) {
                 }
             }
         }
-        else{
-        }
-    }
-    else{
     }
 }
 
