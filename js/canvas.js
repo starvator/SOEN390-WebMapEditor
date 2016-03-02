@@ -21,7 +21,7 @@ function Edge(origin, destination) {
             floorNumber:'TODO to be retrieved',
             distance:distance(this.origin, this.destination)
             };
-    }
+    };
 }
 
 //TODO refactor and place in appropriate location later
@@ -30,10 +30,10 @@ function LanguageText() {
     this.pairs = [];
     this.addPair = function(lang, value){
         this.pairs.push({'language':lang, 'value':value});
-    }
+    };
     this.toJSON = function() {
         return this.pairs;
-    }
+    };
 }
 
 function IBeacon(uuid, major, minor) {
@@ -61,7 +61,7 @@ function Media(){
                 alert('Something went wrong while adding your file (Type not recognized).');
                 break;
         }
-    }
+    };
 }
 
 function File(type) {
@@ -94,7 +94,7 @@ function POI(point) {
             media:this.media, //TODO
             storyPoint:this.storyPoint //TODO
         };
-    }
+    };
 }
 
 function POT(point) {
@@ -111,7 +111,7 @@ function POT(point) {
             y:this.point.y,
             floorID:'TODO to be retrieved'
         };
-    }
+    };
 }
 
 function FloorPlan() {
@@ -169,7 +169,7 @@ $(function(){
     img = new Image();
     img.onload = function() {
         ctx.drawImage(img, -1000, -1000);
-    }
+    };
     img.src = "floor_plans/floor3.svg";
 
     // Register events
@@ -228,7 +228,7 @@ function redraw() {
         }
 
         // The last selected node during edge creation is a different colour
-        if(anode == lastSelectedNode) {
+        if(anode === lastSelectedNode) {
             ctx.fillStyle=confirmedColor;
         }
 
@@ -273,15 +273,12 @@ function redraw() {
             ctx.stroke();
         }
     }
-    if (storylinesEditingMode){
-        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
-        if(!mouseOnNode)
-        {
-            ctx.beginPath();
-            ctx.fillStyle= nodeColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-            ctx.fill();
-        }
+    if (storylinesEditingMode && !mouseOnNode){
+		// Draw a temporary point at the cursor's location when over empty space and not creating an edge
+		ctx.beginPath();
+		ctx.fillStyle= nodeColor;
+		ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+		ctx.fill();
     }
 }
 
@@ -299,7 +296,7 @@ function canvasClick(x,y) {
             lastSelectedNode = mouseOnNode;
         }
         // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-        else if (mouseOnNode && lastSelectedNode && mouseOnNode != lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+        else if (mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
             // Create a new edge
             edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
             lastSelectedNode = null; // Clear the selected node
@@ -314,13 +311,13 @@ function canvasClick(x,y) {
             //alert(active_id);
             var found = false;
             //find point in list and fill editor
-            if(POIList.length == 0){
+            if(POIList.length === 0){
                 var newPOI = new POI(mouseOnNode);
                 POIList.push(newPOI);
                 fillEditor(newPOI);
             }else{
                 for(val in POIList){
-                    if(POIList[val].ID == mouseOnNode.id){
+                    if(POIList[val].ID === mouseOnNode.id){
                     fillEditor(POIList[val]);
                     found = true;
                     break;
@@ -344,7 +341,7 @@ function canvasClick(x,y) {
 function nodesInEdges(a,b) {
 
     for (var i = 0; i < edgeList.length; i++) {
-        if((edgeList[i].origin == a && edgeList[i].destination == b) || (edgeList[i].origin == b && edgeList[i].destination == a))
+        if((edgeList[i].origin === a && edgeList[i].destination === b) || (edgeList[i].origin === b && edgeList[i].destination === a))
         {
             return true;
         }
