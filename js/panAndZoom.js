@@ -7,8 +7,10 @@
 var dragStart,dragged;
 var MOUSE_DRAG_GRACE_DIST_SQUARED = 4; // The distance the mouse must move (squared) to count as a drag
 
-function mouseMove(evt) {
 
+function mouseMove(evt) {
+	xPanLimits[1] = img.width;
+	yPanLimits[1] = img.height;
     // Store the location of the mouse relative to the canvas
     var x = evt.pageX - $(canvas).offset().left;
     var y = evt.pageY - $(canvas).offset().top;
@@ -19,7 +21,6 @@ function mouseMove(evt) {
         dragged = true;
 
         // Redraw if panning or in node editing mode
-
         if (dragStart){
             ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
             redraw();
