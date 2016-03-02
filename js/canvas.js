@@ -42,6 +42,15 @@ function LanguageText() {
 				return this.pairs[i].value;
 			}
 		}
+	};	
+	this.setByLanguage = function(lang, value){
+		for(var i = 0; i < this.pairs.length; i++)
+		{
+			if(this.pairs[i].language === lang)
+			{
+				this.pairs[i].value = value;
+			}
+		}
 	};
 }
 

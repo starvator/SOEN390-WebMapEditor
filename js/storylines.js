@@ -37,7 +37,22 @@ function addNewStoryLine(){
 
 function editStoryLine(){
 
-    var name;
+	var storyline;
+	for(var i = 0; i < storylineList.length; i++)
+	{
+		if(storylineList[i].ID == active_id)
+		{
+			storyline = storylineList[i];
+		}
+	}
+	$("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.getByLanguage("en") +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.getByLanguage("en") +'" /></a>');
+	$("#editButton").html('<a href="#">Save</a>');
+	$("#editButton").attr("onclick","saveStoryLine()");
+}
+
+function saveStoryLine(){
+	
+	var name;
 	var description;
 	var storyline;
 	for(var i = 0; i < storylineList.length; i++)
@@ -47,7 +62,15 @@ function editStoryLine(){
 			storyline = storylineList[i];
 		}
 	}
-	$("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.getByLanguage("en") +'"/><input id="storylineDescription" type="text" placeholder="' + storyline.title.getByLanguage("en") +'" /></a>');
+	name = $("#storylineField").val();
+	description = $("#storylineDescription").val();
+	$("#"+active_id).html('<a href="#">'+ name +'</br>' + description +'</a>');
+	storyline.title.setByLanguage("en", name);
+	storyline.description.setByLanguage("en", description);
+	$("#storylineField").val("");
+	$("#storylineDescription").val("");
+	$("#editButton").html('<a href="#">Edit</a>');
+	$("#editButton").attr("onclick","editStoryLine()");
 }
 
 //variable for active storyline id
