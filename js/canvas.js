@@ -3,6 +3,8 @@
 //the id generator
 var i=0;
 
+var POI_id = 0;
+
 function Point(x,y) {
 	this.x = x;
 	this.y = y;
@@ -76,7 +78,8 @@ function POI(point) {
 		alert("Please create a Storyline before linking a POI.");
 	}
 	else{
-		this.ID = point.id;
+		this.ID = POI_id;
+		POI_id++;
 		this.isSet = false;
 		this.title = new LanguageText('title');
 		this.description = new LanguageText('description');
@@ -219,28 +222,7 @@ function redraw() {
 	ctx.strokeStyle = nodeColor;
 	ctx.lineWidth = 5;
 	
-	// Draw all the edges
-	jQuery.each(edgeList,function(i,anedge){
-		var pointsTrue = 0;
-			for(val in hlPointList){
-				if(hlPointList[val].id == anedge.origin.id){
-					pointsTrue++;
-				}
-				if(hlPointList[val].id == anedge.destination.id){
-					pointsTrue++;
-				}
-				if(pointsTrue == 2){
-					ctx.strokeStyle = hlColor;
-				}
-				else{
-					ctx.strokeStyle = nodeColor;
-				}
-			}
-		ctx.beginPath();
-		ctx.moveTo(anedge.origin.x,anedge.origin.y);
-		ctx.lineTo(anedge.destination.x,anedge.destination.y);
-		ctx.stroke();
-	});
+	drawEdges();
 	
 	// Draw all stored transition nodes on the map
 	jQuery.each(nodeList,function(i,anode){
@@ -335,6 +317,27 @@ function redraw() {
     }
 }
 
+function drawEdges(){
+	// Draw all the edges
+	for(e in edgeList){
+		if(_.contains(hlPointList, edgeList[e].origin)){
+			if(_.contains(hlPointList, edgeList[e].destination)){
+				ctx.strokeStyle = hlColor;
+			}
+			else{
+				ctx.strokeStyle = nodeColor;
+			}
+		}
+		else{
+			ctx.strokeStyle = nodeColor;
+		}
+		ctx.beginPath();
+		ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
+		ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
+		ctx.stroke();
+	}
+}
+
 function canvasClick(x,y) {
 	if(nodeEditingMode) {
 		
@@ -369,9 +372,17 @@ function canvasClick(x,y) {
 				fillEditor(newPOI);
 			}else{
 				for(val in POIList){
-					if(POIList[val].ID == mouseOnNode.id){
-					fillEditor(POIList[val]);
-					found = true;
+					if(POIList[val].point.id == mouseOnNode.id){
+						if(active_id == POIList[val].storyline){
+							fillEditor(POIList[val]);
+							found = true;
+						}
+						else{
+							var newPOI = new POI(mouseOnNode);
+							newPOI.storyline = active_id;
+							fillEditor(newPOI);
+							found = true;
+						}
 					break;
 					}
 				}
