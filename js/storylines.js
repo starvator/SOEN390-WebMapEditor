@@ -8,7 +8,7 @@ function addNewStoryLine(){
     var description;
     name = $("#storylineField").val();
     description = $("#storylineDescription").val();
-    if(name != false){
+    if(name){
         var storyline = new Storyline();
         if(description != false){
         $("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</br>' + description +'</a></li>' +
