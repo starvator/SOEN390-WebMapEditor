@@ -6,11 +6,9 @@
 
 var dragStart,dragged;
 var MOUSE_DRAG_GRACE_DIST_SQUARED = 4; // The distance the mouse must move (squared) to count as a drag
-
+var totalZoomOut;
 
 function mouseMove(evt) {
-	xPanLimits[1] = img.width;
-	yPanLimits[1] = img.height;
     // Store the location of the mouse relative to the canvas
     var x = evt.pageX - $(canvas).offset().left;
     var y = evt.pageY - $(canvas).offset().top;
@@ -18,11 +16,12 @@ function mouseMove(evt) {
 
     if(dragStart && (mouseLocation.x - dragStart.x) * (mouseLocation.x - dragStart.x) + (mouseLocation.y - dragStart.y) * (mouseLocation.y - dragStart.y) > MOUSE_DRAG_GRACE_DIST_SQUARED)
     {
-        dragged = true;
-
-        // Redraw if panning or in node editing mode
-        if (dragStart){
+        if((currentImagePos[0] + (mouseLocation.x - dragStart.x)) <= 0 && (currentImagePos[0] + currentImageSize[0] + (mouseLocation.x - dragStart.x)) >= canvas.width
+        && (currentImagePos[1] + (mouseLocation.y - dragStart.y)) <= 0 && (currentImagePos[1] + currentImageSize[1] + (mouseLocation.y - dragStart.y)) >= canvas.height){
+            dragged = true;
             ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
+            currentImagePos[0]+=mouseLocation.x-dragStart.x;
+            currentImagePos[1]+=mouseLocation.y-dragStart.y;
             redraw();
         }
     }
@@ -65,15 +64,23 @@ var zoom = function(clicks){
     var pt = mouseLocation;
     ctx.translate(pt.x,pt.y);
     var factor = Math.pow(scaleFactor,clicks);
-    ctx.scale(factor,factor);
-    ctx.translate(-pt.x,-pt.y);
-    redraw();
+    //Boundary check
+    //console.log(factor); Math.floor(1/totalZoomOut))
+	if((Math.max(canvas.width / currentImageSize[0], canvas.height / currentImageSize[1]) <= Math.floor(1/totalZoomOut)) && (factor*currentImageSize[0] > totalZoomOut*xPanLimits[1]) && (factor*currentImageSize[1] > totalZoomOut*yPanLimits[1])){
+        ctx.scale(factor,factor);
+        ctx.translate(-pt.x,-pt.y);
+        currentImageSize[0] = factor*currentImageSize[0];
+        currentImageSize[1] = factor*currentImageSize[1];
+        redraw();
+	}
 }
 
 //Allow background image to fill the entire canvas
 var imageFillWindow = function() {
-	var scaleFactor = Math.min(canvas.width / img.width, canvas.height / img.height);
-    ctx.scale(scaleFactor,scaleFactor);
+	totalZoomOut = Math.min(canvas.width / img.width, canvas.height / img.height);
+    currentImageSize[0] = totalZoomOut*img.width;
+    currentImageSize[1] = totalZoomOut*img.height;
+    ctx.scale(totalZoomOut,totalZoomOut);
 }
 
 var handleScroll = function(evt){
