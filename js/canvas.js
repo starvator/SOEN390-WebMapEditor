@@ -46,7 +46,7 @@ function LanguageText() {
                 return this.pairs[i].value;
             }
         }
-    };  
+    };
     this.setByLanguage = function(lang, value){
         for(var i = 0; i < this.pairs.length; i++)
         {
@@ -214,6 +214,7 @@ $(function(){
     document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
     canvas.addEventListener('mousedown', mouseClick, false);
     document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
+    canvas.addEventListener('contextmenu', mouseRightClick, false);
 
     trackTransforms(ctx);
 
@@ -359,25 +360,33 @@ function drawEdges(){
 }
 
 function canvasClick(x,y) {
-	if(nodeEditingMode) {
-		
-		// If clicking on empty space
-		if(!mouseOnNode && !lastSelectedNode) {			
-			// Store a new node in the list of transition nodes
-			nodeList.push(new Point(x, y));
-		}
-		// If clicking on a node and not yet starting an edge
-		else if(mouseOnNode && !lastSelectedNode) {
-			// Select this first node for edge creation
-			lastSelectedNode = mouseOnNode;	
-		} 
-		// If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-		else if (mouseOnNode && lastSelectedNode && mouseOnNode != lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
-			// Create a new edge
-			edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
-			lastSelectedNode = null; // Clear the selected node
-		}
-	}
+    if(nodeEditingMode) {
+
+        // If clicking on empty space
+        if(!mouseOnNode && !lastSelectedNode) {
+            // Store a new node in the list of transition nodes
+            nodeList.push(new Point(x, y));
+        }
+        // If clicking on a node and not yet starting an edge
+        else if(mouseOnNode && !lastSelectedNode) {
+            // Check the selected node has to possibility of connecting to another node
+            if(canNodeConnect(mouseOnNode))
+            {
+                // Select this first node for edge creation
+                lastSelectedNode = mouseOnNode;
+            }
+            else
+            {
+                showWarningAlert("The point you are creating a transition from cannot be connected to another point!");
+            }
+        }
+        // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
+        else if (mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+            // Create a new edge
+            edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
+            lastSelectedNode = null; // Clear the selected node
+        }
+    }
     else if (storylinesEditingMode){
 	//*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
         if(mouseOnNode) {
@@ -421,6 +430,43 @@ function nodesInEdges(a,b) {
     return false;
 }
 
+// Check to see if there is a possibility to create an edge from a node
+function canNodeConnect(a) {
+    // Get a list of all the nodes, minus the current node a
+    var allNodes = removeFromList(a, nodeList.slice());
+
+    for(var i = 0; i < edgeList.length; i++)
+    {
+        // If the node is in an edge, remove the other node
+        if(a == edgeList[i].origin)
+        {
+           allNodes = removeFromList(edgeList[i].destination, allNodes);
+        }
+        else if(a == edgeList[i].destination)
+        {
+           allNodes = removeFromList(edgeList[i].origin, allNodes);
+        }
+    }
+
+    // If there are still nodes left, then we can make a connection
+    return allNodes.length > 0;
+}
+
+// Remove the first element from a list
+function removeFromList(ele, list)
+{
+    list = list.slice();
+
+    for(var i = 0; i < list.length; i++)
+    {
+        if(list[i] === ele)
+        {
+            list.splice(i, 1);
+            return list;
+        }
+    }
+}
+
 function highlightPOI(story){
 	//resets highlight list
 	hlPointList = [];
@@ -435,17 +481,17 @@ function highlightPOI(story){
 }
 
 function resizeCanvas(){
-	var con = $("#floorPlanContainer");
-	if(con.width() > con.height()) {
-		canvas.width = con.width();
-		canvas.height = con.width();
-	} else {
-		canvas.width = con.height();
-		canvas.height = con.height();
-	}
-	
-	// Realign the canvas' transform
-	trackTransforms(ctx);
+    var con = $("#floorPlanContainer");
+    if(con.width() > con.height()) {
+        canvas.width = con.width();
+        canvas.height = con.width();
+    } else {
+        canvas.width = con.height();
+        canvas.height = con.height();
+    }
+
+    // Realign the canvas' transform
+    trackTransforms(ctx);
 }
 
 //resize the canvas whenever its container is resized.
