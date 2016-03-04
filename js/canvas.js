@@ -311,8 +311,16 @@ function canvasClick(x,y) {
         }
         // If clicking on a node and not yet starting an edge
         else if(mouseOnNode && !lastSelectedNode) {
-            // Select this first node for edge creation
-            lastSelectedNode = mouseOnNode;
+            if(canNodeConnect(mouseOnNode))
+            {
+                // Select this first node for edge creation
+                lastSelectedNode = mouseOnNode;
+            }
+            else
+            {
+                showWarningAlert("The point you are creating a transition from cannot be connected to another point!");
+            }
+            
         }
         // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
         else if (mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
@@ -368,6 +376,43 @@ function nodesInEdges(a,b) {
     }
 
     return false;
+}
+
+// Check to see if there is a possibility to create an edge from a node
+function canNodeConnect(a) {
+    // Get a list of all the nodes, minus the current node a
+    var allNodes = removeFromList(a, nodeList.slice());    
+    
+    for(var i = 0; i < edgeList.length; i++)
+    {
+        // If the node is in an edge, remove the other node
+        if(a == edgeList[i].origin)
+        {
+           allNodes = removeFromList(edgeList[i].destination, allNodes);
+        }
+        else if(a == edgeList[i].destination)
+        {
+           allNodes = removeFromList(edgeList[i].origin, allNodes);
+        }
+    }
+    
+    // If there are still nodes left, then we can make a connection
+    return allNodes.length > 0;
+}
+
+// Remove the first element from a list
+function removeFromList(ele, list)
+{
+    list = list.slice();
+    
+    for(var i = 0; i < list.length; i++)
+    {
+        if(list[i] === ele)
+        {
+            list.splice(i, 1);
+            return list;
+        }
+    }
 }
 
 function resizeCanvas(){
