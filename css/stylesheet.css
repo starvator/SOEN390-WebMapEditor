@@ -27,3 +27,18 @@
 }
 */
 
+#alertContainer {
+    display:none;
+    
+    position: absolute;
+    top:0px;
+    left:0px;
+    z-index:1001;
+    
+    padding-top:10px;
+}
+
+#alertMessage {
+    padding-left:5px;
+}
+
