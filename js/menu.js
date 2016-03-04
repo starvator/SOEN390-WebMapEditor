@@ -1,55 +1,55 @@
 /*
-	This JavaScript file contains all scripts relate to operation of the menus
+    This JavaScript file contains all scripts relate to operation of the menus
 */
 
 function showFloorsMenu()
 {
-	$("#nodeEditorMenu").hide();
-	$("#floorEditorMenu").show();
-	
-	nodeEditingMode = false;
+    $("#nodeEditorMenu").hide();
+    $("#floorEditorMenu").show();
+
+    nodeEditingMode = false;
 }
 
 function showNodesMenu()
 {
-	$("#floorEditorMenu").hide();
-	$("#nodeEditorMenu").show();
-	
-	nodeEditingMode = true;
+    $("#floorEditorMenu").hide();
+    $("#nodeEditorMenu").show();
+
+    nodeEditingMode = true;
 }
 
 function showMainMenu()
 {
-	// main menu back button action
-	$("#floorEditorMenu").hide();
-	$("#nodeEditorMenu").hide();
-	$("#sidebarMenu > div").hide();
-	$("#mainMenu").show();
-	
-	// Reset drawing modes
-	nodeEditingMode = false;
-	lastSelectedNode = null;
+    // main menu back button action
+    $("#floorEditorMenu").hide();
+    $("#nodeEditorMenu").hide();
+    $("#sidebarMenu > div").hide();
+    $("#mainMenu").show();
+
+    // Reset drawing modes
+    nodeEditingMode = false;
+    lastSelectedNode = null;
 }
 
 function showMapLayoutMenu()
 {
-	$("#StorylinesMenu").hide();
-	$("#StorylinesTab").removeClass('active');
-	$("#MapLayoutMenu").show();
-	$("#MapLayoutTab").addClass('active');
-	
-	nodeEditingMode = false;
+    $("#StorylinesMenu").hide();
+    $("#StorylinesTab").removeClass('active');
+    $("#MapLayoutMenu").show();
+    $("#MapLayoutTab").addClass('active');
+
+    nodeEditingMode = false;
     storylinesEditingMode = false;
 }
 
 function showStorylinesMenu()
 {
-	$("#MapLayoutMenu").hide();
-	$("#MapLayoutTab").removeClass('active');
-	$("#StorylinesMenu").show();
-	$("#StorylinesTab").addClass('active');
-	
-	storylinesEditingMode = true;
-	nodeEditingMode = false;
+    $("#MapLayoutMenu").hide();
+    $("#MapLayoutTab").removeClass('active');
+    $("#StorylinesMenu").show();
+    $("#StorylinesTab").addClass('active');
+
+    storylinesEditingMode = true;
+    nodeEditingMode = false;
 }
 

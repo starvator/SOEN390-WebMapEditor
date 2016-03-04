@@ -8,87 +8,103 @@ var POT_id = 0;
 var SP_id = 0;
 
 function Point(x,y) {
-	this.x = x;
-	this.y = y;
+    this.x = x;
+    this.y = y;
     this.id=i;
     i++;
 }
 
 function Edge(origin, destination) {
-	this.origin = origin;
-	this.destination = destination;
-	this.toJSON = function() {
-	//TODO: finish and add appropriate methods
-		return {
-			startNode: this.origin,
-			endNode:this.destination,
-			floorNumber:'TODO to be retrieved',
-			distance:distance(this.origin, this.destination)
-			};
-	}
+    this.origin = origin;
+    this.destination = destination;
+    this.toJSON = function() {
+    //TODO: finish and add appropriate methods
+        return {
+            startNode: this.origin,
+            endNode:this.destination,
+            floorNumber:'TODO to be retrieved',
+            distance:distance(this.origin, this.destination)
+            };
+    };
 }
 
 //TODO refactor and place in appropriate location later
 //This class is for any Language Text pairing such as descriptions or titles
 function LanguageText() {
-	this.pairs = [];
-	this.addPair = function(lang, value){
-		this.pairs.push({'language':lang, 'value':value});
-	}
-	this.toJSON = function() {
-		return this.pairs;
-	}
+    this.pairs = [];
+    this.addPair = function(lang, value){
+        this.pairs.push({'language':lang, 'value':value});
+    };
+    this.toJSON = function() {
+        return this.pairs;
+    };
+    this.getByLanguage = function(lang){
+        for(var i = 0; i < this.pairs.length; i++)
+        {
+            if(this.pairs[i].language === lang)
+            {
+                return this.pairs[i].value;
+            }
+        }
+    };  
+    this.setByLanguage = function(lang, value){
+        for(var i = 0; i < this.pairs.length; i++)
+        {
+            if(this.pairs[i].language === lang)
+            {
+                this.pairs[i].value = value;
+            }
+        }
+    };
 }
 
 function IBeacon(uuid, major, minor) {
-	this.uuid = uuid;
-	this.major = major;
-	this.minor = minor;
+    this.uuid = uuid;
+    this.major = major;
+    this.minor = minor;
 }
 
 function Media(){
-	this.image = [];
-	this.video = [];
-	this.audio = [];
-	this.addMedia = function(file) {
-		switch(file.type) {
-			case "image":
-				this.image.push(file);
-				break;
-			case "video":
-				this.video.push(file);
-				break;
-			case "audio":
-				this.audio.push(file);
-				break;
-			default:
-				alert('Something went wrong while adding your file (Type not recognized).');
-				break;
-		}
-	}
+    this.image = [];
+    this.video = [];
+    this.audio = [];
+    this.addMedia = function(file) {
+        switch(file.type) {
+            case "image":
+                this.image.push(file);
+                break;
+            case "video":
+                this.video.push(file);
+                break;
+            case "audio":
+                this.audio.push(file);
+                break;
+            default:
+                alert('Something went wrong while adding your file (Type not recognized).');
+                break;
+        }
+    };
 }
 
 function File(type) {
-	this.type = type;
-	this.path = "";
-	this.language = "";
-	this.caption = "";
+    this.type = type;
+    this.path = "";
+    this.language = "";
+    this.caption = "";
 }
 
 function POI(point) {
-	this.ID = POI_id;
+	this.ID = point.id;
 	POI_id++;
 	this.isSet = false;
 	this.title = new LanguageText('title');
 	this.description = new LanguageText('description');
 	this.point = point;
-	this.floorID = current_floor;
+        this.floorID = current_floor;
 	this.ibeacon = "";
 	//TODO: verify autotrigger toggle functionality
 	this.media = new Media();
-	this.storyPoint = [];
-	//this.storyline = active_id;
-	//storylineList[this.storyline].floorsCovered.push(this.floorID);
+	this.storypoint = [];
 	
 	this.toJSON = function() {
 		return {
@@ -97,11 +113,10 @@ function POI(point) {
 			description: this.description,
 			x:this.point.x,
 			y:this.point.y,
-			floorID:this.floorID,
+			floorID:'TODO retrieve',
 			iBeacon:this.ibeacon,
 			media:this.media, //TODO
 			storyPoint:this.storyPoint //TODO
-			//TODO add storyline in JSON
 		};
 	}
 }
@@ -134,10 +149,10 @@ function POT(point) {
 }
 
 function FloorPlan() {
-	this.floorID = 0;
-	this.imagePath = "";
-	this.imageWidth = 0;
-	this.imageHeight = 0;
+    this.floorID = 0;
+    this.imagePath = "";
+    this.imageWidth = 0;
+    this.imageHeight = 0;
 }
 
 function Storyline(){
@@ -165,15 +180,15 @@ var NODE_SNAP_DIST_SQUARED = 100;   // Const distance to perform mouse to node d
 
 var canvas;
 var ctx;
-var img;							// The background floor image
-var nodeEditingMode = false;		// True when in place node mode
+var img;                            // The background floor image
+var nodeEditingMode = false;        // True when in place node mode
 var storylinesEditingMode = false;  // True when in editing storyline mode
-var nodeList = [];					// List of transition nodes to draw to the canvas
+var nodeList = [];                  // List of transition nodes to draw to the canvas
 var POIList = [];
-var mouseLocation = new Point(0,0);	// Location of the mouse on the canvas
-var mouseOnNode;					// The node that the mouse is currently hovering over
-var edgeList = [];					// List of edges between transition points
-var lastSelectedNode;				// During edge creation, the first selected node
+var mouseLocation = new Point(0,0); // Location of the mouse on the canvas
+var mouseOnNode;                    // The node that the mouse is currently hovering over
+var edgeList = [];                  // List of edges between transition points
+var lastSelectedNode;               // During edge creation, the first selected node
 var nodeColor = "#660066";
 var hlColor = "#009900";
 var confirmedColor = "#0000FF"; 
@@ -185,29 +200,29 @@ var storylineList = [];
 var hlPointList = [];
 
 $(function(){
-	canvas = document.getElementById('floorPlan');
-	ctx = canvas.getContext('2d');
-	resizeCanvas();
-	
-	img = new Image();
-	img.onload = function() {
-		ctx.drawImage(img, -1000, -1000);
-	}
-	img.src = "floor_plans/floor3.svg";
-	
-	// Register events
-	document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
-	canvas.addEventListener('mousedown', mouseClick, false);
-	document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
-	
-	trackTransforms(ctx);
-				
-	canvas.addEventListener('DOMMouseScroll',handleScroll,false);
-	canvas.addEventListener('mousewheel',handleScroll,false);
+    canvas = document.getElementById('floorPlan');
+    ctx = canvas.getContext('2d');
+    resizeCanvas();
+
+    img = new Image();
+    img.onload = function() {
+        ctx.drawImage(img, -1000, -1000);
+    };
+    img.src = "floor_plans/floor3.svg";
+
+    // Register events
+    document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
+    canvas.addEventListener('mousedown', mouseClick, false);
+    document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
+
+    trackTransforms(ctx);
+
+    canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+    canvas.addEventListener('mousewheel',handleScroll,false);
 });
 
 function changeIMGsource(source){
-	img.src = source;
+    img.src = source;
 }
 
 // Main canvas drawing method
@@ -379,16 +394,8 @@ function canvasClick(x,y) {
 			}else{
 				for(val in POIList){
 					if(POIList[val].point.id == mouseOnNode.id){
-						//if(active_id == -2){
 							fillEditor(POIList[val]);
 							found = true;
-						//}
-						//else{
-						//	var newPOI = new POI(mouseOnNode);
-						//	newPOI.storyline = active_id;
-						//	fillEditor(newPOI);
-						//	found = true;
-						//}
 					break;
 					}
 				}
@@ -403,15 +410,28 @@ function canvasClick(x,y) {
 
 // Check to see if the set of nodes is in the current list of nodes
 function nodesInEdges(a,b) {
-	
-	for (var i = 0; i < edgeList.length; i++) {
-		if((edgeList[i].origin == a && edgeList[i].destination == b) || (edgeList[i].origin == b && edgeList[i].destination == a))
-		{	
-			return true;
+
+    for (var i = 0; i < edgeList.length; i++) {
+        if((edgeList[i].origin === a && edgeList[i].destination === b) || (edgeList[i].origin === b && edgeList[i].destination === a))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function highlightPOI(story){
+	//resets highlight list
+	hlPointList = [];
+	for(var val in POIList){
+		for(var p in POIList[val].storyPoint){
+			if(POIList[val].storyPoint[p].storylineID == story){
+				hlPointList.push(POIList[val].point);
+				break;
+			}
 		}
 	}
-	
-	return false;
 }
 
 function resizeCanvas(){
@@ -428,21 +448,8 @@ function resizeCanvas(){
 	trackTransforms(ctx);
 }
 
-function highlightPOI(story){
-	//resets highlight list
-	hlPointList = [];
-	for(var val in POIList){
-		for(var p in POIList[val].storyPoint){
-			if(POIList[val].storyPoint[p].storylineID == story){
-				hlPointList.push(POIList[val].point);
-				break;
-			}
-		}
-	}
-}
-
 //resize the canvas whenever its container is resized.
 $(window).on('resize', function(){
-	resizeCanvas();
-	redraw();
+    resizeCanvas();
+    redraw();
 });

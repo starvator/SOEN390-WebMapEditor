@@ -4,12 +4,12 @@ $(document).ready(function(){
     $("#infoEditingFormClose").click(function(){
         $("#infoEditingForm").hide();
     });
-    
+
     //When you click the attach button
     $("#attachADoc").click(function(){
         $("#uploadFile").trigger('click');
     });
-    
+
     //On change on input
     $( "#uploadFile" ).change(function() {
         try{
@@ -19,12 +19,12 @@ $(document).ready(function(){
         catch (e){
         }
     });
-    
+
     //When you click the x on the attach file
     $("#clearAttachField").click(function(){
         $("#attachedDocName").text("");
     });
-    
+
     //The save button
     $("#SaveStoryPointInfo").click(function(){
 	
@@ -100,12 +100,12 @@ $(document).ready(function(){
 });
 //Open editor of of point of a given id
 function openEditorByPointID(id){
-	for(val in POIList){
-		if(POIList[val].ID == id){
-			fillEditor(POIList[val]);
-			break;
-		}
-	}
+    for(val in POIList){
+        if(POIList[val].ID === id){
+            fillEditor(POIList[val]);
+            break;
+        }
+    }
 }
 
 function fillEditor(poi){
@@ -163,12 +163,6 @@ function fillEditor(poi){
 			}
 		}
 	}
-	//check the active sl
-	//find a storyPoint within that sl and at that poi
-	//if there, load
-	//else, new sp
-	
-    //fill the info
     //show the form
 	$("#infoEditingForm").show();
 }
