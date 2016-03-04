@@ -1,4 +1,5 @@
 var floorList = [];
+var current_floor = 0;
 
 $(function(){
     //handle the new floor submit
@@ -32,14 +33,16 @@ $(function(){
         changeFloor($("#floorNumUpload").val());
         //clear the form
         $("#newFloor")[0].reset();
-        return false;
+		current_floor = val;
+		return false;
     });
 });
 
 function changeFloor(val){
-    changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
-    $("#floor"+val).addClass("active");
-    redraw();
+	changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
+	current_floor = val;
+        $("#floor"+val).addClass("active");
+	redraw();	
 }
 
 function floorClicked(elem){

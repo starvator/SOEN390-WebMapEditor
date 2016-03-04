@@ -1,6 +1,6 @@
 
 var current_id=0;
-var active_id=-2;
+var active_id=-2; // -2 is poi creating
 
 function addNewStoryLine(){
 
@@ -23,6 +23,7 @@ function addNewStoryLine(){
         active_id = current_id;
         storyline.ID = current_id;
         storyline.title.addPair('en', name);
+        storyline.floorsCovered.push(current_floor);
         storyline.description.addPair('en', description);
 
         current_id++;
@@ -78,6 +79,7 @@ function saveStoryLine(){
 function storylineClicked(elem){
     var id = $(elem).attr("id");
     $("#"+active_id).removeClass("active");
-    $("#"+id).addClass("active");
-    active_id = id;
+	$("#"+id).addClass("active");
+	active_id = id;
+	highlightPOI(active_id);
 };
