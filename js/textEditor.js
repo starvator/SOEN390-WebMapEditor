@@ -161,5 +161,16 @@ function fillEditor(poi){
 		}
 	}
     //show the form
+	setEditorTitle();
 	$("#infoEditingForm").show();
+}
+
+function setEditorTitle(){
+	$("#infoEditingFormTitle").empty();
+	if(active_id == -2){
+		$("#infoEditingFormTitle").append('Point of Interest Editor');
+	}
+	else{
+		$("#infoEditingFormTitle").append('Storypoint Editor');
+	}
 }
