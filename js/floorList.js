@@ -13,10 +13,8 @@ $(function(){
             alert("You must select a file.");
             return false;
         }
-        if(floorList[$("#floorNumUpload").val()]){
-            if(!confirm("Would you like to replace the floor?")){
-                return false
-            }
+        if(floorList[$("#floorNumUpload").val()] && !confirm("Would you like to replace the floor?")){
+            return false
         }
         //add to array
         var floor = new FloorPlan();
@@ -27,7 +25,7 @@ $(function(){
         floorList[$("#floorNumUpload").val()] = floor;
         //add floor list from array
         $("#floorList").empty();
-        for(val in floorList){
+        for(var val in floorList){
             $("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
         }
         //change floor
