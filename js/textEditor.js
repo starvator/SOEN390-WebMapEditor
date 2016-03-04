@@ -46,14 +46,11 @@ $(document).ready(function(){
 	else{
 		var exists = false;
 		for(val in POIList){
-			alert(POIList[val].ID + " " + currentPOI.ID);
 			if(POIList[val].ID == currentPOI.ID){
-				alert("EXISTS");
 				exists = true;
 			}
 		}
 		if(!exists){
-			alert("NOT EXISTS");
 			currentPOI.title = $("#spTitle").val();
 			currentPOI.ibeacon = $("#spBeaconID").val();
 			currentPOI.description = CKEDITOR.instances["editor1"].getData();
