@@ -4,6 +4,8 @@
 var i=0;
 
 var POI_id = 0;
+var POT_id = 0;
+var SP_id = 0;
 
 function Point(x,y) {
 	this.x = x;
@@ -74,44 +76,45 @@ function File(type) {
 }
 
 function POI(point) {
-	if(storylineList.length < 1){
-		alert("Please create a Storyline before linking a POI.");
-	}
-	else{
-		this.ID = POI_id;
-		POI_id++;
-		this.isSet = false;
-		this.title = new LanguageText('title');
-		this.description = new LanguageText('description');
-		this.point = point;
-		this.floorID = current_floor;
-		this.ibeacon = "";
-		//TODO: verify autotrigger toggle functionality
-		this.media = new Media();
-		this.storypoint = [];
-		this.storyline = active_id;
-		storylineList[this.storyline].floorsCovered.push(this.floorID);
-		
-		this.toJSON = function() {
-			return {
-				id: this.ID,
-				title: this.title,
-				description: this.description,
-				x:this.point.x,
-				y:this.point.y,
-				floorID:this.floorID,
-				iBeacon:this.ibeacon,
-				media:this.media, //TODO
-				storyPoint:this.storyPoint //TODO
-				//TODO add storyline in JSON
-			};
-		}
+	this.ID = POI_id;
+	POI_id++;
+	this.isSet = false;
+	this.title = new LanguageText('title');
+	this.description = new LanguageText('description');
+	this.point = point;
+	this.floorID = current_floor;
+	this.ibeacon = "";
+	//TODO: verify autotrigger toggle functionality
+	this.media = new Media();
+	this.storyPoint = [];
+	//this.storyline = active_id;
+	//storylineList[this.storyline].floorsCovered.push(this.floorID);
+	
+	this.toJSON = function() {
+		return {
+			id: this.ID,
+			title: this.title,
+			description: this.description,
+			x:this.point.x,
+			y:this.point.y,
+			floorID:this.floorID,
+			iBeacon:this.ibeacon,
+			media:this.media, //TODO
+			storyPoint:this.storyPoint //TODO
+			//TODO add storyline in JSON
+		};
 	}
 }
 
+function setCreatePOIid(){
+	active_id = -2;
+	redraw();
+}
+
 function POT(point) {
-	this.ID = "foobarID"; //TODO GENERATED appropriately
-	this.label = new LanguageText();
+	this.ID = POT_id; //TODO GENERATED appropriately
+	POT_id++;
+	this.label = new LanguageText();//<ramp or stairs or elevator or intersection or washroom or exit or entrance or emergency exit>
 	this.point = point;
 	this.floorID = current_floor;
 	//I think these two are needed
@@ -148,10 +151,12 @@ function Storyline(){
 }
 
 function StoryPoint() {
+	this.ID = SP_id;
 	this.storylineID = active_id;
 	this.title = new LanguageText();
 	this.description = new LanguageText();
 	this.media = new Media();
+	SP_id++;
 }
 
 // End Classes
@@ -369,20 +374,21 @@ function canvasClick(x,y) {
 			//find point in list and fill editor
 			if(POIList.length == 0){
 				var newPOI = new POI(mouseOnNode);
+				newPOI.storyPoint = [];
 				fillEditor(newPOI);
 			}else{
 				for(val in POIList){
 					if(POIList[val].point.id == mouseOnNode.id){
-						if(active_id == POIList[val].storyline){
+						//if(active_id == -2){
 							fillEditor(POIList[val]);
 							found = true;
-						}
-						else{
-							var newPOI = new POI(mouseOnNode);
-							newPOI.storyline = active_id;
-							fillEditor(newPOI);
-							found = true;
-						}
+						//}
+						//else{
+						//	var newPOI = new POI(mouseOnNode);
+						//	newPOI.storyline = active_id;
+						//	fillEditor(newPOI);
+						//	found = true;
+						//}
 					break;
 					}
 				}
@@ -392,10 +398,6 @@ function canvasClick(x,y) {
 				}
 			}
 		}
-        else{
-        }
-    }
-    else{
     }
 }
 
@@ -429,9 +431,12 @@ function resizeCanvas(){
 function highlightPOI(story){
 	//resets highlight list
 	hlPointList = [];
-	for(val in POIList){
-		if(POIList[val].storyline == story){
-			hlPointList.push(POIList[val].point);
+	for(var val in POIList){
+		for(var p in POIList[val].storyPoint){
+			if(POIList[val].storyPoint[p].storylineID == story){
+				hlPointList.push(POIList[val].point);
+				break;
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 
 var current_id=0;
-var active_id=-2;
+var active_id=-2; // -2 is poi creating
 
 function addNewStoryLine(){
 
