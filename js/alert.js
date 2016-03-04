@@ -1,12 +1,14 @@
+/*
+    A series of functions to show alerts
+*/
 
 
-
-
-function showWarningAlert(msg) 
+// Show the warning alert box with a specified message
+function showWarningAlert(msg)
 {
     $("#alertMessage").html(msg);
     var height = $("#alertContainer").height();
-    
+
     $("#alertContainer").css("top", -1 * height);
     $("#alertContainer").show();
     $("#alertContainer").animate({"top": 0}, 250, "swing", function() {
@@ -19,11 +21,10 @@ function showWarningAlert(msg)
 function hideAlert()
 {
     var height = $("#alertContainer").height();
-    
+
+    // Slide up, then hide and reset the position
     $("#alertContainer").animate({"top": -1 * height}, 250, "swing", function() {
         $("#alertContainer").hide();
         $("#alertContainer").css("top", 0);
     });
-    
-    
 }
