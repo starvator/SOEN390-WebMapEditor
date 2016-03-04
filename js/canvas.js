@@ -353,16 +353,8 @@ function canvasClick(x,y) {
 }
 
 // Cancel any edge creation operations
-// Return whether something was cancelled
 function cancelOperations() {
-    var somethingCanceled = false;
-    if(lastSelectedNode)
-    {
-        somethingCanceled = true;
-    }
     lastSelectedNode = null;
-    
-    return somethingCanceled;
 }
 
 // Check to see if the set of nodes is in the current list of nodes
