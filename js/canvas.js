@@ -194,6 +194,7 @@ $(function(){
     document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
     canvas.addEventListener('mousedown', mouseClick, false);
     document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
+    canvas.addEventListener('contextmenu', mouseRightClick, false);
 
     trackTransforms(ctx);
 
@@ -349,6 +350,19 @@ function canvasClick(x,y) {
             }
         }
     }
+}
+
+// Cancel any edge creation operations
+// Return whether something was cancelled
+function cancelOperations() {
+    var somethingCanceled = false;
+    if(lastSelectedNode)
+    {
+        somethingCanceled = true;
+    }
+    lastSelectedNode = null;
+    
+    return somethingCanceled;
 }
 
 // Check to see if the set of nodes is in the current list of nodes

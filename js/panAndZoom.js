@@ -58,6 +58,18 @@ function mouseUp(evt) {
     dragStart = null;
 }
 
+function mouseRightClick(evt) {
+    if(cancelOperations())
+    {
+        evt.preventDefault();
+        return false;
+    }        
+    else
+    {
+        return true;
+    }
+}
+
 // Zoom functions
 var scaleFactor = 1.1;
 var zoom = function(clicks){
