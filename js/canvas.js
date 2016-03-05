@@ -94,7 +94,7 @@ function File(type) {
 }
 
 function POI(point) {
-	this.ID = point.id;
+	this.ID = POI_id;
 	POI_id++;
 	this.isSet = false;
 	this.title = new LanguageText('title');
