@@ -417,6 +417,11 @@ function canvasClick(x,y) {
     }
 }
 
+// Cancel any edge creation operations
+function cancelOperations() {
+    lastSelectedNode = null;
+}
+
 // Check to see if the set of nodes is in the current list of nodes
 function nodesInEdges(a,b) {
 
