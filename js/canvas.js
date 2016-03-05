@@ -164,8 +164,6 @@ var storylineList = [];
 //For PanAndZoom.js
 var xPanLimits;
 var yPanLimits;
-var currentImageSize = [0,0];
-var currentImagePos = [0,0];
 
 $(function(){
     canvas = document.getElementById('floorPlan');
@@ -176,12 +174,13 @@ $(function(){
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
 		trackTransforms(ctx);
-        xPanLimits = [0, img.width];
-        yPanLimits = [0, img.height];
 		imageFillWindow();
 		redraw();
     };
     img.src = "floor_plans/floor3.svg";
+	
+	xPanLimits = [0, img.width];
+	yPanLimits = [0, img.height];
 
     // Register events
     document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
@@ -194,12 +193,8 @@ $(function(){
 
 function changeIMGsource(source){
     img.src = source;
-    
-    //TODO: verify this dooesn't negate onLoad function
 	xPanLimits = [0, img.width];
 	yPanLimits = [0, img.height];
-    currentImagePos = [0,0];
-	//currentImageSize = [img.width, img.height];
 	imageFillWindow();
 }
 
