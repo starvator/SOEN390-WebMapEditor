@@ -162,6 +162,9 @@ var pointList = [];
 var storylineList = [];
 
 //For PanAndZoom.js
+var originalScaledIMG = [];
+var scaledIMG = [];
+
 var xPanLimits;
 var yPanLimits;
 
@@ -173,14 +176,12 @@ $(function(){
     img = new Image();
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
+        scaledIMG = [img.width, img.height];
 		trackTransforms(ctx);
 		imageFillWindow();
 		redraw();
     };
     img.src = "floor_plans/floor3.svg";
-	
-	xPanLimits = [0, img.width];
-	yPanLimits = [0, img.height];
 
     // Register events
     document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
@@ -193,8 +194,6 @@ $(function(){
 
 function changeIMGsource(source){
     img.src = source;
-	xPanLimits = [0, img.width];
-	yPanLimits = [0, img.height];
 	imageFillWindow();
 }
 

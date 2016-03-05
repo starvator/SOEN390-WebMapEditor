@@ -9,8 +9,6 @@ var MOUSE_DRAG_GRACE_DIST_SQUARED = 4; // The distance the mouse must move (squa
 
 
 function mouseMove(evt) {
-	xPanLimits[1] = img.width;
-	yPanLimits[1] = img.height;
     // Store the location of the mouse relative to the canvas
     var x = evt.pageX - $(canvas).offset().left;
     var y = evt.pageY - $(canvas).offset().top;
@@ -66,6 +64,10 @@ var zoom = function(clicks){
     ctx.translate(pt.x,pt.y);
     var factor = Math.pow(scaleFactor,clicks);
     ctx.scale(factor,factor);
+    if(ctx.scale(factor,factor) === undefined){
+        scaledIMG[0] = factor*scaledIMG[0];
+        scaledIMG[1] = factor*scaledIMG[1];
+    }
     ctx.translate(-pt.x,-pt.y);
     redraw();
 }
@@ -73,8 +75,12 @@ var zoom = function(clicks){
 //Allow background image to fill the entire canvas
 var imageFillWindow = function() {
 	var scaleFactor = Math.min(canvas.width / img.width, canvas.height / img.height);
-    ctx.scale(scaleFactor,scaleFactor);
-}
+    originalScaledIMG = [scaleFactor*img.width, scaleFactor*img.height];
+    if(ctx.scale(scaleFactor,scaleFactor) === undefined){
+        scaledIMG[0] = scaleFactor*scaledIMG[0];
+        scaledIMG[1] = scaleFactor*scaledIMG[1];
+    }
+};
 
 var handleScroll = function(evt){
     var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
@@ -104,8 +110,12 @@ function trackTransforms(ctx){
 
     var scale = ctx.scale;
     ctx.scale = function(sx,sy){
-        xform = xform.scaleNonUniform(sx,sy);
-        return scale.call(ctx,sx,sy);
+        if((sx*scaledIMG[0] >= originalScaledIMG[0]) && (sx*scaledIMG[0] <=img.width) && (sy*scaledIMG[1] >= originalScaledIMG[1]) && (sy*scaledIMG[1] <=img.height)){
+            xform = xform.scaleNonUniform(sx,sy);
+            return scale.call(ctx,sx,sy);
+        }else{
+            return false;
+        }
     };
     var rotate = ctx.rotate;
     ctx.rotate = function(radians){
@@ -114,6 +124,7 @@ function trackTransforms(ctx){
     };
     var translate = ctx.translate;
     ctx.translate = function(dx,dy){
+        //TODO: Translation Limit Tracking
         xform = xform.translate(dx,dy);
         return translate.call(ctx,dx,dy);
     };
