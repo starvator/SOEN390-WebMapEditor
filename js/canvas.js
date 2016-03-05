@@ -113,7 +113,7 @@ function POI(point) {
 			description: this.description,
 			x:this.point.x,
 			y:this.point.y,
-			floorID:'TODO retrieve',
+			floorID:this.floorID,
 			iBeacon:this.ibeacon,
 			media:this.media, //TODO
 			storyPoint:this.storyPoint //TODO
