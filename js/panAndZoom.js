@@ -64,9 +64,9 @@ var zoom = function(clicks){
     var pt = mouseLocation;
     ctx.translate(pt.x,pt.y);
     var factor = Math.pow(scaleFactor,clicks);
-
-	if((Math.max(currentImageSize[0]/canvas.width, currentImageSize[1]/canvas.height) < Math.floor(1/totalZoomOut)) 
-        && (factor*currentImageSize[0] > totalZoomOut*xPanLimits[1]) && (factor*currentImageSize[1] > totalZoomOut*yPanLimits[1])){
+    //Boundary check
+    //console.log(factor); Math.floor(1/totalZoomOut))
+	if((Math.max(canvas.width / currentImageSize[0], canvas.height / currentImageSize[1]) <= Math.floor(1/totalZoomOut)) && (factor*currentImageSize[0] > totalZoomOut*xPanLimits[1]) && (factor*currentImageSize[1] > totalZoomOut*yPanLimits[1])){
         ctx.scale(factor,factor);
         ctx.translate(-pt.x,-pt.y);
         currentImageSize[0] = factor*currentImageSize[0];
