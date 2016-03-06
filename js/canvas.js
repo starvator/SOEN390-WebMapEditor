@@ -104,7 +104,7 @@ function POI(point) {
 	this.ibeacon = "";
 	//TODO: verify autotrigger toggle functionality
 	this.media = new Media();
-	this.storypoint = [];
+	this.storyPoint = [];
 	
 	this.toJSON = function() {
 		return {
