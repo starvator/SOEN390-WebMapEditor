@@ -120,18 +120,16 @@ function fillEditor(poi){
 		if(poi.isSet){
 			$("#spTitle").val(poi.title);
 			$("#autoOn").click();
-			//$("#autoOff").click();
 			$("#spBeaconID").val(poi.ibeacon);     
 			CKEDITOR.instances["editor1"].setData(poi.description);
 			$("#attachedDocName").text(poi.media);
 		}
 		else{
-			$("#spTitle").val("Title");
+			$("#spTitle").val("");
 			$("#autoOn").click();
-			//$("#autoOff").click();
-			$("#spBeaconID").val("beacon id");     
-			CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
-			$("#attachedDocName").text("Oldfilename.txt");
+			$("#spBeaconID").val("");     
+			CKEDITOR.instances["editor1"].setData("");
+			$("#attachedDocName").text("");
 		}
 	}
 	else{
@@ -141,7 +139,6 @@ function fillEditor(poi){
 				if (currentPOI.storyPoint[p].storylineID == active_id){
 					$("#spTitle").val(currentPOI.storyPoint[p].title);
 					$("#autoOn").click();
-					//$("#autoOff").click();
 					$("#spBeaconID").val(currentPOI.ibeacon);     
 					CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
 					$("#attachedDocName").text(currentPOI.storyPoint[p].media);
@@ -150,12 +147,11 @@ function fillEditor(poi){
 			}
 			//If the storyPoint doesnt exist, create it
 			if(!spFound){
-				$("#spTitle").val("Title");
+				$("#spTitle").val("");
 				$("#autoOn").click();
-				//$("#autoOff").click();
-				$("#spBeaconID").val("beacon id");     
-				CKEDITOR.instances["editor1"].setData("<p>the info that i<strong>s &quot;&quot;in the js<u>on</u></strong><u> whateve</u>r</p>");
-				$("#attachedDocName").text("Oldfilename.txt");
+				$("#spBeaconID").val("");     
+				CKEDITOR.instances["editor1"].setData("");
+				$("#attachedDocName").text("");
 				spFound = false;
 			}
 		}
