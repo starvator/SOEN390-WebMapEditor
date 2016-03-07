@@ -127,7 +127,6 @@ function fillEditor(poi){
 		else{
 			$("#spTitle").val("");
 			$("#autoOn").click();
-			//$("#autoOff").click();
 			$("#spBeaconID").val("");     
 			CKEDITOR.instances["editor1"].setData("");
 			$("#attachedDocName").text("");
@@ -140,7 +139,6 @@ function fillEditor(poi){
 				if (currentPOI.storyPoint[p].storylineID == active_id){
 					$("#spTitle").val(currentPOI.storyPoint[p].title);
 					$("#autoOn").click();
-					//$("#autoOff").click();
 					$("#spBeaconID").val(currentPOI.ibeacon);     
 					CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
 					$("#attachedDocName").text(currentPOI.storyPoint[p].media);
