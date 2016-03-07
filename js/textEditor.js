@@ -120,7 +120,6 @@ function fillEditor(poi){
 		if(poi.isSet){
 			$("#spTitle").val(poi.title);
 			$("#autoOn").click();
-			//$("#autoOff").click();
 			$("#spBeaconID").val(poi.ibeacon);     
 			CKEDITOR.instances["editor1"].setData(poi.description);
 			$("#attachedDocName").text(poi.media);
@@ -152,7 +151,6 @@ function fillEditor(poi){
 			if(!spFound){
 				$("#spTitle").val("");
 				$("#autoOn").click();
-				//$("#autoOff").click();
 				$("#spBeaconID").val("");     
 				CKEDITOR.instances["editor1"].setData("");
 				$("#attachedDocName").text("");
