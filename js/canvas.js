@@ -118,7 +118,7 @@ function POI(point) {
             media:this.media, //TODO
             storyPoint:this.storyPoint //TODO
         };
-    }
+    };
 }
 
 function setCreatePOIid(){
@@ -145,7 +145,7 @@ function POT(point) {
             y:this.point.y,
             floorID:this.floorID
         };
-    }
+    };
 }
 
 function FloorPlan() {
@@ -259,15 +259,15 @@ function redraw() {
         {
             //Add condition to take into account storyline
             ctx.fillStyle= nodeColor;
-            for (val in hlPointList){
-                if (anode.id == hlPointList[val].id){
+            for (var val in hlPointList){
+                if (anode.id === hlPointList[val].id){
                     ctx.fillStyle = hlColor;
                 }
             }
         }
 
         // The last selected node during edge creation is a different colour
-        if(anode == lastSelectedNode) {
+        if(anode === lastSelectedNode) {
             ctx.fillStyle=confirmedColor;
         }
 
@@ -306,14 +306,14 @@ function redraw() {
         else if (lastSelectedNode && mouseOnNode)
         {
             var pointsTrue = 0;
-            for(val in hlPointList){
-                if(hlPointList[val].id == lastSelectedNode.id){
+            for(var val in hlPointList){
+                if(hlPointList[val].id === lastSelectedNode.id){
                     pointsTrue++;
                 }
-                if(hlPointList[val].id == mouseOnNode.id){
+                if(hlPointList[val].id === mouseOnNode.id){
                     pointsTrue++;
                 }
-                if(pointsTrue == 2){
+                if(pointsTrue === 2){
                     ctx.strokeStyle = hlColor;
                 }
                 else{
@@ -326,21 +326,18 @@ function redraw() {
             ctx.stroke();
         }
     }
-    if (storylinesEditingMode){
+    if (storylinesEditingMode && !mouseOnNode){
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
-        if(!mouseOnNode)
-        {
-            ctx.beginPath();
-            ctx.fillStyle= nodeColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-            ctx.fill();
-        }
+        ctx.beginPath();
+        ctx.fillStyle= nodeColor;
+        ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+        ctx.fill();
     }
 }
 
 function drawEdges(){
     // Draw all the edges
-    for(e in edgeList){
+    for(var e in edgeList){
         if(_.contains(hlPointList, edgeList[e].origin)){
             if(_.contains(hlPointList, edgeList[e].destination)){
                 ctx.strokeStyle = hlColor;
@@ -387,31 +384,29 @@ function canvasClick(x,y) {
             lastSelectedNode = null; // Clear the selected node
         }
     }
-    else if (storylinesEditingMode){
+    else if (storylinesEditingMode && mouseOnNode){
     //*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
-        if(mouseOnNode) {
-            //TODOTYLER: get the id of the current point of interest
-            //alert(mouseOnNode.id);
-            //TODOTYLER: get the id of the currently selected storyline
-            //alert(active_id);
-            var found = false;
-            //find point in list and fill editor
-            if(POIList.length == 0){
+        //TODOTYLER: get the id of the current point of interest
+        //alert(mouseOnNode.id);
+        //TODOTYLER: get the id of the currently selected storyline
+        //alert(active_id);
+        var found = false;
+        //find point in list and fill editor
+        if(POIList.length === 0){
+            var newPOI = new POI(mouseOnNode);
+            newPOI.storyPoint = [];
+            fillEditor(newPOI);
+        }else{
+            for(var val in POIList){
+                if(POIList[val].point.id === mouseOnNode.id){
+                        fillEditor(POIList[val]);
+                        found = true;
+                break;
+                }
+            }
+            if(!found){
                 var newPOI = new POI(mouseOnNode);
-                newPOI.storyPoint = [];
                 fillEditor(newPOI);
-            }else{
-                for(val in POIList){
-                    if(POIList[val].point.id == mouseOnNode.id){
-                            fillEditor(POIList[val]);
-                            found = true;
-                    break;
-                    }
-                }
-                if(!found){
-                    var newPOI = new POI(mouseOnNode);
-                    fillEditor(newPOI);
-                }
             }
         }
     }
@@ -443,11 +438,11 @@ function canNodeConnect(a) {
     for(var i = 0; i < edgeList.length; i++)
     {
         // If the node is in an edge, remove the other node
-        if(a == edgeList[i].origin)
+        if(a === edgeList[i].origin)
         {
            allNodes = removeFromList(edgeList[i].destination, allNodes);
         }
-        else if(a == edgeList[i].destination)
+        else if(a === edgeList[i].destination)
         {
            allNodes = removeFromList(edgeList[i].origin, allNodes);
         }
@@ -477,7 +472,7 @@ function highlightPOI(story){
     hlPointList = [];
     for(var val in POIList){
         for(var p in POIList[val].storyPoint){
-            if(POIList[val].storyPoint[p].storylineID == story){
+            if(POIList[val].storyPoint[p].storylineID === story){
                 hlPointList.push(POIList[val].point);
                 break;
             }
