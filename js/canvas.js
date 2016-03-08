@@ -94,58 +94,58 @@ function File(type) {
 }
 
 function POI(point) {
-	this.ID = POI_id;
-	POI_id++;
-	this.isSet = false;
-	this.title = new LanguageText('title');
-	this.description = new LanguageText('description');
-	this.point = point;
+    this.ID = POI_id;
+    POI_id++;
+    this.isSet = false;
+    this.title = new LanguageText('title');
+    this.description = new LanguageText('description');
+    this.point = point;
         this.floorID = current_floor;
-	this.ibeacon = "";
-	//TODO: verify autotrigger toggle functionality
-	this.media = new Media();
-	this.storyPoint = [];
-	
-	this.toJSON = function() {
-		return {
-			id: this.ID,
-			title: this.title,
-			description: this.description,
-			x:this.point.x,
-			y:this.point.y,
-			floorID:this.floorID,
-			iBeacon:this.ibeacon,
-			media:this.media, //TODO
-			storyPoint:this.storyPoint //TODO
-		};
-	}
+    this.ibeacon = "";
+    //TODO: verify autotrigger toggle functionality
+    this.media = new Media();
+    this.storyPoint = [];
+
+    this.toJSON = function() {
+        return {
+            id: this.ID,
+            title: this.title,
+            description: this.description,
+            x:this.point.x,
+            y:this.point.y,
+            floorID:this.floorID,
+            iBeacon:this.ibeacon,
+            media:this.media, //TODO
+            storyPoint:this.storyPoint //TODO
+        };
+    }
 }
 
 function setCreatePOIid(){
-	active_id = -2;
-	redraw();
+    active_id = -2;
+    redraw();
 }
 
 function POT(point) {
-	this.ID = POT_id; //TODO GENERATED appropriately
-	POT_id++;
-	this.label = new LanguageText();//<ramp or stairs or elevator or intersection or washroom or exit or entrance or emergency exit>
-	this.point = point;
-	this.floorID = current_floor;
-	//I think these two are needed
-	this.storyline = active_id;
-	storylineList[storyline].floorsCovered.push(this.floorID);
-	
-	//TODO
-	this.toJSON = function() {
-		return {
-			id: this.ID,
-			label: this.label,
-			x:this.point.x,
-			y:this.point.y,
-			floorID:this.floorID
-		};
-	}
+    this.ID = POT_id; //TODO GENERATED appropriately
+    POT_id++;
+    this.label = new LanguageText();//<ramp or stairs or elevator or intersection or washroom or exit or entrance or emergency exit>
+    this.point = point;
+    this.floorID = current_floor;
+    //I think these two are needed
+    this.storyline = active_id;
+    storylineList[storyline].floorsCovered.push(this.floorID);
+
+    //TODO
+    this.toJSON = function() {
+        return {
+            id: this.ID,
+            label: this.label,
+            x:this.point.x,
+            y:this.point.y,
+            floorID:this.floorID
+        };
+    }
 }
 
 function FloorPlan() {
@@ -156,22 +156,22 @@ function FloorPlan() {
 }
 
 function Storyline(){
-	this.ID = "";//gets defined in storylines.js
-	this.title = new LanguageText();
-	this.description = new LanguageText();
-	this.path = [];
-	this.thumbnail = "";
-	this.walkingTimeInMinutes = ""; //TODO auto generate with math?
-	this.floorsCovered = [];
+    this.ID = "";//gets defined in storylines.js
+    this.title = new LanguageText();
+    this.description = new LanguageText();
+    this.path = [];
+    this.thumbnail = "";
+    this.walkingTimeInMinutes = ""; //TODO auto generate with math?
+    this.floorsCovered = [];
 }
 
 function StoryPoint() {
-	this.ID = SP_id;
-	this.storylineID = active_id;
-	this.title = new LanguageText();
-	this.description = new LanguageText();
-	this.media = new Media();
-	SP_id++;
+    this.ID = SP_id;
+    this.storylineID = active_id;
+    this.title = new LanguageText();
+    this.description = new LanguageText();
+    this.media = new Media();
+    SP_id++;
 }
 
 // End Classes
@@ -191,7 +191,7 @@ var edgeList = [];                  // List of edges between transition points
 var lastSelectedNode;               // During edge creation, the first selected node
 var nodeColor = "#660066";
 var hlColor = "#009900";
-var confirmedColor = "#0000FF"; 
+var confirmedColor = "#0000FF";
 
 //For JSON use
 var floorList = [];
@@ -227,136 +227,136 @@ function changeIMGsource(source){
 }
 
 // Main canvas drawing method
-function redraw() {	
-	// Clear the canvas
-	var p1 = ctx.transformedPoint(0,0);
-	var p2 = ctx.transformedPoint(canvas.width,canvas.height);
-	ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
-	
-	// Draw the background image
-	ctx.drawImage(img, -1000, -1000);
-	
-	// Clear the currently stored node
-	mouseOnNode = null;
-	
-	// Set line styles
-	ctx.strokeStyle = nodeColor;
-	ctx.lineWidth = 5;
-	
-	drawEdges();
-	
-	// Draw all stored transition nodes on the map
-	jQuery.each(nodeList,function(i,anode){
+function redraw() {
+    // Clear the canvas
+    var p1 = ctx.transformedPoint(0,0);
+    var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+    ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
-		// If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-		if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
-		{
-			// If the mouse is near, set the node and change its colour
-			mouseOnNode = anode;
-			ctx.fillStyle=confirmedColor;
-		}
-		else
-		{
-			//Add condition to take into account storyline
-			ctx.fillStyle= nodeColor;
-			for (val in hlPointList){
-				if (anode.id == hlPointList[val].id){
-					ctx.fillStyle = hlColor;
-				}
-			}
-		}
-	
-		// The last selected node during edge creation is a different colour
-		if(anode == lastSelectedNode) {
-			ctx.fillStyle=confirmedColor;
-		}
-	
-		// Draw a point
-		ctx.beginPath();
-		ctx.arc(anode.x,anode.y,7,0,2*Math.PI);
-		ctx.fill();
-	});	
-	
-	// When placing a node
-	if(nodeEditingMode)
-	{
-		// Draw a temporary point at the cursor's location when over empty space and not creating an edge
-		if(!lastSelectedNode && !mouseOnNode)
-		{
-			ctx.beginPath();
-			ctx.fillStyle= nodeColor;
-			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-			ctx.fill();
-		}
-		// When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-		else if(lastSelectedNode && !mouseOnNode)
-		{
-			ctx.strokeStyle = confirmedColor;
-			ctx.beginPath();
-			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
-			ctx.lineTo(mouseLocation.x,mouseLocation.y);
-			ctx.stroke();
-		
-			ctx.beginPath();
-			ctx.fillStyle=confirmedColor;
-			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-			ctx.fill();
-		}
-		// When creating an edge and hovering on top of a node, draw a line to that node
-		else if (lastSelectedNode && mouseOnNode)
-		{
-			var pointsTrue = 0;
-			for(val in hlPointList){
-				if(hlPointList[val].id == lastSelectedNode.id){
-					pointsTrue++;
-				}
-				if(hlPointList[val].id == mouseOnNode.id){
-					pointsTrue++;
-				}
-				if(pointsTrue == 2){
-					ctx.strokeStyle = hlColor;
-				}
-				else{
-					ctx.strokeStyle = confirmedColor;
-				}
-			}
-			ctx.beginPath();
-			ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
-			ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
-			ctx.stroke();
-		}
-	}
+    // Draw the background image
+    ctx.drawImage(img, -1000, -1000);
+
+    // Clear the currently stored node
+    mouseOnNode = null;
+
+    // Set line styles
+    ctx.strokeStyle = nodeColor;
+    ctx.lineWidth = 5;
+
+    drawEdges();
+
+    // Draw all stored transition nodes on the map
+    jQuery.each(nodeList,function(i,anode){
+
+        // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
+        if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+        {
+            // If the mouse is near, set the node and change its colour
+            mouseOnNode = anode;
+            ctx.fillStyle=confirmedColor;
+        }
+        else
+        {
+            //Add condition to take into account storyline
+            ctx.fillStyle= nodeColor;
+            for (val in hlPointList){
+                if (anode.id == hlPointList[val].id){
+                    ctx.fillStyle = hlColor;
+                }
+            }
+        }
+
+        // The last selected node during edge creation is a different colour
+        if(anode == lastSelectedNode) {
+            ctx.fillStyle=confirmedColor;
+        }
+
+        // Draw a point
+        ctx.beginPath();
+        ctx.arc(anode.x,anode.y,7,0,2*Math.PI);
+        ctx.fill();
+    });
+
+    // When placing a node
+    if(nodeEditingMode)
+    {
+        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+        if(!lastSelectedNode && !mouseOnNode)
+        {
+            ctx.beginPath();
+            ctx.fillStyle= nodeColor;
+            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+            ctx.fill();
+        }
+        // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
+        else if(lastSelectedNode && !mouseOnNode)
+        {
+            ctx.strokeStyle = confirmedColor;
+            ctx.beginPath();
+            ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+            ctx.lineTo(mouseLocation.x,mouseLocation.y);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.fillStyle=confirmedColor;
+            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+            ctx.fill();
+        }
+        // When creating an edge and hovering on top of a node, draw a line to that node
+        else if (lastSelectedNode && mouseOnNode)
+        {
+            var pointsTrue = 0;
+            for(val in hlPointList){
+                if(hlPointList[val].id == lastSelectedNode.id){
+                    pointsTrue++;
+                }
+                if(hlPointList[val].id == mouseOnNode.id){
+                    pointsTrue++;
+                }
+                if(pointsTrue == 2){
+                    ctx.strokeStyle = hlColor;
+                }
+                else{
+                    ctx.strokeStyle = confirmedColor;
+                }
+            }
+            ctx.beginPath();
+            ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+            ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
+            ctx.stroke();
+        }
+    }
     if (storylinesEditingMode){
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
-		if(!mouseOnNode)
-		{
-			ctx.beginPath();
-			ctx.fillStyle= nodeColor;
-			ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-			ctx.fill();
-		}
+        if(!mouseOnNode)
+        {
+            ctx.beginPath();
+            ctx.fillStyle= nodeColor;
+            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+            ctx.fill();
+        }
     }
 }
 
 function drawEdges(){
-	// Draw all the edges
-	for(e in edgeList){
-		if(_.contains(hlPointList, edgeList[e].origin)){
-			if(_.contains(hlPointList, edgeList[e].destination)){
-				ctx.strokeStyle = hlColor;
-			}
-			else{
-				ctx.strokeStyle = nodeColor;
-			}
-		}
-		else{
-			ctx.strokeStyle = nodeColor;
-		}
-		ctx.beginPath();
-		ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
-		ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
-		ctx.stroke();
-	}
+    // Draw all the edges
+    for(e in edgeList){
+        if(_.contains(hlPointList, edgeList[e].origin)){
+            if(_.contains(hlPointList, edgeList[e].destination)){
+                ctx.strokeStyle = hlColor;
+            }
+            else{
+                ctx.strokeStyle = nodeColor;
+            }
+        }
+        else{
+            ctx.strokeStyle = nodeColor;
+        }
+        ctx.beginPath();
+        ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
+        ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
+        ctx.stroke();
+    }
 }
 
 function canvasClick(x,y) {
@@ -388,32 +388,32 @@ function canvasClick(x,y) {
         }
     }
     else if (storylinesEditingMode){
-	//*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
+    //*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
         if(mouseOnNode) {
             //TODOTYLER: get the id of the current point of interest
             //alert(mouseOnNode.id);
             //TODOTYLER: get the id of the currently selected storyline
             //alert(active_id);
-			var found = false;
-			//find point in list and fill editor
-			if(POIList.length == 0){
-				var newPOI = new POI(mouseOnNode);
-				newPOI.storyPoint = [];
-				fillEditor(newPOI);
-			}else{
-				for(val in POIList){
-					if(POIList[val].point.id == mouseOnNode.id){
-							fillEditor(POIList[val]);
-							found = true;
-					break;
-					}
-				}
-				if(!found){
-					var newPOI = new POI(mouseOnNode);
-					fillEditor(newPOI);
-				}
-			}
-		}
+            var found = false;
+            //find point in list and fill editor
+            if(POIList.length == 0){
+                var newPOI = new POI(mouseOnNode);
+                newPOI.storyPoint = [];
+                fillEditor(newPOI);
+            }else{
+                for(val in POIList){
+                    if(POIList[val].point.id == mouseOnNode.id){
+                            fillEditor(POIList[val]);
+                            found = true;
+                    break;
+                    }
+                }
+                if(!found){
+                    var newPOI = new POI(mouseOnNode);
+                    fillEditor(newPOI);
+                }
+            }
+        }
     }
 }
 
@@ -473,16 +473,16 @@ function removeFromList(ele, list)
 }
 
 function highlightPOI(story){
-	//resets highlight list
-	hlPointList = [];
-	for(var val in POIList){
-		for(var p in POIList[val].storyPoint){
-			if(POIList[val].storyPoint[p].storylineID == story){
-				hlPointList.push(POIList[val].point);
-				break;
-			}
-		}
-	}
+    //resets highlight list
+    hlPointList = [];
+    for(var val in POIList){
+        for(var p in POIList[val].storyPoint){
+            if(POIList[val].storyPoint[p].storylineID == story){
+                hlPointList.push(POIList[val].point);
+                break;
+            }
+        }
+    }
 }
 
 function resizeCanvas(){
