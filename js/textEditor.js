@@ -32,8 +32,8 @@ $(document).ready(function(){
     //if not saving a storyPoint
     if(active_id == -2){
         POIList.push(currentPOI);
-        for(val in POIList){
-            if(POIList[val].ID == currentPOI.ID){
+        for(var val in POIList){
+            if(POIList[val].ID === currentPOI.ID){
                 POIList[val].title = $("#spTitle").val();
                 POIList[val].ibeacon = $("#spBeaconID").val();
                 POIList[val].description = CKEDITOR.instances["editor1"].getData();
@@ -45,8 +45,8 @@ $(document).ready(function(){
     }
     else{
         var exists = false;
-        for(val in POIList){
-            if(POIList[val].ID == currentPOI.ID){
+        for(var val in POIList){
+            if(POIList[val].ID === currentPOI.ID){
                 exists = true;
             }
         }
@@ -59,8 +59,8 @@ $(document).ready(function(){
             POIList.push(currentPOI);
         }
         for(val in POIList){
-            if(POIList[val].ID == currentPOI.ID){
-                for(p in POIList[val].storyPoint){
+            if(POIList[val].ID === currentPOI.ID){
+                for(var p in POIList[val].storyPoint){
                     if (POIList[val].storyPoint[p].storylineID == active_id){
                         //Updating sp
                         POIList[val].storyPoint[p].title = $("#spTitle").val();
@@ -77,7 +77,7 @@ $(document).ready(function(){
                 //If it wasnt found in the loop, create it.
                 if(!spCreated){
                     //Create storypoint
-                    newStoryPoint = new StoryPoint();
+                    var newStoryPoint = new StoryPoint();
                     newStoryPoint.title = $("#spTitle").val();
                     newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
                     newStoryPoint.media = $("#attachedDocName").text();
