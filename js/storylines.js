@@ -41,7 +41,7 @@ function editStoryLine(){
     var storyline;
     for(var i = 0; i < storylineList.length; i++)
     {
-        if(storylineList[i].ID === active_id)
+        if(storylineList[i].ID == active_id)
         {
             storyline = storylineList[i];
         }
@@ -58,7 +58,7 @@ function saveStoryLine(){
     var storyline;
     for(var i = 0; i < storylineList.length; i++)
     {
-        if(storylineList[i].ID === active_id)
+        if(storylineList[i].ID == active_id)
         {
             storyline = storylineList[i];
         }
@@ -79,7 +79,7 @@ function saveStoryLine(){
 function storylineClicked(elem){
     var id = $(elem).attr("id");
     $("#"+active_id).removeClass("active");
-	$("#"+id).addClass("active");
-	active_id = id;
-	highlightPOI(active_id);
+    $("#"+id).addClass("active");
+    active_id = id;
+    highlightPOI(active_id);
 };

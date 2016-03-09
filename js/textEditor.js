@@ -133,10 +133,10 @@ function fillEditor(poi){
 		}
 	}
 	else{
-		if(active_id != -2){
+		if(active_id !== -2){
 			//find the storyPoint associated to the storyline
 			for(var p in currentPOI.storyPoint){
-				if (currentPOI.storyPoint[p].storylineID == active_id){
+				if (currentPOI.storyPoint[p].storylineID === active_id){
 					$("#spTitle").val(currentPOI.storyPoint[p].title);
 					$("#autoOn").click();
 					$("#spBeaconID").val(currentPOI.ibeacon);     
@@ -163,7 +163,7 @@ function fillEditor(poi){
 
 function setEditorTitle(){
 	$("#infoEditingFormTitle").empty();
-	if(active_id == -2){
+	if(active_id === -2){
 		$("#infoEditingFormTitle").append('Point of Interest Editor');
 	}
 	else{
