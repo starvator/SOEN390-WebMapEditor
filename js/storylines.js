@@ -10,7 +10,7 @@ function addNewStoryLine(){
     description = $("#storylineDescription").val();
     if(name){
         var storyline = new Storyline();
-        if(description != false){
+        if(description){
         $("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</br>' + description +'</a></li>' +
         '<ul id="'+ current_id +'_pointList"></ul>');
         }
@@ -52,7 +52,7 @@ function editStoryLine(){
 }
 
 function saveStoryLine(){
-    
+
     var name;
     var description;
     var storyline;
@@ -79,7 +79,7 @@ function saveStoryLine(){
 function storylineClicked(elem){
     var id = $(elem).attr("id");
     $("#"+active_id).removeClass("active");
-	$("#"+id).addClass("active");
-	active_id = id;
-	highlightPOI(active_id);
+    $("#"+id).addClass("active");
+    active_id = id;
+    highlightPOI(active_id);
 };
