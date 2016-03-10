@@ -18,14 +18,11 @@
 
 #nodeEditorMenu {
 	display:none;
-	padding-top:200px;
 }
 
-/*
-#MapLayoutMenu {
-	visibility: hidden;
+#MapLayoutMenu{
+    padding-top:10px;
 }
-*/
 
 #alertContainer {
     display:none;
