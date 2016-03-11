@@ -105,6 +105,7 @@ function POI(point) {
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
+	this.isAutoOn = true;
 
     this.toJSON = function() {
         return {
