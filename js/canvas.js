@@ -164,9 +164,8 @@ var storylineList = [];
 //For PanAndZoom.js
 var originalScaledIMG = [];
 var scaledIMG = [];
-
-var xPanLimits;
-var yPanLimits;
+var panBuffer = [];
+var imgLocation = [0,0];
 
 $(function(){
     canvas = document.getElementById('floorPlan');
@@ -176,6 +175,7 @@ $(function(){
     img = new Image();
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
+        imgLocation = [0,0];
         scaledIMG = [img.width, img.height];
 		trackTransforms(ctx);
 		imageFillWindow();

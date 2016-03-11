@@ -20,7 +20,11 @@ function mouseMove(evt) {
 
         // Redraw if panning or in node editing mode
         if (dragStart){
-            ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
+            if(ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y) === undefined){
+                //Location tracking should change
+                imgLocation = [imgLocation[0]+mouseLocation.x-dragStart.x,imgLocation[1]+mouseLocation.y-dragStart.y];
+                console.log(imgLocation[0]);
+            }
             redraw();
         }
     }
@@ -61,14 +65,20 @@ function mouseUp(evt) {
 var scaleFactor = 1.1;
 var zoom = function(clicks){
     var pt = mouseLocation;
-    ctx.translate(pt.x,pt.y);
+    if(ctx.translate(pt.x,pt.y) === undefined){
+        imgLocation = [imgLocation[0]+pt.x,imgLocation[1]+pt.y];
+    }
     var factor = Math.pow(scaleFactor,clicks);
     ctx.scale(factor,factor);
     if(ctx.scale(factor,factor) === undefined){
         scaledIMG[0] = factor*scaledIMG[0];
         scaledIMG[1] = factor*scaledIMG[1];
+        panBuffer = [Math.abs(scaledIMG[0]-canvas.width), Math.abs(scaledIMG[1]-canvas.height)];
+        console.log(panBuffer);
     }
-    ctx.translate(-pt.x,-pt.y);
+    if(ctx.translate(-pt.x,-pt.y) === undefined){
+        imgLocation = [imgLocation[0]-pt.x,imgLocation[1]-pt.y];
+    }
     redraw();
 }
 
@@ -79,6 +89,7 @@ var imageFillWindow = function() {
     if(ctx.scale(scaleFactor,scaleFactor) === undefined){
         scaledIMG[0] = scaleFactor*scaledIMG[0];
         scaledIMG[1] = scaleFactor*scaledIMG[1];
+        panBuffer = [0,0];
     }
 };
 
@@ -125,8 +136,12 @@ function trackTransforms(ctx){
     var translate = ctx.translate;
     ctx.translate = function(dx,dy){
         //TODO: Translation Limit Tracking
-        xform = xform.translate(dx,dy);
-        return translate.call(ctx,dx,dy);
+        if(Math.abs(imgLocation[0]+ dx)  <= panBuffer[0] && Math.abs(imgLocation[1]+ dy)  <= panBuffer[1]){
+            xform = xform.translate(dx,dy);
+            return translate.call(ctx,dx,dy);
+        }else{
+           return false;
+        }
     };
     var transform = ctx.transform;
     ctx.transform = function(a,b,c,d,e,f){
