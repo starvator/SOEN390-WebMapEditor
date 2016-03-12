@@ -200,6 +200,17 @@ var pointList = [];
 var storylineList = [];
 var hlPointList = [];
 
+var POTtypes = {
+    "none": 0x63,
+    "ramp": 0x72,
+    "stairs": 0x73,
+    "elevator": 0x76,
+    "washroom": 0x77,
+    "exit": 0x78,
+    "entrance": 0x6e,
+    "emergency-exit": 0x6d
+};
+
 $(function(){
     canvas = document.getElementById('floorPlan');
     ctx = canvas.getContext('2d');
@@ -282,7 +293,7 @@ function redraw() {
 
         // Draw a point
         ctx.beginPath();
-        ctx.arc(anode.x,anode.y,7,0,2*Math.PI);
+        ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
         ctx.fill();
     });
 
@@ -291,11 +302,10 @@ function redraw() {
     {
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
         if(!lastSelectedNode && !mouseOnNode)
-        {
-            ctx.beginPath();
+        { 
+            ctx.font = '20px souvlaki-font-1';
             ctx.fillStyle= nodeColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-            ctx.fill();
+            ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
         }
         // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
         else if(lastSelectedNode && !mouseOnNode)
@@ -308,7 +318,7 @@ function redraw() {
 
             ctx.beginPath();
             ctx.fillStyle=confirmedColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
             ctx.fill();
         }
         // When creating an edge and hovering on top of a node, draw a line to that node
