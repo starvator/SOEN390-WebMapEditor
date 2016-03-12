@@ -39,8 +39,8 @@ $(function(){
 
 function changeFloor(val){
     changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
-    current_floor = val;
-        $("#floor"+val).addClass("active");
+    current_floor = parseInt(val);
+    $("#floor"+val).addClass("active");
     redraw();
 }
 
