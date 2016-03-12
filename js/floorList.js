@@ -1,7 +1,7 @@
 var floorList = [];
 var current_floor = 0;
 
-$(function(){
+$(function(){        
     //handle the new floor submit
     $('#newFloor').submit(function () {
         //if no floor number
@@ -33,15 +33,14 @@ $(function(){
         changeFloor($("#floorNumUpload").val());
         //clear the form
         $("#newFloor")[0].reset();
-        current_floor = val;
         return false;
     });
 });
 
 function changeFloor(val){
     changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
-    current_floor = val;
-        $("#floor"+val).addClass("active");
+    current_floor = parseInt(val);
+    $("#floor"+val).addClass("active");
     redraw();
 }
 
@@ -51,3 +50,18 @@ function floorClicked(elem){
     $("#"+id).addClass("active");
     changeFloor(id.substring(5));
 };
+
+function loadInitialFloor() {
+    var floor = new FloorPlan();
+    floor.floorID = 1;
+    floor.imagePath  = {name: "floor3.svg"};
+    floor.imageWidth = 0;//TODO
+    floor.imageHeight = 0;//TODO
+    floorList[1] = floor;
+    
+    $("#floorList").empty();
+    for(var val in floorList){
+        $("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
+    }
+    changeFloor(1);
+}

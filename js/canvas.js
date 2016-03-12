@@ -7,10 +7,11 @@ var POI_id = 0;
 var POT_id = 0;
 var SP_id = 0;
 
-function Point(x,y) {
+function Point(x,y,floor) {
     this.x = x;
     this.y = y;
     this.id=i;
+    this.floorID = floor;
     i++;
 }
 
@@ -220,6 +221,8 @@ $(function(){
 
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
+
+    loadInitialFloor();
 });
 
 function changeIMGsource(source){
@@ -247,6 +250,12 @@ function redraw() {
 
     // Draw all stored transition nodes on the map
     jQuery.each(nodeList,function(i,anode){
+
+        // If the node is not on the current floor, ignore it
+        if(anode.floorID !== current_floor)
+        {
+            return true;
+        }
 
         // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
         if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
@@ -338,6 +347,13 @@ function redraw() {
 function drawEdges(){
     // Draw all the edges
     for(var e in edgeList){
+
+        // If a node in the edge is not on the current floor, don't draw the edge
+        if(edgeList[e].origin.floorID !== current_floor || edgeList[e].destination.floorID !== current_floor)
+        {
+            continue;
+        }
+
         if(_.contains(hlPointList, edgeList[e].origin)){
             if(_.contains(hlPointList, edgeList[e].destination)){
                 ctx.strokeStyle = hlColor;
@@ -362,7 +378,7 @@ function canvasClick(x,y) {
         // If clicking on empty space
         if(!mouseOnNode && !lastSelectedNode) {
             // Store a new node in the list of transition nodes
-            nodeList.push(new Point(x, y));
+            nodeList.push(new Point(x, y, current_floor));
         }
         // If clicking on a node and not yet starting an edge
         else if(mouseOnNode && !lastSelectedNode) {
