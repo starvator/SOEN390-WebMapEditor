@@ -2,6 +2,16 @@
     This JavaScript file contains all scripts relate to operation of the menus
 */
 
+var current_tool = "none"
+
+$(document).ready(function(){
+    $("#POTMenu > #POTIconsContainer > .btn").click(function () {
+        current_tool = $(this).data("pot-type");
+        $("#POTMenu > #POTIconsContainer > .btn").removeClass("active");
+        $(this).addClass("active");
+    });
+});
+
 function showFloorsMenu()
 {
     $("#nodeEditorMenu").hide();
