@@ -81,7 +81,7 @@ function Media(){
                 this.audio.push(file);
                 break;
             default:
-                alert('Something went wrong while adding your file (Type not recognized).');
+                showErrorAlert('Something went wrong while adding your file (Type not recognized).');
                 break;
         }
     };
