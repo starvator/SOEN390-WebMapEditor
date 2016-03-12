@@ -10,6 +10,8 @@ $(document).ready(function(){
         $("#POTMenu > #POTIconsContainer > .btn").removeClass("active");
         $(this).addClass("active");
     });
+    
+    $("#POTMenu > #POTIconsContainer > .btn").tooltip();
 });
 
 function showFloorsMenu()
