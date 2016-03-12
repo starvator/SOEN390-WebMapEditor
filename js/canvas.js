@@ -11,6 +11,7 @@ function Point(x,y) {
     this.x = x;
     this.y = y;
     this.id=i;
+    this.floorID = current_floor;
     i++;
 }
 
@@ -220,6 +221,8 @@ $(function(){
 
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
+    
+    loadInitialFloor();
 });
 
 function changeIMGsource(source){
