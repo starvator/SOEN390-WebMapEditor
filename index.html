@@ -34,9 +34,13 @@
     <div class="container">
         <div class="row">
             <div id="alertContainer" class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 col-xs-12">
-                <div class="alert alert-warning" role="alert">
+                <div id="warningAlert" class="alert alert-warning" role="alert">
                     <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-                    <span id="alertMessage"><strong>Warning!</strong> Better check yourself, you're not looking too good.</span>
+                    <span id="warningAlertMessage"><strong>Warning!</strong> Better check yourself, you're not looking too good.</span>
+                </div>
+                <div id="errorAlert" class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                    <span id="errorAlertMessage"><strong>Oh snap!</strong> Change a few things up and try submitting again.</span>
                 </div>
             </div>
         </div>
