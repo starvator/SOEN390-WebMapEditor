@@ -47,3 +47,7 @@
     width:100%;
     text-align: center;
 }
+
+#POTMenu {
+    display:none;
+}

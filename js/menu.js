@@ -7,6 +7,7 @@ function showFloorsMenu()
     $("#nodeEditorMenu").hide();
     $("#MapLayoutMainMenu").hide();
     $("#floorEditorMenu").show();
+    $("#POTMenu").hide();
 
     nodeEditingMode = false;
 }
@@ -16,7 +17,8 @@ function showNodesMenu()
     $("#floorEditorMenu").hide();
     $("#MapLayoutMainMenu").hide();
     $("#nodeEditorMenu").show();
-
+    $("#POTMenu").show();
+    
     nodeEditingMode = true;
 }
 
@@ -26,6 +28,7 @@ function showMainMenu()
     $("#floorEditorMenu").hide();
     $("#nodeEditorMenu").hide();
     $("#MapLayoutMainMenu").show();
+    $("#POTMenu").hide();
 
     // Reset drawing modes
     nodeEditingMode = false;
