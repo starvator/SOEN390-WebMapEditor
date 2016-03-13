@@ -11,10 +11,13 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/bootstrap.override.css">
-    <link rel="stylesheet" href="css/textEditor.css">
 
+    <link rel="stylesheet" href="css/textEditor.css">
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" href="css/canvas.css">
+
+    <!-- Custom font for icons -->
+    <link rel="stylesheet" href="css/souvlaki-font-1.css">
 
     <script src="js/compute.js"></script>
     <script src="js/json.js"></script>
@@ -131,6 +134,34 @@
                 </div>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-7" id="floorPlanContainer">
+                <div id="POTMenu">
+                    <div id="POTIconsContainer">
+                        <div class="btn btn-default active" data-pot-type="none" data-toggle="tooltip" data-placement="bottom" title="None">
+                            <span class="icon-circle"></span>
+                        </div>
+                        <div class="btn btn-primary" data-pot-type="ramp" data-toggle="tooltip" data-placement="bottom" title="Ramp">
+                            <span class="icon-ramp-1"></span>
+                        </div>
+                        <div class="btn btn-primary" data-pot-type="stairs" data-toggle="tooltip" data-placement="bottom" title="Stairs">
+                            <span class="icon-stairs"></span>
+                        </div>
+                        <div class="btn btn-primary" data-pot-type="elevator" data-toggle="tooltip" data-placement="bottom" title="Elevator">
+                            <span class="icon-elevator"></span>
+                        </div>
+                        <div class="btn btn-success" data-pot-type="washroom" data-toggle="tooltip" data-placement="bottom" title="Washroom">
+                            <span class="icon-washroom"></span>
+                        </div>
+                        <div class="btn btn-warning" data-pot-type="exit" data-toggle="tooltip" data-placement="bottom" title="Exit">
+                            <span class="icon-exit"></span>
+                        </div>
+                        <div class="btn btn-warning" data-pot-type="entrance" data-toggle="tooltip" data-placement="bottom" title="Entrance">
+                            <span class="icon-entrance"></span>
+                        </div>
+                        <div class="btn btn-danger" data-pot-type="emergency-exit" data-toggle="tooltip" data-placement="bottom" title="Emergency Exit">
+                            <span class="icon-emergency-exit"></span>
+                        </div>
+                    </div>
+                </div>
                 <canvas id="floorPlan" width="1" height="1">
                 </canvas>
             </div>

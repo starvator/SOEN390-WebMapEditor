@@ -39,3 +39,14 @@
     padding-left:5px;
 }
 
+#POTIconsContainer {
+    display: inline-block;
+}
+
+#POTMenu {
+    width:100%;
+    text-align: center;
+    display:none;
+    padding-top:5px;
+    padding-bottom:5px;
+}
