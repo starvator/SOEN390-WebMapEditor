@@ -297,6 +297,13 @@ function redraw() {
         {
             if(POTList[pot].point === anode)
             {
+                // Draw a background
+                ctx.beginPath();
+                ctx.fillStyle="#e6e6e6";
+                ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
+                ctx.fill();
+                
+                
                 // Draw the associated tool
                 ctx.font = '20px souvlaki-font-1';
                 ctx.fillStyle= nodeColor;
@@ -322,10 +329,21 @@ function redraw() {
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
         if(!lastSelectedNode && !mouseOnNode)
         { 
-            ctx.font = '20px souvlaki-font-1';
-            ctx.fillStyle= nodeColor;
-            // Draw the selected tool
-            ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            if(current_tool === "none")
+            {
+                // Draw a point
+                ctx.beginPath();
+                ctx.fillStyle= nodeColor;
+                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+                ctx.fill();
+            }
+            else
+            {
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                // Draw the selected tool
+                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            }
         }
         // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
         else if(lastSelectedNode && !mouseOnNode)
