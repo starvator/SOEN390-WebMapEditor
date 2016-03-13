@@ -127,21 +127,18 @@ function setCreatePOIid(){
     redraw();
 }
 
-function POT(point) {
-    this.ID = POT_id; //TODO GENERATED appropriately
+function POT(point, label) {
+    this.ID = POT_id;
     POT_id++;
-    this.label = new LanguageText();//<ramp or stairs or elevator or intersection or washroom or exit or entrance or emergency exit>
+    this.label = label;
     this.point = point;
     this.floorID = current_floor;
-    //I think these two are needed
-    this.storyline = active_id;
-    storylineList[storyline].floorsCovered.push(this.floorID);
 
-    //TODO
+    
     this.toJSON = function() {
         return {
             id: this.ID,
-            label: this.label,
+            label: this.label, // TODO: make language text
             x:this.point.x,
             y:this.point.y,
             floorID:this.floorID
@@ -186,6 +183,7 @@ var nodeEditingMode = false;        // True when in place node mode
 var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];                  // List of transition nodes to draw to the canvas
 var POIList = [];
+var POTList = [];
 var mouseLocation = new Point(0,0); // Location of the mouse on the canvas
 var mouseOnNode;                    // The node that the mouse is currently hovering over
 var edgeList = [];                  // List of edges between transition points
@@ -291,10 +289,31 @@ function redraw() {
             ctx.fillStyle=confirmedColor;
         }
 
-        // Draw a point
-        ctx.beginPath();
-        ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
-        ctx.fill();
+        
+        var potFound = false;
+        
+        // Determine if the node is a POT
+        for(var pot in POTList)
+        {
+            if(POTList[pot].point === anode)
+            {
+                // Draw the associated tool
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                ctx.fillText(String.fromCharCode(POTtypes[POTList[pot].label]), anode.x - 10,anode.y + 10);
+                potFound = true;
+                break;
+            }
+        }
+        
+        // If the node was not a POT, draw a regular circle
+        if(!potFound)
+        {
+            // Draw a point
+            ctx.beginPath();
+            ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
+            ctx.fill();
+        }
     });
 
     // When placing a node
@@ -305,6 +324,7 @@ function redraw() {
         { 
             ctx.font = '20px souvlaki-font-1';
             ctx.fillStyle= nodeColor;
+            // Draw the selected tool
             ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
         }
         // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
@@ -388,7 +408,14 @@ function canvasClick(x,y) {
         // If clicking on empty space
         if(!mouseOnNode && !lastSelectedNode) {
             // Store a new node in the list of transition nodes
-            nodeList.push(new Point(x, y, current_floor));
+            var point = new Point(x, y, current_floor);
+            nodeList.push(point);
+            
+            // if a POT tool is selected, create a POT
+            if(current_tool !== "none")
+            {
+                POTList.push(new POT(point, current_tool));
+            }            
         }
         // If clicking on a node and not yet starting an edge
         else if(mouseOnNode && !lastSelectedNode) {
