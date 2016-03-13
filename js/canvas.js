@@ -134,7 +134,7 @@ function POT(point, label) {
     this.point = point;
     this.floorID = current_floor;
 
-    
+
     this.toJSON = function() {
         return {
             id: this.ID,
@@ -289,9 +289,9 @@ function redraw() {
             ctx.fillStyle=confirmedColor;
         }
 
-        
+
         var potFound = false;
-        
+
         // Determine if the node is a POT
         for(var pot in POTList)
         {
@@ -302,8 +302,8 @@ function redraw() {
                 ctx.fillStyle="#e6e6e6";
                 ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
                 ctx.fill();
-                
-                
+
+
                 // Draw the associated tool
                 ctx.font = '20px souvlaki-font-1';
                 ctx.fillStyle= nodeColor;
@@ -312,7 +312,7 @@ function redraw() {
                 break;
             }
         }
-        
+
         // If the node was not a POT, draw a regular circle
         if(!potFound)
         {
@@ -328,7 +328,7 @@ function redraw() {
     {
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
         if(!lastSelectedNode && !mouseOnNode)
-        { 
+        {
             if(current_tool === "none")
             {
                 // Draw a point
@@ -428,12 +428,12 @@ function canvasClick(x,y) {
             // Store a new node in the list of transition nodes
             var point = new Point(x, y, current_floor);
             nodeList.push(point);
-            
+
             // if a POT tool is selected, create a POT
             if(current_tool !== "none")
             {
                 POTList.push(new POT(point, current_tool));
-            }            
+            }
         }
         // If clicking on a node and not yet starting an edge
         else if(mouseOnNode && !lastSelectedNode) {
