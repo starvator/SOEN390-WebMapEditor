@@ -12,7 +12,7 @@ function createJSON() {
     */
     return JSON.stringify({
         floorPlan:floorList,
-        node:{'poi':POIList, 'pot':[]},
+        node:{'poi':POIList, 'pot':POTList},
         edge:edgeList,
         storyline:storylineList
         });
