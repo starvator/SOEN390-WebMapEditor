@@ -5,12 +5,14 @@
 var current_tool = "none"
 
 $(document).ready(function(){
+    // Set the click event on the POTs to change the current tool
     $("#POTMenu > #POTIconsContainer > .btn").click(function () {
         current_tool = $(this).data("pot-type");
         $("#POTMenu > #POTIconsContainer > .btn").removeClass("active");
         $(this).addClass("active");
     });
 
+    // Enable tooltips
     $("#POTMenu > #POTIconsContainer > .btn").tooltip();
 });
 
