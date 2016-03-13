@@ -174,7 +174,7 @@ function StoryPoint() {
 
 // End Classes
 
-var NODE_SNAP_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
+var NODE_SNAP_DIST_SQUARED = 400;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
 
 var canvas;
 var ctx;
@@ -290,33 +290,25 @@ function redraw() {
         }
 
 
-        var potFound = false;
+        // Note that potFound returns a POT if one is found
+        var potFound = isNodePOT(anode);
 
-        // Determine if the node is a POT
-        for(var pot in POTList)
-        {
-            if(POTList[pot].point === anode)
-            {
-                // Draw a background
-                ctx.beginPath();
-                ctx.fillStyle="#e6e6e6";
-                ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
-                ctx.fill();
+        if(potFound) {
+            // Draw a background
+            ctx.beginPath();
+            ctx.fillStyle="#e6e6e6";
+            ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
+            ctx.fill();
 
 
-                // Draw the associated tool
-                ctx.font = '20px souvlaki-font-1';
-                ctx.fillStyle= nodeColor;
-                ctx.fillText(String.fromCharCode(POTtypes[POTList[pot].label]), anode.x - 10,anode.y + 10);
-                potFound = true;
-                break;
-            }
+            // Draw the associated tool
+            ctx.font = '20px souvlaki-font-1';
+            ctx.fillStyle= nodeColor;
+            ctx.fillText(String.fromCharCode(POTtypes[potFound.label]), anode.x - 10,anode.y + 10);
         }
-
-        // If the node was not a POT, draw a regular circle
-        if(!potFound)
+        else
         {
-            // Draw a point
+            // Draw a reglar point
             ctx.beginPath();
             ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
             ctx.fill();
@@ -461,6 +453,14 @@ function canvasClick(x,y) {
         //alert(mouseOnNode.id);
         //TODOTYLER: get the id of the currently selected storyline
         //alert(active_id);
+
+        // Cancel POI creation if the node is a POT
+        if(isNodePOT(mouseOnNode))
+        {
+            showWarningAlert("Cannot create a storypoint or POI on a special Point of Transition");
+            return false;
+        }
+
         var found = false;
         //find point in list and fill editor
         if(POIList.length === 0){
@@ -521,6 +521,20 @@ function canNodeConnect(a) {
 
     // If there are still nodes left, then we can make a connection
     return allNodes.length > 0;
+}
+
+function isNodePOT(node) {
+    // Determine if the node is a POT
+    for(var pot in POTList)
+    {
+        if(POTList[pot].point === node)
+        {
+            return POTList[pot];
+
+            potFound = true;
+            break;
+        }
+    }
 }
 
 // Remove the first element from a list
