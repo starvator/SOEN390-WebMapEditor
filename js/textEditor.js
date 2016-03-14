@@ -27,72 +27,76 @@ $(document).ready(function(){
 
     //The save button
     $("#SaveStoryPointInfo").click(function(){
-
-    var spCreated = false;
-    //if not saving a storyPoint
-    if(active_id == -2){
-        POIList.push(currentPOI);
-        for(var val in POIList){
-            if(POIList[val].ID === currentPOI.ID){
-                POIList[val].title = $("#spTitle").val();
-                POIList[val].ibeacon = $("#spBeaconID").val();
-                POIList[val].description = CKEDITOR.instances["editor1"].getData();
-                POIList[val].media = $("#attachedDocName").text();
-                POIList[val].isSet = true;
-                break;
-            }
-        }
-    }
-    else{
-        var exists = false;
-        for(var val in POIList){
-            if(POIList[val].ID === currentPOI.ID){
-                exists = true;
-            }
-        }
-        if(!exists){
-            currentPOI.title = $("#spTitle").val();
-            currentPOI.ibeacon = $("#spBeaconID").val();
-            currentPOI.description = CKEDITOR.instances["editor1"].getData();
-            currentPOI.media = $("#attachedDocName").text();
-            currentPOI.isSet = true;
-            POIList.push(currentPOI);
-        }
-        for(val in POIList){
-            if(POIList[val].ID === currentPOI.ID){
-                for(var p in POIList[val].storyPoint){
-                    if (POIList[val].storyPoint[p].storylineID == active_id){
-                        //Updating sp
-                        POIList[val].storyPoint[p].title = $("#spTitle").val();
-                        POIList[val].ibeacon = $("#spBeaconID").val();
-                        POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
-                        POIList[val].storyPoint[p].media = $("#attachedDocName").text();
-                        //Adding the point to the storyline list.
-                        //get into <a> and change POIList[val].title
-                        $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
-                        storylineList[active_id].path.push(currentPOI.ID);
-                        spCreated = true;
-                    }
-                }
-                //If it wasnt found in the loop, create it.
-                if(!spCreated){
-                    //Create storypoint
-                    var newStoryPoint = new StoryPoint();
-                    newStoryPoint.title = $("#spTitle").val();
-                    newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
-                    newStoryPoint.media = $("#attachedDocName").text();
-                    POIList[val].storyPoint.push(newStoryPoint);
-                    //Adding the point to the storyline list.
-                    $("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
-                    storylineList[active_id].path.push(currentPOI.ID);
-                    spCreated = false;
-                }
-            }
-        }
-    }
-        //close the window
-        $("#infoEditingForm").hide();
-        highlightPOI(active_id);
+	if($("#spTitle").val() != ""){
+		var spCreated = false;
+		//if not saving a storyPoint
+		if(active_id == -2){
+			POIList.push(currentPOI);
+			for(var val in POIList){
+				if(POIList[val].ID === currentPOI.ID){
+					POIList[val].title = $("#spTitle").val();
+					POIList[val].ibeacon = $("#spBeaconID").val();
+					POIList[val].description = CKEDITOR.instances["editor1"].getData();
+					POIList[val].media = $("#attachedDocName").text();
+					POIList[val].isSet = true;
+					break;
+				}
+			}
+		}
+		else{
+			var exists = false;
+			for(var val in POIList){
+				if(POIList[val].ID === currentPOI.ID){
+					exists = true;
+				}
+			}
+			if(!exists){
+				currentPOI.title = $("#spTitle").val();
+				currentPOI.ibeacon = $("#spBeaconID").val();
+				currentPOI.description = CKEDITOR.instances["editor1"].getData();
+				currentPOI.media = $("#attachedDocName").text();
+				currentPOI.isSet = true;
+				POIList.push(currentPOI);
+			}
+			for(val in POIList){
+				if(POIList[val].ID === currentPOI.ID){
+					for(var p in POIList[val].storyPoint){
+						if (POIList[val].storyPoint[p].storylineID == active_id){
+							//Updating sp
+							POIList[val].storyPoint[p].title = $("#spTitle").val();
+							POIList[val].ibeacon = $("#spBeaconID").val();
+							POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
+							POIList[val].storyPoint[p].media = $("#attachedDocName").text();
+							//Adding the point to the storyline list.
+							//get into <a> and change POIList[val].title
+							$("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
+							storylineList[active_id].path.push(currentPOI.ID);
+							spCreated = true;
+						}
+					}
+					//If it wasnt found in the loop, create it.
+					if(!spCreated){
+						//Create storypoint
+						var newStoryPoint = new StoryPoint();
+						newStoryPoint.title = $("#spTitle").val();
+						newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
+						newStoryPoint.media = $("#attachedDocName").text();
+						POIList[val].storyPoint.push(newStoryPoint);
+						//Adding the point to the storyline list.
+						$("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
+						storylineList[active_id].path.push(currentPOI.ID);
+						spCreated = false;
+					}
+				}
+			}
+		}
+			//close the window
+			$("#infoEditingForm").hide();
+			highlightPOI(active_id);
+	}
+	else{
+		showErrorAlert("Enter a Title.");
+	}
     });
 });
 //Open editor of of point of a given id
