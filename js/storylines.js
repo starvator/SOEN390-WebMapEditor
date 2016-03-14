@@ -1,6 +1,6 @@
 
 var current_id=0;
-var active_id=-2;
+var active_id=-2; // -2 is poi creating
 
 function addNewStoryLine(){
 
@@ -10,7 +10,7 @@ function addNewStoryLine(){
     description = $("#storylineDescription").val();
     if(name){
         var storyline = new Storyline();
-        if(description != false){
+        if(description){
         $("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</br>' + description +'</a></li>' +
         '<ul id="'+ current_id +'_pointList"></ul>');
         }
@@ -23,6 +23,7 @@ function addNewStoryLine(){
         active_id = current_id;
         storyline.ID = current_id;
         storyline.title.addPair('en', name);
+        storyline.floorsCovered.push(current_floor);
         storyline.description.addPair('en', description);
 
         current_id++;
@@ -31,7 +32,7 @@ function addNewStoryLine(){
         storylineList.push(storyline);
     }
     else{
-        alert("Enter a name for the storyline.");
+        showWarningAlert("Enter a name for the storyline.");
     }
 }
 
@@ -51,7 +52,7 @@ function editStoryLine(){
 }
 
 function saveStoryLine(){
-    
+
     var name;
     var description;
     var storyline;
@@ -80,4 +81,18 @@ function storylineClicked(elem){
     $("#"+active_id).removeClass("active");
     $("#"+id).addClass("active");
     active_id = id;
+    highlightPOI(active_id);
+    hideInactiveStoryLines();
+};
+
+function hideInactiveStoryLines(){
+    //all id except up to current except acctive 0_pointList
+    for(var id = 0; id < current_id; id++){
+        if(id != active_id){
+            $("#"+id+"_pointList").hide();
+        }
+        if(id == active_id){
+            $("#"+id+"_pointList").show();
+        }
+    }
 };

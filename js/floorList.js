@@ -1,16 +1,17 @@
 var floorList = [];
+var current_floor = 0;
 
 $(function(){
     //handle the new floor submit
     $('#newFloor').submit(function () {
         //if no floor number
         if (!$("#floorNumUpload").val()){
-            alert("You must enter a floor number.");
+            showErrorAlert("You must enter a floor number.");
             return false;
         }
         //if no file selected
         if (!$("#fileUpload")[0].files[0]){
-            alert("You must select a file.");
+            showErrorAlert("You must select a file.");
             return false;
         }
         if(floorList[$("#floorNumUpload").val()] && !confirm("Would you like to replace the floor?")){
@@ -38,6 +39,7 @@ $(function(){
 
 function changeFloor(val){
     changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
+    current_floor = parseInt(val);
     $("#floor"+val).addClass("active");
     redraw();
 }
@@ -48,3 +50,18 @@ function floorClicked(elem){
     $("#"+id).addClass("active");
     changeFloor(id.substring(5));
 };
+
+function loadInitialFloor() {
+    var floor = new FloorPlan();
+    floor.floorID = 1;
+    floor.imagePath  = {name: "floor3.svg"};
+    floor.imageWidth = 0;//TODO
+    floor.imageHeight = 0;//TODO
+    floorList[1] = floor;
+
+    $("#floorList").empty();
+    for(var val in floorList){
+        $("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
+    }
+    changeFloor(1);
+}

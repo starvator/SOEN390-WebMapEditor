@@ -34,6 +34,13 @@ function mouseMove(evt) {
 }
 
 function mouseClick(evt) {
+
+    // Only click with left mouse button
+    if(!detectLeftButton(evt))
+    {
+        return false;
+    }
+
     document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
 
     // Store the location of the mouse relative to the canvas
@@ -46,16 +53,40 @@ function mouseClick(evt) {
 }
 
 function mouseUp(evt) {
-    // If we did not perform a drag, forward the click event to the canvas
+
+    // Only interact left mouse button
+    if(!detectLeftButton(evt))
+    {
+        return false;
+    }
+
+    // If we did not perform a drag, and the mouse is on the canvas
+    // forward the click event to the canvas
     if(!dragged) {
         var x = evt.pageX - $(canvas).offset().left;
         var y = evt.pageY - $(canvas).offset().top;
-        var pt = ctx.transformedPoint(x,y);
 
-        canvasClick(pt.x,pt.y);
+        if(x >= 0 && y >= 0 && x <= $(canvas).height() && y <= $(canvas).width())
+        {
+            var pt = ctx.transformedPoint(x,y);
+            canvasClick(pt.x,pt.y);
+        }
     }
 
     dragStart = null;
+}
+
+function mouseRightClick(evt) {
+    cancelOperations();
+    evt.preventDefault();
+    return false;
+}
+
+// From http://stackoverflow.com/questions/3944122/detect-left-mouse-button-press
+function detectLeftButton(evt) {
+    evt = evt || window.event;
+    var button = evt.which || evt.button;
+    return button == 1;
 }
 
 // Zoom functions
