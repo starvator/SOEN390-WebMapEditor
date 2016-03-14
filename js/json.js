@@ -20,10 +20,23 @@ function createJSON() {
 
 function loadFromJSON() {
     floorList = jsonMap.floorPlan;
-    POIList = jsonMap.poi;
-    POTList = jsonMap.pot;
+    POIList = jsonMap.node.poi;
+    POTList = jsonMap.node.pot;
     edgeList = jsonMap.edge;
     storylineList = jsonMap.storyline;
+    
+    jQuery.each(POIList, function(i, poi) {
+        nodeList.push(new Point(poi.x, poi.y));
+    });
+    jQuery.each(POTList, function(i, pot) {
+        nodeList.push(new Point(pot.x, pot.y));
+    });
+    jQuery.each(edgeList, function(i, edge) {
+        nodeList.push(edge.startNode);
+        nodeList.push(edge.endNode);
+    });
+    
+    //TODO: remove duplicates?
 }
 
 $(document).on('change', '.btn-file :file', function() {
@@ -43,6 +56,8 @@ $(document).ready( function() {
             jsonMap = JSON.parse(contents);
             loadFromJSON();
             redraw();
+            //refresh menu
+            
         };
         reader.readAsText(file);
     });

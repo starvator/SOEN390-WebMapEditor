@@ -36,6 +36,10 @@ function addNewStoryLine(){
     }
 }
 
+function buildFromList(){
+    
+}
+
 function editStoryLine(){
 
     var storyline;

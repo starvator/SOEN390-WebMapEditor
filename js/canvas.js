@@ -14,16 +14,16 @@ function Point(x,y) {
     i++;
 }
 
-function Edge(origin, destination) {
-    this.origin = origin;
-    this.destination = destination;
+function Edge(startNode, endNode) {
+    this.startNode = startNode;
+    this.endNode = endNode;
     this.toJSON = function() {
     //TODO: finish and add appropriate methods
         return {
-            startNode: this.origin,
-            endNode:this.destination,
+            startNode: this.startNode,
+            endNode:this.endNode,
             floorNumber:'TODO to be retrieved',
-            distance:distance(this.origin, this.destination)
+            distance:distance(this.startNode, this.endNode)
             };
     };
 }
@@ -100,7 +100,7 @@ function POI(point) {
     this.title = new LanguageText('title');
     this.description = new LanguageText('description');
     this.point = point;
-        this.floorID = current_floor;
+    this.floorID = current_floor;
     this.ibeacon = "";
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
@@ -338,8 +338,8 @@ function redraw() {
 function drawEdges(){
     // Draw all the edges
     for(var e in edgeList){
-        if(_.contains(hlPointList, edgeList[e].origin)){
-            if(_.contains(hlPointList, edgeList[e].destination)){
+        if(_.contains(hlPointList, edgeList[e].startNode)){
+            if(_.contains(hlPointList, edgeList[e].endNode)){
                 ctx.strokeStyle = hlColor;
             }
             else{
@@ -350,8 +350,8 @@ function drawEdges(){
             ctx.strokeStyle = nodeColor;
         }
         ctx.beginPath();
-        ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
-        ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
+        ctx.moveTo(edgeList[e].startNode.x,edgeList[e].startNode.y);
+        ctx.lineTo(edgeList[e].endNode.x,edgeList[e].endNode.y);
         ctx.stroke();
     }
 }
@@ -421,7 +421,7 @@ function cancelOperations() {
 function nodesInEdges(a,b) {
 
     for (var i = 0; i < edgeList.length; i++) {
-        if((edgeList[i].origin === a && edgeList[i].destination === b) || (edgeList[i].origin === b && edgeList[i].destination === a))
+        if((edgeList[i].startNode === a && edgeList[i].endNode === b) || (edgeList[i].startNode === b && edgeList[i].endNode === a))
         {
             return true;
         }
@@ -438,13 +438,13 @@ function canNodeConnect(a) {
     for(var i = 0; i < edgeList.length; i++)
     {
         // If the node is in an edge, remove the other node
-        if(a === edgeList[i].origin)
+        if(a === edgeList[i].startNode)
         {
-           allNodes = removeFromList(edgeList[i].destination, allNodes);
+           allNodes = removeFromList(edgeList[i].endNode, allNodes);
         }
-        else if(a === edgeList[i].destination)
+        else if(a === edgeList[i].endNode)
         {
-           allNodes = removeFromList(edgeList[i].origin, allNodes);
+           allNodes = removeFromList(edgeList[i].startNode, allNodes);
         }
     }
 
