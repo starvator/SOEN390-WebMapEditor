@@ -39,7 +39,7 @@ $(document).ready(function(){
                 POIList[val].description = CKEDITOR.instances["editor1"].getData();
                 POIList[val].media = $("#attachedDocName").text();
                 POIList[val].isSet = true;
-				POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
+                POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                 break;
             }
         }
@@ -57,7 +57,7 @@ $(document).ready(function(){
             currentPOI.description = CKEDITOR.instances["editor1"].getData();
             currentPOI.media = $("#attachedDocName").text();
             currentPOI.isSet = true;
-			currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
+            currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
             POIList.push(currentPOI);
         }
         for(val in POIList){
@@ -69,7 +69,7 @@ $(document).ready(function(){
                         POIList[val].ibeacon = $("#spBeaconID").val();
                         POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
                         POIList[val].storyPoint[p].media = $("#attachedDocName").text();
-						POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
+                        POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                         //Adding the point to the storyline list.
                         //get into <a> and change POIList[val].title
                         $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
@@ -125,11 +125,11 @@ function fillEditor(poi){
             $("#spBeaconID").val(poi.ibeacon);
             CKEDITOR.instances["editor1"].setData(poi.description);
             $("#attachedDocName").text(poi.media);
-		    if(poi.isAutoOn === true){
-			    $("#autoOn").click();
-		    }else if(poi.isAutoOn === false){
-			    $("#autoOff").click();
-			}
+            if(poi.isAutoOn === true){
+                $("#autoOn").click();
+            }else if(poi.isAutoOn === false){
+                $("#autoOff").click();
+            }
         }
         else{
             $("#spTitle").val("");
@@ -145,11 +145,11 @@ function fillEditor(poi){
             for(var p in currentPOI.storyPoint){
                 if (currentPOI.storyPoint[p].storylineID === active_id){
                     $("#spTitle").val(currentPOI.storyPoint[p].title);
-					if(currentPOI.isAutoOn === true){
+                    if(currentPOI.isAutoOn === true){
                         $("#autoOn").click();
-					}else if(currentPOI.isAutoOn === false){
-			            $("#autoOff").click();
-			        }
+                    }else if(currentPOI.isAutoOn === false){
+                        $("#autoOff").click();
+                    }
                     $("#spBeaconID").val(currentPOI.ibeacon);
                     CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
                     $("#attachedDocName").text(currentPOI.storyPoint[p].media);
