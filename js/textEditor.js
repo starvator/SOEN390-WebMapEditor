@@ -31,7 +31,9 @@ $(document).ready(function(){
     var spCreated = false;
     //if not saving a storyPoint
     if(active_id == -2){
-        POIList.push(currentPOI);
+        if(!_.contains(POIList, currentPOI)){
+                POIList.push(currentPOI);
+        }
         for(var val in POIList){
             if(POIList[val].ID === currentPOI.ID){
                 POIList[val].title = $("#spTitle").val();
