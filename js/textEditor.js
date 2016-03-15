@@ -39,11 +39,7 @@ $(document).ready(function(){
                 POIList[val].description = CKEDITOR.instances["editor1"].getData();
                 POIList[val].media = $("#attachedDocName").text();
                 POIList[val].isSet = true;
-				if($("#autoOn").attr("class") === "btn btn-default active"){
-				    POIList[val].isAutoOn = true;
-				} else if($("#autoOff").attr("class") === "btn btn-default active") {
-				    POIList[val].isAutoOn = false;
-				}
+				POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                 break;
             }
         }
@@ -61,11 +57,7 @@ $(document).ready(function(){
             currentPOI.description = CKEDITOR.instances["editor1"].getData();
             currentPOI.media = $("#attachedDocName").text();
             currentPOI.isSet = true;
-			if($("#autoOn").attr("class") == "active"){
-				currentPOI.isAutoOn = true;
-			} else if($("#autoOff").attr("class") == "active") {
-				currentPOI.isAutoOn = false;
-			}
+			currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
             POIList.push(currentPOI);
         }
         for(val in POIList){
@@ -77,11 +69,7 @@ $(document).ready(function(){
                         POIList[val].ibeacon = $("#spBeaconID").val();
                         POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
                         POIList[val].storyPoint[p].media = $("#attachedDocName").text();
-						if($("#autoOn").attr("class") == "active"){
-				            POIList[val].isAutoOn = true;
-			            } else if($("#autoOff").attr("class") == "active") {
-				            POIList[val].isAutoOn = false;
-			            }
+						POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                         //Adding the point to the storyline list.
                         //get into <a> and change POIList[val].title
                         $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
@@ -96,11 +84,6 @@ $(document).ready(function(){
                     newStoryPoint.title = $("#spTitle").val();
                     newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
                     newStoryPoint.media = $("#attachedDocName").text();
-					/* if($("#autoOn").attr("class") === "btn btn-default active"){
-				        newStoryPoint.isAutoOn = true;
-			        } else if($("#autoOff").attr("class") === "btn btn-default active") {
-				        newStoryPoint.isAutoOn = false;
-			        } */
                     POIList[val].storyPoint.push(newStoryPoint);
                     //Adding the point to the storyline list.
                     $("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
