@@ -100,7 +100,7 @@ function POI(point) {
     this.title = new LanguageText('title');
     this.description = new LanguageText('description');
     this.point = point;
-        this.floorID = current_floor;
+    this.floorID = current_floor;
     this.ibeacon = "";
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
@@ -117,7 +117,8 @@ function POI(point) {
             floorID:this.floorID,
             iBeacon:this.ibeacon,
             media:this.media, //TODO
-            storyPoint:this.storyPoint //TODO
+            storyPoint:this.storyPoint, //TODO
+			autoOn:this.isAutoOn
         };
     };
 }
