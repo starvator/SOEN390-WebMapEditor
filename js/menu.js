@@ -5,6 +5,7 @@
 function showFloorsMenu()
 {
     $("#nodeEditorMenu").hide();
+    $("#MapLayoutMainMenu").hide();
     $("#floorEditorMenu").show();
 
     nodeEditingMode = false;
@@ -13,6 +14,7 @@ function showFloorsMenu()
 function showNodesMenu()
 {
     $("#floorEditorMenu").hide();
+    $("#MapLayoutMainMenu").hide();
     $("#nodeEditorMenu").show();
 
     nodeEditingMode = true;
@@ -23,8 +25,7 @@ function showMainMenu()
     // main menu back button action
     $("#floorEditorMenu").hide();
     $("#nodeEditorMenu").hide();
-    $("#sidebarMenu > div").hide();
-    $("#mainMenu").show();
+    $("#MapLayoutMainMenu").show();
 
     // Reset drawing modes
     nodeEditingMode = false;
@@ -44,6 +45,9 @@ function showMapLayoutMenu()
 
 function showStorylinesMenu()
 {
+    //Reset any menus on the map layout menu
+    showMainMenu();
+
     $("#MapLayoutMenu").hide();
     $("#MapLayoutTab").removeClass('active');
     $("#StorylinesMenu").show();
