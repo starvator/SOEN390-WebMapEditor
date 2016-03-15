@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <title>Map Editor</title>
     <link rel="shortcut icon" href="dog-silhouette.ico">
     <script src="js/jquery-2.2.0.min.js"></script>
@@ -19,17 +20,28 @@
     <!-- Custom font for icons -->
     <link rel="stylesheet" href="css/souvlaki-font-1.css">
 
-    <script src="js/compute.js"></script>
-    <script src="js/json.js"></script>
-    <script src="js/canvas.js"></script>
-    <script src="js/floorList.js"></script>
-    <script src="js/menu.js"></script>
+    <!--QUnit testing framework -->
+    <link rel="stylesheet" href="qunit/qunit-1.21.0.css">
+    <script src="qunit/qunit-1.21.0.js"></script>
+    <script src="qunit/blanket.min.js"></script>
+    <script src="qunit/jquery.simulate.js"></script>
+    <script src="qunit/jquery.simulate.ext.js"></script>
+    <script src="qunit/jquery.simulate.drag-n-drop.js"></script>
+    <script src="qunit/s2_tests.js"></script>
+    <script src="qunit/s3_tests.js"></script>
+    <script src="qunit/s4_tests.js"></script>
+
+    <script src="js/compute.js" data-cover></script>
+    <script src="js/json.js" data-cover></script>
+    <script src="js/canvas.js" data-cover></script>
+    <script src="js/floorList.js" data-cover></script>
+    <script src="js/menu.js" data-cover></script>
     <script src="ckeditor/ckeditor.js"></script>
-    <script src="js/panAndZoom.js"></script>
-    <script src="js/textEditor.js"></script>
-    <script src="js/storylines.js"></script>
-    <script src="js/alert.js"></script>
-    <script src="js/underscore-min.js"></script>
+    <script src="js/panAndZoom.js" data-cover></script>
+    <script src="js/textEditor.js" data-cover></script>
+    <script src="js/storylines.js" data-cover></script>
+    <script src="js/alert.js" data-cover></script>
+    <script src="js/underscore-min.js" data-cover></script>
 
 </head>
 
@@ -210,17 +222,7 @@
             <span>&nbsp;</span>
         </div>
     </div>
-	<!--QUnit testing framework -->
-	<link rel="stylesheet" href="qunit/qunit-1.21.0.css">
-	<script src="qunit/qunit-1.21.0.js"></script>
-	<script src="qunit/jquery.simulate.js"></script>
-	<script src="qunit/jquery.simulate.ext.js"></script>
-	<script src="qunit/jquery.simulate.drag-n-drop.js"></script>
-	<script src="qunit/s2_tests.js"></script>
-	<script src="qunit/s3_tests.js"></script>
-	<div id="qunit"></div>
-	<div id="qunit-fixture"></div>
-	<!--End of QUnit testing framework-->
-</body>
-
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    </body>
 </html>
