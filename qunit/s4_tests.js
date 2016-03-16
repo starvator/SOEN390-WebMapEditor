@@ -25,18 +25,26 @@ QUnit.test( "Sprint 4 user story 2.2: point editing (bathroom, stair, etc)", fun
 	    testX += 100;
 	curr_id += 1;
     }
-    redraw();
-
     //edit the type of each node to another type. Assert that they are then changed in POTList.
     //assert.ok( 1 == "0", "Each node has been edited.");
 });
 
 QUnit.test( "Sprint 4 user story 4.4: showing and hiding storylines", function( assert ) {
     //create two storylines. toggle their visible state.
-    //Assert that no storyline is visible in GUI.
-    //Assert that one storyline is visible in the GUI.
-    //Assert that both storylines are visible in the GUI.
-    assert.ok( 1 == "0");
+	$("#storylineField").val("4.4 Storyline 1");
+	$("#storylineDescription").val("");
+	addNewStoryLine();
+	$("#storylineField").val("4.4 Storyline 2");
+	$("#storylineDescription").val("");
+	addNewStoryLine();
+    //Assert that when storyline 1 is active, storyline 2 is inactive, and vice versa.
+    storylineClicked($("#1"));
+	assert.ok($("#1").is(".active"), "storyline 1 is set to active");
+	assert.notOk($("#2").is(".active"), "storyline 2 is not set to active");
+	
+	storylineClicked($("#2"));
+	assert.notOk($("#1").is(".active"), "storyline 1 is not set to active");
+	assert.ok($("#2").is(".active"), "storyline 2 is set to active");
 });
 
 QUnit.test( "Sprint 4 user story 5.2: loading a saved map from JSON", function( assert ) {
