@@ -32,7 +32,7 @@ function addNewStoryLine(){
         storylineList.push(storyline);
     }
     else{
-        alert("Enter a name for the storyline.");
+        showWarningAlert("Enter a name for the storyline.");
     }
 }
 
@@ -82,17 +82,17 @@ function storylineClicked(elem){
     $("#"+id).addClass("active");
     active_id = id;
     highlightPOI(active_id);
-	hideInactiveStoryLines();
+    hideInactiveStoryLines();
 };
 
 function hideInactiveStoryLines(){
-	//all id except up to current except acctive 0_pointList
-	for(var id = 0; id < current_id; id++){
-		if(id != active_id){
-			$("#"+id+"_pointList").hide();
-		}
-		if(id == active_id){
-			$("#"+id+"_pointList").show();
-		}
-	}
+    //all id except up to current except acctive 0_pointList
+    for(var id = 0; id < current_id; id++){
+        if(id != active_id){
+            $("#"+id+"_pointList").hide();
+        }
+        if(id == active_id){
+            $("#"+id+"_pointList").show();
+        }
+    }
 };
