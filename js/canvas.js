@@ -471,7 +471,7 @@ function canvasClick(x,y) {
             fillEditor(newPOI);
         }else{
             for(var val in POIList){
-                if(POIList[val].point.id === mouseOnNode.id){
+                if(POIList[val].point.id == mouseOnNode.id){
                         fillEditor(POIList[val]);
                         found = true;
                 break;
@@ -559,7 +559,7 @@ function highlightPOI(story){
     hlPointList = [];
     for(var val in POIList){
         for(var p in POIList[val].storyPoint){
-            if(POIList[val].storyPoint[p].storylineID === story){
+            if(POIList[val].storyPoint[p].storylineID == story){
                 hlPointList.push(POIList[val].point);
                 break;
             }

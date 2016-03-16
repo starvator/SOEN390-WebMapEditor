@@ -25,11 +25,12 @@ function addNewStoryLine(){
         storyline.title.addPair('en', name);
         storyline.floorsCovered.push(current_floor);
         storyline.description.addPair('en', description);
-
-        current_id++;
+        
         $("#storylineField").val("");
         $("#storylineDescription").val("");
         storylineList.push(storyline);
+        storylineClicked($("#"+current_id));
+        current_id++;
     }
     else{
         showWarningAlert("Enter a name for the storyline.");
