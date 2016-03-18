@@ -25,14 +25,15 @@ function addNewStoryLine(){
         storyline.title.addPair('en', name);
         storyline.floorsCovered.push(current_floor);
         storyline.description.addPair('en', description);
-
-        current_id++;
+        
         $("#storylineField").val("");
         $("#storylineDescription").val("");
         storylineList.push(storyline);
+        storylineClicked($("#"+current_id));
+        current_id++;
     }
     else{
-        alert("Enter a name for the storyline.");
+        showWarningAlert("Enter a name for the storyline.");
     }
 }
 
@@ -60,7 +61,8 @@ function editStoryLine(){
         }
     }
     $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.getByLanguage("en") +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.getByLanguage("en") +'" /></a>');
-    $("#editButton").html('<a href="#">Save</a>');
+    $("#submitButton").hide();
+	$("#editButton").html('<a href="#">Save</a>');
     $("#editButton").attr("onclick","saveStoryLine()");
 }
 
@@ -85,6 +87,7 @@ function saveStoryLine(){
     $("#storylineDescription").val("");
     $("#editButton").html('<a href="#">Edit</a>');
     $("#editButton").attr("onclick","editStoryLine()");
+	$("#submitButton").show();
 }
 
 //variable for active storyline id
@@ -95,17 +98,17 @@ function storylineClicked(elem){
     $("#"+id).addClass("active");
     active_id = id;
     highlightPOI(active_id);
-	hideInactiveStoryLines();
+    hideInactiveStoryLines();
 };
 
 function hideInactiveStoryLines(){
-	//all id except up to current except acctive 0_pointList
-	for(var id = 0; id < current_id; id++){
-		if(id != active_id){
-			$("#"+id+"_pointList").hide();
-		}
-		if(id == active_id){
-			$("#"+id+"_pointList").show();
-		}
-	}
+    //all id except up to current except acctive 0_pointList
+    for(var id = 0; id < current_id; id++){
+        if(id != active_id){
+            $("#"+id+"_pointList").hide();
+        }
+        if(id == active_id){
+            $("#"+id+"_pointList").show();
+        }
+    }
 };

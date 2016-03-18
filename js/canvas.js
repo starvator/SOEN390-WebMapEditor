@@ -7,23 +7,24 @@ var POI_id = 0;
 var POT_id = 0;
 var SP_id = 0;
 
-function Point(x,y) {
+function Point(x,y,floor) {
     this.x = x;
     this.y = y;
     this.id=i;
+    this.floorID = floor;
     i++;
 }
 
-function Edge(startNode, endNode) {
-    this.startNode = startNode;
-    this.endNode = endNode;
+function Edge(origin, destination) {
+    this.origin = origin;
+    this.destination = destination;
     this.toJSON = function() {
     //TODO: finish and add appropriate methods
         return {
-            startNode: this.startNode,
-            endNode:this.endNode,
+            startNode: this.origin,
+            endNode:this.destination,
             floorNumber:'TODO to be retrieved',
-            distance:distance(this.startNode, this.endNode)
+            distance:distance(this.origin, this.destination)
             };
     };
 }
@@ -80,7 +81,7 @@ function Media(){
                 this.audio.push(file);
                 break;
             default:
-                alert('Something went wrong while adding your file (Type not recognized).');
+                showErrorAlert('Something went wrong while adding your file (Type not recognized).');
                 break;
         }
     };
@@ -94,21 +95,22 @@ function File(type) {
 }
 
 function POI(point) {
-    this.id = POI_id;
+    this.ID = POI_id;
     POI_id++;
     this.isSet = false;
     this.title = new LanguageText('title');
     this.description = new LanguageText('description');
     this.point = point;
-    this.floorID = current_floor;
+        this.floorID = current_floor;
     this.ibeacon = "";
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
+    this.isAutoOn = true;
 
     this.toJSON = function() {
         return {
-            id: this.id,
+            id: this.ID,
             title: this.title,
             description: this.description,
             x:this.point.x,
@@ -116,7 +118,8 @@ function POI(point) {
             floorID:this.floorID,
             iBeacon:this.ibeacon,
             media:this.media, //TODO
-            storyPoint:this.storyPoint //TODO
+            storyPoint:this.storyPoint, //TODO
+            autoOn:this.isAutoOn
         };
     };
 }
@@ -126,21 +129,21 @@ function setCreatePOIid(){
     redraw();
 }
 
-function POT(point) {
-    this.id = POT_id; //TODO GENERATED appropriately
+function POT(point, label) {
+    this.ID = POT_id;
     POT_id++;
-    this.label = new LanguageText();//<ramp or stairs or elevator or intersection or washroom or exit or entrance or emergency exit>
+    this.label = label;
     this.point = point;
     this.floorID = current_floor;
     //I think these two are needed
     this.storyline = active_id;
     storylineList[storyline].floorsCovered.push(this.floorID);
 
-    //TODO
+
     this.toJSON = function() {
         return {
-            id: this.id,
-            label: this.label,
+            id: this.ID,
+            label: this.label, // TODO: make language text
             x:this.point.x,
             y:this.point.y,
             floorID:this.floorID
@@ -156,7 +159,7 @@ function FloorPlan() {
 }
 
 function Storyline(){
-    this.id = "";//gets defined in storylines.js
+    this.ID = "";//gets defined in storylines.js
     this.title = new LanguageText();
     this.description = new LanguageText();
     this.path = [];
@@ -166,7 +169,7 @@ function Storyline(){
 }
 
 function StoryPoint() {
-    this.id = SP_id;
+    this.ID = SP_id;
     this.storylineID = active_id;
     this.title = new LanguageText();
     this.description = new LanguageText();
@@ -176,7 +179,7 @@ function StoryPoint() {
 
 // End Classes
 
-var NODE_SNAP_DIST_SQUARED = 100;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
+var NODE_SNAP_DIST_SQUARED = 400;   // Const distance to perform mouse to node distance checks, squared to optimize out expensive square root operations
 
 var canvas;
 var ctx;
@@ -185,6 +188,7 @@ var nodeEditingMode = false;        // True when in place node mode
 var storylinesEditingMode = false;  // True when in editing storyline mode
 var nodeList = [];                  // List of transition nodes to draw to the canvas
 var POIList = [];
+var POTList = [];
 var mouseLocation = new Point(0,0); // Location of the mouse on the canvas
 var mouseOnNode;                    // The node that the mouse is currently hovering over
 var edgeList = [];                  // List of edges between transition points
@@ -198,6 +202,17 @@ var floorList = [];
 var pointList = [];
 var storylineList = [];
 var hlPointList = [];
+
+var POTtypes = {
+    "none": 0x63,
+    "ramp": 0x72,
+    "stairs": 0x73,
+    "elevator": 0x76,
+    "washroom": 0x77,
+    "exit": 0x78,
+    "entrance": 0x6e,
+    "emergency-exit": 0x6d
+};
 
 $(function(){
     canvas = document.getElementById('floorPlan');
@@ -220,6 +235,8 @@ $(function(){
 
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
+
+    loadInitialFloor();
 });
 
 function changeIMGsource(source){
@@ -248,6 +265,12 @@ function redraw() {
     // Draw all stored transition nodes on the map
     jQuery.each(nodeList,function(i,anode){
 
+        // If the node is not on the current floor, ignore it
+        if(anode.floorID !== current_floor)
+        {
+            return true;
+        }
+
         // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
         if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
         {
@@ -271,10 +294,30 @@ function redraw() {
             ctx.fillStyle=confirmedColor;
         }
 
-        // Draw a point
-        ctx.beginPath();
-        ctx.arc(anode.x,anode.y,7,0,2*Math.PI);
-        ctx.fill();
+
+        // Note that potFound returns a POT if one is found
+        var potFound = isNodePOT(anode);
+
+        if(potFound) {
+            // Draw a background
+            ctx.beginPath();
+            ctx.fillStyle="#e6e6e6";
+            ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
+            ctx.fill();
+
+
+            // Draw the associated tool
+            ctx.font = '20px souvlaki-font-1';
+            ctx.fillStyle= nodeColor;
+            ctx.fillText(String.fromCharCode(POTtypes[potFound.label]), anode.x - 10,anode.y + 10);
+        }
+        else
+        {
+            // Draw a reglar point
+            ctx.beginPath();
+            ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
+            ctx.fill();
+        }
     });
 
     // When placing a node
@@ -283,10 +326,21 @@ function redraw() {
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
         if(!lastSelectedNode && !mouseOnNode)
         {
-            ctx.beginPath();
-            ctx.fillStyle= nodeColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
-            ctx.fill();
+            if(current_tool === "none")
+            {
+                // Draw a point
+                ctx.beginPath();
+                ctx.fillStyle= nodeColor;
+                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+                ctx.fill();
+            }
+            else
+            {
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                // Draw the selected tool
+                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            }
         }
         // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
         else if(lastSelectedNode && !mouseOnNode)
@@ -299,7 +353,7 @@ function redraw() {
 
             ctx.beginPath();
             ctx.fillStyle=confirmedColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
             ctx.fill();
         }
         // When creating an edge and hovering on top of a node, draw a line to that node
@@ -338,8 +392,15 @@ function redraw() {
 function drawEdges(){
     // Draw all the edges
     for(var e in edgeList){
-        if(_.contains(hlPointList, edgeList[e].startNode)){
-            if(_.contains(hlPointList, edgeList[e].endNode)){
+
+        // If a node in the edge is not on the current floor, don't draw the edge
+        if(edgeList[e].origin.floorID !== current_floor || edgeList[e].destination.floorID !== current_floor)
+        {
+            continue;
+        }
+
+        if(_.contains(hlPointList, edgeList[e].origin)){
+            if(_.contains(hlPointList, edgeList[e].destination)){
                 ctx.strokeStyle = hlColor;
             }
             else{
@@ -350,8 +411,8 @@ function drawEdges(){
             ctx.strokeStyle = nodeColor;
         }
         ctx.beginPath();
-        ctx.moveTo(edgeList[e].startNode.x,edgeList[e].startNode.y);
-        ctx.lineTo(edgeList[e].endNode.x,edgeList[e].endNode.y);
+        ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
+        ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
         ctx.stroke();
     }
 }
@@ -362,7 +423,14 @@ function canvasClick(x,y) {
         // If clicking on empty space
         if(!mouseOnNode && !lastSelectedNode) {
             // Store a new node in the list of transition nodes
-            nodeList.push(new Point(x, y));
+            var point = new Point(x, y, current_floor);
+            nodeList.push(point);
+
+            // if a POT tool is selected, create a POT
+            if(current_tool !== "none")
+            {
+                POTList.push(new POT(point, current_tool));
+            }
         }
         // If clicking on a node and not yet starting an edge
         else if(mouseOnNode && !lastSelectedNode) {
@@ -390,6 +458,14 @@ function canvasClick(x,y) {
         //alert(mouseOnNode.id);
         //TODOTYLER: get the id of the currently selected storyline
         //alert(active_id);
+
+        // Cancel POI creation if the node is a POT
+        if(isNodePOT(mouseOnNode))
+        {
+            showWarningAlert("Cannot create a storypoint or POI on a special Point of Transition");
+            return false;
+        }
+
         var found = false;
         //find point in list and fill editor
         if(POIList.length === 0){
@@ -398,7 +474,7 @@ function canvasClick(x,y) {
             fillEditor(newPOI);
         }else{
             for(var val in POIList){
-                if(POIList[val].point.id === mouseOnNode.id){
+                if(POIList[val].point.id == mouseOnNode.id){
                         fillEditor(POIList[val]);
                         found = true;
                 break;
@@ -421,7 +497,7 @@ function cancelOperations() {
 function nodesInEdges(a,b) {
 
     for (var i = 0; i < edgeList.length; i++) {
-        if((edgeList[i].startNode === a && edgeList[i].endNode === b) || (edgeList[i].startNode === b && edgeList[i].endNode === a))
+        if((edgeList[i].origin === a && edgeList[i].destination === b) || (edgeList[i].origin === b && edgeList[i].destination === a))
         {
             return true;
         }
@@ -438,18 +514,32 @@ function canNodeConnect(a) {
     for(var i = 0; i < edgeList.length; i++)
     {
         // If the node is in an edge, remove the other node
-        if(a === edgeList[i].startNode)
+        if(a === edgeList[i].origin)
         {
-           allNodes = removeFromList(edgeList[i].endNode, allNodes);
+           allNodes = removeFromList(edgeList[i].destination, allNodes);
         }
-        else if(a === edgeList[i].endNode)
+        else if(a === edgeList[i].destination)
         {
-           allNodes = removeFromList(edgeList[i].startNode, allNodes);
+           allNodes = removeFromList(edgeList[i].origin, allNodes);
         }
     }
 
     // If there are still nodes left, then we can make a connection
     return allNodes.length > 0;
+}
+
+function isNodePOT(node) {
+    // Determine if the node is a POT
+    for(var pot in POTList)
+    {
+        if(POTList[pot].point === node)
+        {
+            return POTList[pot];
+
+            potFound = true;
+            break;
+        }
+    }
 }
 
 // Remove the first element from a list
@@ -472,7 +562,7 @@ function highlightPOI(story){
     hlPointList = [];
     for(var val in POIList){
         for(var p in POIList[val].storyPoint){
-            if(POIList[val].storyPoint[p].storylineID === story){
+            if(POIList[val].storyPoint[p].storylineID == story){
                 hlPointList.push(POIList[val].point);
                 break;
             }
