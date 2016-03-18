@@ -31,6 +31,7 @@ function Edge(origin, destination) {
 
 //TODO refactor and place in appropriate location later
 //This class is for any Language Text pairing such as descriptions or titles
+/** TO BE USED IN LATER STORY
 function LanguageText() {
     this.pairs = [];
     this.addPair = function(lang, value){
@@ -58,6 +59,7 @@ function LanguageText() {
         }
     };
 }
+**/
 
 function IBeacon(uuid, major, minor) {
     this.uuid = uuid;
@@ -98,8 +100,8 @@ function POI(point) {
     this.ID = POI_id;
     POI_id++;
     this.isSet = false;
-    this.title = new LanguageText('title');
-    this.description = new LanguageText('description');
+    this.title = "";//new LanguageText('title');
+    this.description = "";//new LanguageText('description');
     this.point = point;
     this.floorID = current_floor;
     this.ibeacon = "";
@@ -135,6 +137,7 @@ function POT(point, label) {
     this.label = label;
     this.point = point;
     this.floorID = current_floor;
+    this.storyline = active_id;
 
 
     this.toJSON = function() {
@@ -157,8 +160,8 @@ function FloorPlan() {
 
 function Storyline(){
     this.ID = "";//gets defined in storylines.js
-    this.title = new LanguageText();
-    this.description = new LanguageText();
+    this.title = "";//new LanguageText();
+    this.description = "";//new LanguageText();
     this.path = [];
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
@@ -168,8 +171,8 @@ function Storyline(){
 function StoryPoint() {
     this.ID = SP_id;
     this.storylineID = active_id;
-    this.title = new LanguageText();
-    this.description = new LanguageText();
+    this.title = "";//new LanguageText();
+    this.description = "";//new LanguageText();
     this.media = new Media();
     SP_id++;
 }

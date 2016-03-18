@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/bootstrap.override.css">
-
     <link rel="stylesheet" href="css/textEditor.css">
+
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" href="css/canvas.css">
 
@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="css/souvlaki-font-1.css">
 
     <script src="js/compute.js"></script>
-    <script src="js/json.js"></script>
     <script src="js/canvas.js"></script>
+    <script src="js/json.js"></script>
     <script src="js/floorList.js"></script>
     <script src="js/menu.js"></script>
     <script src="ckeditor/ckeditor.js"></script>
@@ -89,6 +89,8 @@
                                 <div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                                 </br>
+                                <div class="btn btn-default btn-file">Load Map<input type="file" id="inputFile"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                </div>
                                 <!-- TODO: offer the user to name the file? -->
                                 <div class="btn btn-default" onclick="download('mapData.json',createJSON())">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
