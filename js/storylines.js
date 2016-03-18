@@ -114,6 +114,7 @@ function storylineClicked(elem){
     active_id = id;
     highlightPOI(active_id);
     hideInactiveStoryLines();
+    redraw();
 };
 
 function hideInactiveStoryLines(){
