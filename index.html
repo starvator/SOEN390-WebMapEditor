@@ -3,7 +3,7 @@
 
 <head>
     <title>Map Editor</title>
-	<link rel="shortcut icon" href="dog-silhouette.ico">
+    <link rel="shortcut icon" href="dog-silhouette.ico">
     <script src="js/jquery-2.2.0.min.js"></script>
 
     <!-- Bootstrap includes -->
@@ -11,10 +11,13 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/bootstrap.override.css">
-    <link rel="stylesheet" href="css/textEditor.css">
 
+    <link rel="stylesheet" href="css/textEditor.css">
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" href="css/canvas.css">
+
+    <!-- Custom font for icons -->
+    <link rel="stylesheet" href="css/souvlaki-font-1.css">
 
     <script src="js/compute.js"></script>
     <script src="js/json.js"></script>
@@ -26,17 +29,21 @@
     <script src="js/textEditor.js"></script>
     <script src="js/storylines.js"></script>
     <script src="js/alert.js"></script>
-	<script src="js/underscore-min.js"></script>
-	
+    <script src="js/underscore-min.js"></script>
+
 </head>
 
 <body>
     <div class="container">
         <div class="row">
             <div id="alertContainer" class="col-lg-offset-3 col-lg-6 col-md-offset-2 col-md-8 col-sm-offset-1 col-sm-10 col-xs-12">
-                <div class="alert alert-warning" role="alert">
+                <div id="warningAlert" class="alert alert-warning" role="alert">
                     <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
-                    <span id="alertMessage"><strong>Warning!</strong> Better check yourself, you're not looking too good.</span>
+                    <span id="warningAlertMessage"><strong>Warning!</strong> Better check yourself, you're not looking too good.</span>
+                </div>
+                <div id="errorAlert" class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+                    <span id="errorAlertMessage"><strong>Oh snap!</strong> Change a few things up and try submitting again.</span>
                 </div>
             </div>
         </div>
@@ -58,70 +65,109 @@
                             <ul id="StorylinesList"class="nav nav-pills nav-stacked">
                             </ul>
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a><input id="storylineField" type="text" placeholder="Add New Storyline Title" /></br>
-                                <input id="storylineDescription" type="text" placeholder="Add New Storyline Description" /></a> <!-- change field--></li>
+                                <li>
+                                    <a>
+                                        <input id="storylineField" type="text" placeholder="Add New Storyline Title" /></br>
+                                        <input id="storylineDescription" type="text" placeholder="Add New Storyline Description" />
+                                    </a> <!-- change field-->
+                                </li>
                                 <li id = "submitButton" onclick="addNewStoryLine()"><a href="#">Submit</a></li>
                                 <li id = "editButton" onclick="editStoryLine()"><a href="#">Edit</a></li>
-								<li onclick="setCreatePOIid()"><a href="#">Edit a Point of Interest</a></li>
+                                <li onclick="setCreatePOIid()"><a href="#">Edit a Point of Interest</a></li>
                             </ul>
                         </div>
                         <!-- MAP LAYOUT MENU -->
-        <div id="MapLayoutMenu" hidden>
+                        <div id="MapLayoutMenu" hidden>
+                            <div id="MapLayoutMainMenu">
+                                <ol class="breadcrumb">
+                                    <li class="active">Map Layout Menu</li>
+                                </ol>
 
-                        <div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        </div>
-                        </br>
-                        <div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        </div>
-                        </br>
-                        <!-- TODO: offer the user to name the file? -->
-                        <div class="btn btn-default" onclick="download('mapData.json',createJSON())">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                        </div>
-                    </div>
-                    <div id="floorEditorMenu">
-                        <!-- FLOOR EDITOR MENU -->
-                        FLOOR EDITING MENU
-                        </br>
-
-
-                        <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
-                        </br>
-                        </br>
-
-                        <form id="newFloor">
-                            <div class="form-group">
-                                <label for="floorNumUpload">Floor number</label>
-                                <input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
+                                <div class="btn btn-default" onclick="showFloorsMenu()">Edit Floors <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                </div>
+                                </br>
+                                <div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                </div>
+                                </br>
+                                <!-- TODO: offer the user to name the file? -->
+                                <div class="btn btn-default" onclick="download('mapData.json',createJSON())">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="fileUpload">Floor map svg image</label>
-                                <input id="fileUpload" type="file" accept=".svg" />
+                            <div id="floorEditorMenu">
+                                <!-- FLOOR EDITOR MENU -->
+                                <ol class="breadcrumb">
+                                    <li><a href="#" onclick="showMainMenu()">Map Layout Menu</a></li>
+                                    <li class="active">Floor Editing Menu</li>
+                                </ol>
+                                <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Map Layout Menu</div>
+                                </br>
+                                </br>
+
+                                <form id="newFloor">
+                                    <div class="form-group">
+                                        <label for="floorNumUpload">Floor number</label>
+                                        <input id="floorNumUpload" class="form-control" type="number" placeholder="Floor number" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fileUpload">Floor map svg image</label>
+                                        <input id="fileUpload" type="file" accept=".svg" />
+                                    </div>
+                                    <input type="submit" class="btn btn-default" value="Add Floor" />
+                                </form>
                             </div>
-                            <input type="submit" class="btn btn-default" value="Add Floor" />
-                        </form>
-                    </div>
-                    <div id="nodeEditorMenu">
-                        <!-- NODE EDITOR MENU -->
-                        POINT EDITING MENU
-                        </br>
-                        <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Main menu</div>
-                        </br>
-                        Click map to add points!</br>
-                        <div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
-                        </br>
-                        <div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                            <div id="nodeEditorMenu">
+                                <!-- NODE EDITOR MENU -->
+                                <ol class="breadcrumb">
+                                    <li><a href="#" onclick="showMainMenu()">Map Layout Menu</a></li>
+                                    <li class="active">Point Editing Menu</li>
+                                </ol>
+                                <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Map Layout Menu</div>
+                                </br>
+
+                                Click map to add points!</br>
+                                <div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
+                                </br>
+                                <div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-        </div>
-                </div>
+            </div>
             <div class="col-lg-9 col-md-8 col-sm-7" id="floorPlanContainer">
+                <div id="POTMenu">
+                    <div id="POTIconsContainer">
+                        <div class="btn btn-default active" data-pot-type="none" data-toggle="tooltip" data-placement="bottom" title="None">
+                            <span class="icon-circle"></span>
+                        </div>
+                        <div class="btn btn-primary" data-pot-type="ramp" data-toggle="tooltip" data-placement="bottom" title="Ramp">
+                            <span class="icon-ramp-1"></span>
+                        </div>
+                        <div class="btn btn-primary" data-pot-type="stairs" data-toggle="tooltip" data-placement="bottom" title="Stairs">
+                            <span class="icon-stairs"></span>
+                        </div>
+                        <div class="btn btn-primary" data-pot-type="elevator" data-toggle="tooltip" data-placement="bottom" title="Elevator">
+                            <span class="icon-elevator"></span>
+                        </div>
+                        <div class="btn btn-success" data-pot-type="washroom" data-toggle="tooltip" data-placement="bottom" title="Washroom">
+                            <span class="icon-washroom"></span>
+                        </div>
+                        <div class="btn btn-warning" data-pot-type="exit" data-toggle="tooltip" data-placement="bottom" title="Exit">
+                            <span class="icon-exit"></span>
+                        </div>
+                        <div class="btn btn-warning" data-pot-type="entrance" data-toggle="tooltip" data-placement="bottom" title="Entrance">
+                            <span class="icon-entrance"></span>
+                        </div>
+                        <div class="btn btn-danger" data-pot-type="emergency-exit" data-toggle="tooltip" data-placement="bottom" title="Emergency Exit">
+                            <span class="icon-emergency-exit"></span>
+                        </div>
+                    </div>
+                </div>
                 <canvas id="floorPlan" width="1" height="1">
                 </canvas>
-
             </div>
         </div>
     </div>
-
+    <div id="modal" hidden></div>
     <div id="infoEditingForm" hidden>
         <div class="form-group">
             <span id="infoEditingFormTitle"></span>

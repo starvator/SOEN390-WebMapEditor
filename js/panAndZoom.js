@@ -60,13 +60,17 @@ function mouseUp(evt) {
         return false;
     }
 
-    // If we did not perform a drag, forward the click event to the canvas
+    // If we did not perform a drag, and the mouse is on the canvas
+    // forward the click event to the canvas
     if(!dragged) {
         var x = evt.pageX - $(canvas).offset().left;
         var y = evt.pageY - $(canvas).offset().top;
-        var pt = ctx.transformedPoint(x,y);
 
-        canvasClick(pt.x,pt.y);
+        if(x >= 0 && y >= 0 && x <= $(canvas).height() && y <= $(canvas).width())
+        {
+            var pt = ctx.transformedPoint(x,y);
+            canvasClick(pt.x,pt.y);
+        }
     }
 
     dragStart = null;
