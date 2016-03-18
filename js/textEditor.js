@@ -3,6 +3,7 @@ $(document).ready(function(){
     //The x at the top
     $("#infoEditingFormClose").click(function(){
         $("#infoEditingForm").hide();
+        $("#modal").hide();
     });
 
     //When you click the attach button
@@ -97,6 +98,7 @@ $(document).ready(function(){
         }
             //close the window
             $("#infoEditingForm").hide();
+            $("#modal").hide();
             highlightPOI(active_id);
     }
     else{
@@ -175,6 +177,7 @@ function fillEditor(poi){
     //show the form
     setEditorTitle();
     $("#infoEditingForm").show();
+    $("#modal").show();
 }
 
 function setEditorTitle(){
