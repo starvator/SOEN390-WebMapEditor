@@ -21,7 +21,7 @@ function addNewStoryLine(){
         $("#StorylinesList").find(".active").removeClass("active");
         $("#"+current_id).addClass("active");
         active_id = current_id;
-        storyline.id = current_id;
+        storyline.ID = current_id;
         
         storyline.title = name;
         storyline.description = description;

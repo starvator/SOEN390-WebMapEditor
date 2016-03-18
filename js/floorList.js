@@ -20,7 +20,7 @@ $(function(){
         //add to array
         var floor = new FloorPlan();
         floor.floorID = $("#floorNumUpload").val();
-        floor.imagePath = $("#fileUpload")[0].files[0]; //TODO verify
+        floor.imagePath.name = $("#fileUpload")[0].files[0];
         floor.imageWidth = 0;//TODO
         floor.imageHeight = 0;//TODO
         floorList[$("#floorNumUpload").val()] = floor;
