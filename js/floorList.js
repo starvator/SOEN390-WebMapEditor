@@ -37,6 +37,13 @@ $(function(){
     });
 });
 
+function loadFloorsFromList(){
+    $("#floorList").empty();
+    for(var val in floorList){
+            $("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
+    }
+}
+
 function changeFloor(val){
     changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
     current_floor = parseInt(val);

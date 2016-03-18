@@ -19,30 +19,46 @@ function createJSON() {
 }
 
 function loadFromJSON() {
+    floorList = [];
+    storylineList = [];
+    POIList = [];
+    POTList = [];
+    nodeList = [];
+    edgeList = [];
     
     //floorList
     $.each(jsonMap.floorPlan, function(i, fp) {
-        floorList.push(FloorPlan.fromJSON(fp));
+        if(fp !== null) {
+            floorList[eval(fp.floorID)] = (FloorPlan.fromJSON(fp));
+        }
     });
 
     //storylineList
     $.each(jsonMap.storyline, function(i, sl) {
-        storylineList.push(Storyline.fromJSON(sl));
+        if(sl !== null) {
+            storylineList.push(Storyline.fromJSON(sl));
+        }
     });
     
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
-        POIList.push(POI.fromJSON(poi));
+        if(poi !== null) {
+            POIList.push(POI.fromJSON(poi));
+        }
     });
      
     //POT
     $.each(jsonMap.node.pot, function(i, pot) {
-        POTList.push(POT.fromJSON(pot));
+        if(pot !== null) {
+            POTList.push(POT.fromJSON(pot));
+        }
     });
        
     //edgeList
     $.each(jsonMap.edge, function(i, e) {
-        edgeList.push(Edge.fromJSON(e));
+        if(e !== null) {
+            edgeList.push(Edge.fromJSON(e));
+        }
     });
 
 }
@@ -64,8 +80,8 @@ StoryPoint.fromJSON = function(json) {
 
     var sp = new StoryPoint();
     sp.storylineID = json.storylineID;
-    sp.title = LanguageText.fromJSON(json.title);
-    sp.description = LanguageText.fromJSON(json.description);
+    sp.title = json.title;//LanguageText.fromJSON(json.title);
+    sp.description = json.description;//LanguageText.fromJSON(json.description);
     sp.media = json.media;
     
     return sp;
@@ -73,13 +89,17 @@ StoryPoint.fromJSON = function(json) {
 
 POI.fromJSON = function(json) {
 
-    var ppp = new Point(json.x, json.y);
+    var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
     poi.id = json.id;
-    poi.title = LanguageText.fromJSON(json.title);
-    poi.description = LanguageText.fromJSON(json.description);
+    poi.title = json.title;
+    poi.description = json.description;
+    
+    //TODO: LanguageText formats?
+    //poi.title = LanguageText.fromJSON(json.title);
+    //poi.description = LanguageText.fromJSON(json.description);
     poi.floorID = json.floorID;
-    poi.ibeacon = new iBeacon(json.iBeacon.uuid, json.iBeacon.major, json.iBeacon.minor);
+    poi.ibeacon = new IBeacon(json.iBeacon.uuid, json.iBeacon.major, json.iBeacon.minor);
     poi.media = json.media;
     
     $.each(json.storyPoint, function(i, sp) {
@@ -93,9 +113,9 @@ POI.fromJSON = function(json) {
 
 POT.fromJSON = function(json) {
 
-    var ppp = new Point(json.x, json.y);
+    var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
-    pot.label = LanguageText.fromJSON(json.label);
+    pot.label = json.label;//LanguageText.fromJSON(json.label);
     pot.floorID = json.floorID; 
     
     nodeList.push(ppp);
@@ -113,9 +133,9 @@ Edge.fromJSON = function(json) {
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-    s.id = json.id;
-    s.title = LanguageText.fromJSON(json.title);
-    s.description = LanguageText.fromJSON(json.description);
+    s.ID = json.ID;
+    s.title = json.title;//LanguageText.fromJSON(json.title);
+    s.description = json.description;//LanguageText.fromJSON(json.description);
     s.path = json.path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;
@@ -124,6 +144,7 @@ Storyline.fromJSON = function(json) {
     return s;
 };
 
+/** TODO: LanguageText Story
 LanguageText.fromJSON = function(json) {
 
     var lt = new LanguageText();
@@ -133,7 +154,7 @@ LanguageText.fromJSON = function(json) {
     
     return lt;
 };
-
+**/
 
 $(document).on('change', '.btn-file :file', function() {
     var input = $(this);
@@ -143,7 +164,7 @@ $(document).on('change', '.btn-file :file', function() {
 $(document).ready( function() {
     $('.btn-file :file').on('fileselect', function(event, file) {
         if(!file) {
-            
+            showErrorAlert("There was a problem with your file. Please try again.");
             return;
         }
         var reader = new FileReader();
@@ -153,6 +174,7 @@ $(document).ready( function() {
             loadFromJSON();
             redraw();
             buildStorylineMenuFromList();
+            loadFloorsFromList();
         };
         reader.readAsText(file);
     });
