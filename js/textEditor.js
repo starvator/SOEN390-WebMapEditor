@@ -14,7 +14,16 @@ $(document).ready(function(){
     //On change on input
     $( "#uploadFile" ).change(function() {
         try{
-        $("#attachedDocName").text($('#uploadFile')[0].files[0].name);
+            tempList = "";
+            for (var val in $('#uploadFile')[0].files){
+                tempName = $('#uploadFile')[0].files[val].name;
+                if (tempName === undefined || tempName === "item"){
+                    break;
+                }
+                tempList += tempName + ", ";
+            }
+            tempList = tempList.substring(0, tempList.length - 2);
+        $("#attachedDocName").text(tempList);
         }
         //if you click cancel in a dialog, it will clear the input, so catch and ignore
         catch (e){
