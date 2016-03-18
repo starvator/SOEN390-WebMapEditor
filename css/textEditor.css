@@ -39,7 +39,7 @@
     display: none;
 }
 #attachedDocName {
-    width:275px;
-    max-width: 275px;
+    width:200px;
+    max-width: 200px;
     overflow-x: auto;
 }
