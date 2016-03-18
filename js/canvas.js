@@ -94,7 +94,7 @@ function File(type) {
 }
 
 function POI(point) {
-    this.ID = POI_id;
+    this.id = POI_id;
     POI_id++;
     this.isSet = false;
     this.title = new LanguageText('title');
@@ -108,7 +108,7 @@ function POI(point) {
 
     this.toJSON = function() {
         return {
-            id: this.ID,
+            id: this.id,
             title: this.title,
             description: this.description,
             x:this.point.x,
@@ -127,7 +127,7 @@ function setCreatePOIid(){
 }
 
 function POT(point) {
-    this.ID = POT_id; //TODO GENERATED appropriately
+    this.id = POT_id; //TODO GENERATED appropriately
     POT_id++;
     this.label = new LanguageText();//<ramp or stairs or elevator or intersection or washroom or exit or entrance or emergency exit>
     this.point = point;
@@ -139,7 +139,7 @@ function POT(point) {
     //TODO
     this.toJSON = function() {
         return {
-            id: this.ID,
+            id: this.id,
             label: this.label,
             x:this.point.x,
             y:this.point.y,
@@ -156,7 +156,7 @@ function FloorPlan() {
 }
 
 function Storyline(){
-    this.ID = "";//gets defined in storylines.js
+    this.id = "";//gets defined in storylines.js
     this.title = new LanguageText();
     this.description = new LanguageText();
     this.path = [];
@@ -166,7 +166,7 @@ function Storyline(){
 }
 
 function StoryPoint() {
-    this.ID = SP_id;
+    this.id = SP_id;
     this.storylineID = active_id;
     this.title = new LanguageText();
     this.description = new LanguageText();

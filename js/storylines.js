@@ -21,7 +21,7 @@ function addNewStoryLine(){
         $("#StorylinesList").find(".active").removeClass("active");
         $("#"+current_id).addClass("active");
         active_id = current_id;
-        storyline.ID = current_id;
+        storyline.id = current_id;
         storyline.title.addPair('en', name);
         storyline.floorsCovered.push(current_floor);
         storyline.description.addPair('en', description);
@@ -36,8 +36,17 @@ function addNewStoryLine(){
     }
 }
 
-function buildFromList(){
-    
+function buildStorylineMenuFromList(){
+    jQuery.each(storylineList, function(i, s){
+        if(s.description){
+        $("#StorylinesList").append('<li id="'+ s.id +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.getByLanguage("en") +'</br>' + s.description.getByLanguage("en") +'</a></li>' +
+        '<ul id="'+ s.id +'_pointList"></ul>');
+        }
+        else{
+        $("#StorylinesList").append('<li id="'+ s.id +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.getByLanguage("en") +'</a></li>' +
+        '<ul id="'+ s.id +'_pointList"></ul>');
+        }
+    });
 }
 
 function editStoryLine(){
