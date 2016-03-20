@@ -14,6 +14,13 @@ function mouseMove(evt) {
     var y = evt.pageY - $(canvas).offset().top;
     mouseLocation = ctx.transformedPoint(x,y);
 
+    
+    if(x < 0 || y < 0 || x > canvas.width || y > canvas.height){
+    //|| x > imgLocation[0]+scaledIMG[0] || y > imgLocation[1]+scaledIMG[1]
+    //|| x < imgLocation[0] || y < imgLocation[1]){
+        return false;
+    }
+    
     if(dragStart && (mouseLocation.x - dragStart.x) * (mouseLocation.x - dragStart.x) + (mouseLocation.y - dragStart.y) * (mouseLocation.y - dragStart.y) > MOUSE_DRAG_GRACE_DIST_SQUARED)
     {
         dragged = true;
@@ -23,7 +30,6 @@ function mouseMove(evt) {
             if(ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y) === undefined){
                 //Location tracking should change
                 imgLocation = [imgLocation[0]+mouseLocation.x-dragStart.x,imgLocation[1]+mouseLocation.y-dragStart.y];
-                console.log(imgLocation[0]);
             }
             redraw();
         }
@@ -96,20 +102,15 @@ function detectLeftButton(evt) {
 var scaleFactor = 1.1;
 var zoom = function(clicks){
     var pt = mouseLocation;
-    if(ctx.translate(pt.x,pt.y) === undefined){
-        imgLocation = [imgLocation[0]+pt.x,imgLocation[1]+pt.y];
-    }
+    ctx.translate(pt.x,pt.y);
     var factor = Math.pow(scaleFactor,clicks);
     ctx.scale(factor,factor);
     if(ctx.scale(factor,factor) === undefined){
         scaledIMG[0] = factor*scaledIMG[0];
         scaledIMG[1] = factor*scaledIMG[1];
-        panBuffer = [Math.abs(scaledIMG[0]-canvas.width), Math.abs(scaledIMG[1]-canvas.height)];
-        console.log(panBuffer);
     }
-    if(ctx.translate(-pt.x,-pt.y) === undefined){
-        imgLocation = [imgLocation[0]-pt.x,imgLocation[1]-pt.y];
-    }
+    ctx.translate(-pt.x,-pt.y);
+   
     redraw();
 };
 
@@ -166,13 +167,8 @@ function trackTransforms(ctx){
     };
     var translate = ctx.translate;
     ctx.translate = function(dx,dy){
-        //TODO: Translation Limit Tracking
-        if(Math.abs(imgLocation[0]+ dx)  <= panBuffer[0] && Math.abs(imgLocation[1]+ dy)  <= panBuffer[1]){
-            xform = xform.translate(dx,dy);
-            return translate.call(ctx,dx,dy);
-        }else{
-           return false;
-        }
+        xform = xform.translate(dx,dy);
+        return translate.call(ctx,dx,dy);
     };
     var transform = ctx.transform;
     ctx.transform = function(a,b,c,d,e,f){
