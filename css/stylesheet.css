@@ -3,7 +3,6 @@
 */
 
 #floorList {
-	min-height:200px;
 }
 
 #mainMenu {
@@ -19,11 +18,35 @@
 
 #nodeEditorMenu {
 	display:none;
-	padding-top:200px;
 }
 
-/*
-#MapLayoutMenu {
-	visibility: hidden;
+#MapLayoutMenu{
+    padding-top:10px;
 }
-*/
+
+#alertContainer {
+    display:none;
+    
+    position: absolute;
+    top:0px;
+    left:0px;
+    z-index:1001;
+    
+    padding-top:10px;
+}
+
+#alertMessage {
+    padding-left:5px;
+}
+
+#POTIconsContainer {
+    display: inline-block;
+}
+
+#POTMenu {
+    width:100%;
+    text-align: center;
+    display:none;
+    padding-top:5px;
+    padding-bottom:5px;
+}
