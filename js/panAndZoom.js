@@ -6,20 +6,18 @@
 
 var dragStart,dragged;
 var MOUSE_DRAG_GRACE_DIST_SQUARED = 4; // The distance the mouse must move (squared) to count as a drag
-
+var mouseExited = false;
 
 function mouseMove(evt) {
     // Store the location of the mouse relative to the canvas
     var x = evt.pageX - $(canvas).offset().left;
     var y = evt.pageY - $(canvas).offset().top;
     mouseLocation = ctx.transformedPoint(x,y);
-
     
-    if(x < 0 || y < 0 || x > canvas.width || y > canvas.height){
-    //|| x > imgLocation[0]+scaledIMG[0] || y > imgLocation[1]+scaledIMG[1]
-    //|| x < imgLocation[0] || y < imgLocation[1]){
+    if(mouseLocation.x < 0 || mouseLocation.y < 0 || mouseLocation.x > img.width || mouseLocation.y > img.height){
         return false;
     }
+    mouseExited = false;
     
     if(dragStart && (mouseLocation.x - dragStart.x) * (mouseLocation.x - dragStart.x) + (mouseLocation.y - dragStart.y) * (mouseLocation.y - dragStart.y) > MOUSE_DRAG_GRACE_DIST_SQUARED)
     {
@@ -27,10 +25,7 @@ function mouseMove(evt) {
 
         // Redraw if panning or in node editing mode
         if (dragStart){
-            if(ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y) === undefined){
-                //Location tracking should change
-                imgLocation = [imgLocation[0]+mouseLocation.x-dragStart.x,imgLocation[1]+mouseLocation.y-dragStart.y];
-            }
+            ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
             redraw();
         }
     }
@@ -168,6 +163,7 @@ function trackTransforms(ctx){
     var translate = ctx.translate;
     ctx.translate = function(dx,dy){
         xform = xform.translate(dx,dy);
+        imgLocation = [imgLocation[0]+dx, imgLocation[1]+dy];
         return translate.call(ctx,dx,dy);
     };
     var transform = ctx.transform;
