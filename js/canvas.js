@@ -214,6 +214,12 @@ var POTtypes = {
     "emergency-exit": 0x6d
 };
 
+//For PanAndZoom.js
+var originalScaledIMG = [];
+var scaledIMG = [];
+var panBuffer = [];
+var imgLocation = [0,0];
+
 $(function(){
     canvas = document.getElementById('floorPlan');
     ctx = canvas.getContext('2d');
@@ -221,7 +227,12 @@ $(function(){
 
     img = new Image();
     img.onload = function() {
-        ctx.drawImage(img, -1000, -1000);
+        ctx.drawImage(img, 0, 0);
+        imgLocation = [0,0];
+        scaledIMG = [img.width, img.height];
+		trackTransforms(ctx);
+		imageFillWindow();
+		redraw();
     };
     img.src = "floor_plans/floor3.svg";
 
@@ -231,8 +242,6 @@ $(function(){
     document.getElementsByTagName("BODY")[0].addEventListener('mouseup',mouseUp, false);
     canvas.addEventListener('contextmenu', mouseRightClick, false);
 
-    trackTransforms(ctx);
-
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
 
@@ -241,6 +250,7 @@ $(function(){
 
 function changeIMGsource(source){
     img.src = source;
+	imageFillWindow();
 }
 
 // Main canvas drawing method
@@ -251,7 +261,7 @@ function redraw() {
     ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
     // Draw the background image
-    ctx.drawImage(img, -1000, -1000);
+    ctx.drawImage(img, 0, 0);
 
     // Clear the currently stored node
     mouseOnNode = null;
