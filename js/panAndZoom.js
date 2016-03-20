@@ -6,20 +6,24 @@
 
 var dragStart,dragged;
 var MOUSE_DRAG_GRACE_DIST_SQUARED = 4; // The distance the mouse must move (squared) to count as a drag
+var mouseExited = false;
 
 function mouseMove(evt) {
-
     // Store the location of the mouse relative to the canvas
     var x = evt.pageX - $(canvas).offset().left;
     var y = evt.pageY - $(canvas).offset().top;
     mouseLocation = ctx.transformedPoint(x,y);
-
+    
+    if(mouseLocation.x < 0 || mouseLocation.y < 0 || mouseLocation.x > img.width || mouseLocation.y > img.height){
+        return false;
+    }
+    mouseExited = false;
+    
     if(dragStart && (mouseLocation.x - dragStart.x) * (mouseLocation.x - dragStart.x) + (mouseLocation.y - dragStart.y) * (mouseLocation.y - dragStart.y) > MOUSE_DRAG_GRACE_DIST_SQUARED)
     {
         dragged = true;
 
         // Redraw if panning or in node editing mode
-
         if (dragStart){
             ctx.translate(mouseLocation.x-dragStart.x,mouseLocation.y-dragStart.y);
             redraw();
@@ -60,13 +64,17 @@ function mouseUp(evt) {
         return false;
     }
 
-    // If we did not perform a drag, forward the click event to the canvas
+    // If we did not perform a drag, and the mouse is on the canvas
+    // forward the click event to the canvas
     if(!dragged) {
         var x = evt.pageX - $(canvas).offset().left;
         var y = evt.pageY - $(canvas).offset().top;
-        var pt = ctx.transformedPoint(x,y);
 
-        canvasClick(pt.x,pt.y);
+        if(x >= 0 && y >= 0 && x <= $(canvas).height() && y <= $(canvas).width())
+        {
+            var pt = ctx.transformedPoint(x,y);
+            canvasClick(pt.x,pt.y);
+        }
     }
 
     dragStart = null;
@@ -92,8 +100,24 @@ var zoom = function(clicks){
     ctx.translate(pt.x,pt.y);
     var factor = Math.pow(scaleFactor,clicks);
     ctx.scale(factor,factor);
+    if(ctx.scale(factor,factor) === undefined){
+        scaledIMG[0] = factor*scaledIMG[0];
+        scaledIMG[1] = factor*scaledIMG[1];
+    }
     ctx.translate(-pt.x,-pt.y);
+   
     redraw();
+};
+
+//Allow background image to fill the entire canvas
+var imageFillWindow = function() {
+	var scaleFactor = Math.min(canvas.width / img.width, canvas.height / img.height);
+    originalScaledIMG = [scaleFactor*img.width, scaleFactor*img.height];
+    if(ctx.scale(scaleFactor,scaleFactor) === undefined){
+        scaledIMG[0] = scaleFactor*scaledIMG[0];
+        scaledIMG[1] = scaleFactor*scaledIMG[1];
+        panBuffer = [0,0];
+    }
 };
 
 var handleScroll = function(evt){
@@ -124,8 +148,12 @@ function trackTransforms(ctx){
 
     var scale = ctx.scale;
     ctx.scale = function(sx,sy){
-        xform = xform.scaleNonUniform(sx,sy);
-        return scale.call(ctx,sx,sy);
+        if((sx*scaledIMG[0] >= originalScaledIMG[0]) && (sx*scaledIMG[0] <=img.width) && (sy*scaledIMG[1] >= originalScaledIMG[1]) && (sy*scaledIMG[1] <=img.height)){
+            xform = xform.scaleNonUniform(sx,sy);
+            return scale.call(ctx,sx,sy);
+        }else{
+            return false;
+        }
     };
     var rotate = ctx.rotate;
     ctx.rotate = function(radians){
@@ -135,6 +163,7 @@ function trackTransforms(ctx){
     var translate = ctx.translate;
     ctx.translate = function(dx,dy){
         xform = xform.translate(dx,dy);
+        imgLocation = [imgLocation[0]+dx, imgLocation[1]+dy];
         return translate.call(ctx,dx,dy);
     };
     var transform = ctx.transform;

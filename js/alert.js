@@ -3,10 +3,28 @@
 */
 
 
-// Show the warning alert box with a specified message
+// Show the yellow warning alert box with a specified message
 function showWarningAlert(msg)
 {
-    $("#alertMessage").html(msg);
+    $("#warningAlertMessage").html(msg);
+    $(".alert").hide();
+    $("#warningAlert").show();
+
+    showAlert(msg);
+}
+
+// Show the red error alert box with a specified message
+function showErrorAlert(msg) {
+    $("#errorAlertMessage").html(msg);
+    $(".alert").hide();
+    $("#errorAlert").show();
+
+    showAlert(msg);
+}
+
+// Show the alert container and then set a timeout for the hide
+function showAlert(msg) {
+
     var height = $("#alertContainer").height();
 
     $("#alertContainer").css("top", -1 * height);
@@ -18,6 +36,7 @@ function showWarningAlert(msg)
     });
 }
 
+// Hide the alert container
 function hideAlert()
 {
     var height = $("#alertContainer").height();
