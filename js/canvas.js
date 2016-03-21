@@ -234,7 +234,6 @@ $(function(){
 		imageFillWindow();
 		redraw();
     };
-    img.src = "floor_plans/floor3.svg";
 
     // Register events
     document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
@@ -250,7 +249,6 @@ $(function(){
 
 function changeIMGsource(source){
     img.src = source;
-	imageFillWindow();
 }
 
 // Main canvas drawing method
