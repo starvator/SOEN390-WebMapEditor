@@ -16,14 +16,12 @@ function Point(x,y,floor) {
 }
 
 function Edge(origin, destination) {
-    this.origin = origin;
-    this.destination = destination;
+    this.origin = origin.ID;
+    this.destination = destination.ID;
     this.toJSON = function() {
-    //TODO: finish and add appropriate methods
         return {
             startNode: this.origin,
             endNode:this.destination,
-            floorNumber:'TODO to be retrieved',
             distance:distance(this.origin, this.destination)
             };
     };
