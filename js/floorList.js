@@ -20,7 +20,7 @@ $(function(){
         //add to array
         var floor = new FloorPlan();
         floor.floorID = $("#floorNumUpload").val();
-        floor.imagePath = $("#fileUpload")[0].files[0]; //TODO verify
+        floor.imagePath = $("#fileUpload")[0].files[0].name;
         floor.imageWidth = 0;//TODO
         floor.imageHeight = 0;//TODO
         floorList[$("#floorNumUpload").val()] = floor;
@@ -37,8 +37,15 @@ $(function(){
     });
 });
 
+function loadFloorsFromList(){
+    $("#floorList").empty();
+    for(var val in floorList){
+            $("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
+    }
+}
+
 function changeFloor(val){
-    changeIMGsource("floor_plans/"+floorList[val].imagePath.name);
+    changeIMGsource("floor_plans/"+floorList[val].imagePath);
     current_floor = parseInt(val);
     $("#floor"+val).addClass("active");
     redraw();
@@ -54,7 +61,7 @@ function floorClicked(elem){
 function loadInitialFloor() {
     var floor = new FloorPlan();
     floor.floorID = 1;
-    floor.imagePath  = {name: "floor3.svg"};
+    floor.imagePath  = "floor3.svg";
     floor.imageWidth = 0;//TODO
     floor.imageHeight = 0;//TODO
     floorList[1] = floor;

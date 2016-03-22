@@ -38,3 +38,8 @@
 #uploadFile{
     display: none;
 }
+#attachedDocName {
+    width:200px;
+    max-width: 200px;
+    overflow-x: auto;
+}
