@@ -25,7 +25,7 @@ function loadFromJSON() {
     POTList = [];
     nodeList = [];
     edgeList = [];
-    
+
     //floorList
     $.each(jsonMap.floorPlan, function(i, fp) {
         if(fp !== null) {

@@ -2,7 +2,11 @@
     This JavaScript file contains all scripts relate to operation of the menus
 */
 
-var current_tool = "none"
+// The current POT tool (none, stair, ramp, etc.)
+var current_tool = "none";
+
+// The node editing tool (place point, create edge, move point, etc.)
+var current_node_tool = "point";
 
 $(document).ready(function(){
     // Set the click event on the POTs to change the current tool
@@ -22,6 +26,9 @@ function showFloorsMenu()
     $("#MapLayoutMainMenu").hide();
     $("#floorEditorMenu").show();
     hidePOTMenu();
+
+    // Reset selected node editing tool
+    updateNodeEditorTool($("#placeNodeButton"));
 
     nodeEditingMode = false;
 }
@@ -43,6 +50,9 @@ function showMainMenu()
     $("#nodeEditorMenu").hide();
     $("#MapLayoutMainMenu").show();
     hidePOTMenu();
+
+    // Reset selected node editing tool
+    updateNodeEditorTool($("#placeNodeButton"));
 
     // Reset drawing modes
     nodeEditingMode = false;
@@ -83,7 +93,7 @@ function showPOTMenu() {
     jQuery.each( $("#POTMenu > #POTIconsContainer > .btn"), function( i, btn ) {
 
         // Don't animate the first button for spacing reasons
-        if(i == 0) {
+        if(i === 0) {
             return true;
         }
 
@@ -108,4 +118,41 @@ function hidePOTMenu() {
         $("#POTMenu").css("margin-top", 0);
     });
 
+}
+
+// Click on a node editor tool
+function changeNodeEditorTool(btn)
+{
+    updateNodeEditorTool(btn);
+
+    if(current_node_tool === "point")
+    {
+        showPOTMenu();
+    }
+    else
+    {
+        hidePOTMenu();
+    }
+}
+
+// Switch to a node editor tool
+function updateNodeEditorTool(btn)
+{
+    // Don't do anything if the tool is already selected
+    if($(btn).data("node-tool") === current_node_tool)
+    {
+        return false;
+    }
+
+    // Remove the active button
+    $("#nodeEditorMenu .btn").removeClass("active");
+
+    // Make the clicked button active
+    $(btn).addClass("active");
+
+    // Cancel anything the current tool is doing
+    cancelOperations();
+
+    // Change the tool
+    current_node_tool = $(btn).data("node-tool");
 }
