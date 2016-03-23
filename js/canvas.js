@@ -3,8 +3,7 @@
 //the id generator
 var i=0;
 
-var POI_id = 0;
-var POT_id = 0;
+var Node_ID = 0;
 var SP_id = 0;
 
 function Point(x,y,floor) {
@@ -95,8 +94,8 @@ function File(type) {
 }
 
 function POI(point) {
-    this.ID = POI_id;
-    POI_id++;
+    this.ID = Node_ID;
+    Node_ID++;
     this.isSet = false;
     this.title = "";//new LanguageText('title');
     this.description = "";//new LanguageText('description');
@@ -130,8 +129,8 @@ function setCreatePOIid(){
 }
 
 function POT(point, label) {
-    this.ID = POT_id;
-    POT_id++;
+    this.ID = Node_ID;
+    Node_ID++;
     this.label = label;
     this.point = point;
     this.floorID = current_floor;
