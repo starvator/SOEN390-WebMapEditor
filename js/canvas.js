@@ -127,7 +127,10 @@ function POI(point) {
 }
 
 function setCreatePOIid(){
+    $("#"+active_id).removeClass("active");
+    $("#editPOIButton").addClass("active");
     active_id = -2;
+    hideInactiveStoryLines();
     redraw();
 }
 
