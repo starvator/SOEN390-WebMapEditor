@@ -111,6 +111,7 @@ function storylineClicked(elem){
     var id = $(elem).attr("id");
     $("#"+active_id).removeClass("active");
     $("#"+id).addClass("active");
+    $("#editPOIButton").removeClass("active");
     active_id = id;
     highlightPOI(active_id);
     hideInactiveStoryLines();
