@@ -39,21 +39,21 @@ function loadFromJSON() {
             storylineList.push(Storyline.fromJSON(sl));
         }
     });
-
+    
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
         if(poi !== null) {
             POIList.push(POI.fromJSON(poi));
         }
     });
-
+     
     //POT
     $.each(jsonMap.node.pot, function(i, pot) {
         if(pot !== null) {
             POTList.push(POT.fromJSON(pot));
         }
     });
-
+       
     //edgeList
     $.each(jsonMap.edge, function(i, e) {
         if(e !== null) {
@@ -72,7 +72,7 @@ FloorPlan.fromJSON = function(json) {
     fp.imagePath = json.imagePath;
     fp.imageWidth = json.imageWidth;
     fp.imageHeight = json.imageHeight;
-
+    
     return fp;
 };
 
@@ -83,7 +83,7 @@ StoryPoint.fromJSON = function(json) {
     sp.title = json.title;//LanguageText.fromJSON(json.title);
     sp.description = json.description;//LanguageText.fromJSON(json.description);
     sp.media = json.media;
-
+    
     return sp;
 };
 
@@ -91,23 +91,23 @@ POI.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
-    poi.id = json.id;
+    poi.ID = json.id;
     poi.title = json.title;
     poi.description = json.description;
-
+    
     //TODO: LanguageText formats?
     //poi.title = LanguageText.fromJSON(json.title);
     //poi.description = LanguageText.fromJSON(json.description);
     poi.floorID = json.floorID;
-    poi.ibeacon = new IBeacon(json.iBeacon.uuid, json.iBeacon.major, json.iBeacon.minor);
+    poi.ibeacon = IBeacon.fromJSON(json.iBeacon);
     poi.media = json.media;
-
+    
     $.each(json.storyPoint, function(i, sp) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
     });
-
+    
     nodeList.push(ppp);
-
+    
     return poi;
 };
 
@@ -115,20 +115,48 @@ POT.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
+    pot.ID = json.id;
     pot.label = json.label;//LanguageText.fromJSON(json.label);
-    pot.floorID = json.floorID;
-
+    pot.floorID = json.floorID; 
+    
     nodeList.push(ppp);
-
+    
     return pot;
 };
 
 Edge.fromJSON = function(json) {
 
-    var e = new Edge(json.startNode, json.endNode);
+    var start = findNodeByID(json.startNode.id);
+    var end = findNodeByID(json.endNode.id);
 
+    var e = new Edge(start, end);
+    
     return e;
 };
+
+IBeacon.fromJSON = function(json) {
+    
+    var ib = new IBeacon(json.uuid, json.major, json.minor);
+  
+    return ib;
+};
+
+function findNodeByID(id){
+    var found;
+    $.each(POIList, function(i, poi) {
+       if(poi.ID === id){
+           found = poi;
+       } 
+    });
+    
+    $.each(POTList, function(i, pot) {
+       if(pot.ID === id){
+           found = pot;
+       } 
+    });
+    
+    return found;
+}
 
 Storyline.fromJSON = function(json) {
 
@@ -140,7 +168,7 @@ Storyline.fromJSON = function(json) {
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;
     s.floorsCovered = json.floorsCovered;
-
+    
     return s;
 };
 
@@ -151,7 +179,7 @@ LanguageText.fromJSON = function(json) {
     $.each(json, function(i, pair) {
         lt.addPair(pair.language, pair.value);
     });
-
+    
     return lt;
 };
 **/

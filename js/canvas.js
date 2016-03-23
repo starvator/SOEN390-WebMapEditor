@@ -3,8 +3,7 @@
 //the id generator
 var i=0;
 
-var POI_id = 0;
-var POT_id = 0;
+var Node_ID = 0;
 var SP_id = 0;
 
 function Point(x,y,floor) {
@@ -19,11 +18,9 @@ function Edge(origin, destination) {
     this.origin = origin;
     this.destination = destination;
     this.toJSON = function() {
-    //TODO: finish and add appropriate methods
         return {
-            startNode: this.origin,
-            endNode:this.destination,
-            floorNumber:'TODO to be retrieved',
+            startNode: this.origin.ID,
+            endNode:this.destination.ID,
             distance:distance(this.origin, this.destination)
             };
     };
@@ -97,14 +94,14 @@ function File(type) {
 }
 
 function POI(point) {
-    this.ID = POI_id;
-    POI_id++;
+    this.ID = Node_ID;
+    Node_ID++;
     this.isSet = false;
     this.title = "";//new LanguageText('title');
     this.description = "";//new LanguageText('description');
     this.point = point;
     this.floorID = current_floor;
-    this.ibeacon = "";
+    this.ibeacon = new IBeacon("","","");
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
@@ -136,8 +133,8 @@ function setCreatePOIid(){
 }
 
 function POT(point, label) {
-    this.ID = POT_id;
-    POT_id++;
+    this.ID = Node_ID;
+    Node_ID++;
     this.label = label;
     this.point = point;
     this.floorID = current_floor;
@@ -437,8 +434,8 @@ function drawEdges(){
             ctx.strokeStyle = nodeColor;
         }
         ctx.beginPath();
-        ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
-        ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
+        ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
+        ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);
         ctx.stroke();
     }
 }
