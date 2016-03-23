@@ -2,7 +2,7 @@
     This JavaScript file contains all scripts relate to operation of the menus
 */
 
-var current_tool = "none"
+var current_tool = "none";
 
 $(document).ready(function(){
     // Set the click event on the POTs to change the current tool
@@ -83,7 +83,7 @@ function showPOTMenu() {
     jQuery.each( $("#POTMenu > #POTIconsContainer > .btn"), function( i, btn ) {
 
         // Don't animate the first button for spacing reasons
-        if(i == 0) {
+        if(i === 0) {
             return true;
         }
 
