@@ -296,7 +296,7 @@ function drawNode(anode) {
         anode.x = mouseLocation.x;
         anode.y = mouseLocation.y;
     }
-    
+
     // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
     if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
     {
@@ -533,7 +533,7 @@ function canvasClickStoryEditing()
 
 // Cancel any edge creation operations
 function cancelOperations() {
-    
+
     // If a node was being moved, move it back
     if(lastSelectedNode && current_node_tool === "move")
     {

@@ -27,6 +27,9 @@ function showFloorsMenu()
     $("#floorEditorMenu").show();
     hidePOTMenu();
 
+    // Reset selected node editing tool
+    updateNodeEditorTool($("#placeNodeButton"));
+
     nodeEditingMode = false;
 }
 
@@ -47,6 +50,9 @@ function showMainMenu()
     $("#nodeEditorMenu").hide();
     $("#MapLayoutMainMenu").show();
     hidePOTMenu();
+
+    // Reset selected node editing tool
+    updateNodeEditorTool($("#placeNodeButton"));
 
     // Reset drawing modes
     nodeEditingMode = false;
@@ -114,16 +120,39 @@ function hidePOTMenu() {
 
 }
 
-function changeNodeEditorTool(btn) {
+// Click on a node editor tool
+function changeNodeEditorTool(btn)
+{
+    updateNodeEditorTool(btn);
+
+    if(current_node_tool === "point")
+    {
+        showPOTMenu();
+    }
+    else
+    {
+        hidePOTMenu();
+    }
+}
+
+// Switch to a node editor tool
+function updateNodeEditorTool(btn)
+{
+    // Don't do anything if the tool is already selected
+    if($(btn).data("node-tool") === current_node_tool)
+    {
+        return false;
+    }
+
     // Remove the active button
     $("#nodeEditorMenu .btn").removeClass("active");
-    
+
     // Make the clicked button active
     $(btn).addClass("active");
-    
+
     // Cancel anything the current tool is doing
     cancelOperations();
-    
+
     // Change the tool
     current_node_tool = $(btn).data("node-tool");
 }
