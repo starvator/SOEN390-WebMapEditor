@@ -22,7 +22,7 @@ function addNewStoryLine(){
         $("#"+current_id).addClass("active");
         active_id = current_id;
         storyline.ID = current_id;
-        
+
         storyline.title = name;
         storyline.description = description;
         storyline.floorsCovered.push(current_floor);
@@ -31,7 +31,7 @@ function addNewStoryLine(){
         storyline.floorsCovered.push(current_floor);
         storyline.description.addPair('en', description);
         **/
-        
+
         $("#storylineField").val("");
         $("#storylineDescription").val("");
         storylineList.push(storyline);
@@ -54,11 +54,11 @@ function buildStorylineMenuFromList(){
         '<ul id="'+ s.ID +'_pointList"></ul>');
         }
         current_id++;
-        
+
         $.each(POIList, function(i, poi) {
                 $.each(poi.storyPoint, function(j, sp) {
                     if(sp.storylineID == s.ID) {
-                        $("#"+s.ID+"_pointList").append('<li><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title +'</a></li>');      
+                        $("#"+s.ID+"_pointList").append('<li><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title +'</a></li>');
                     }
                 });
             });
@@ -77,7 +77,7 @@ function editStoryLine(){
     }
     $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.getByLanguage("en") +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.getByLanguage("en") +'" /></a>');
     $("#submitButton").hide();
-	$("#editButton").html('<a href="#">Save</a>');
+    $("#editButton").html('<a href="#">Save</a>');
     $("#editButton").attr("onclick","saveStoryLine()");
 }
 
@@ -102,7 +102,7 @@ function saveStoryLine(){
     $("#storylineDescription").val("");
     $("#editButton").html('<a href="#">Edit</a>');
     $("#editButton").attr("onclick","editStoryLine()");
-	$("#submitButton").show();
+    $("#submitButton").show();
 }
 
 //variable for active storyline id
