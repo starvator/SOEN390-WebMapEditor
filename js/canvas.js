@@ -16,12 +16,12 @@ function Point(x,y,floor) {
 }
 
 function Edge(origin, destination) {
-    this.origin = origin.ID;
-    this.destination = destination.ID;
+    this.origin = origin;
+    this.destination = destination;
     this.toJSON = function() {
         return {
-            startNode: this.origin,
-            endNode:this.destination,
+            startNode: this.origin.ID,
+            endNode:this.destination.ID,
             distance:distance(this.origin, this.destination)
             };
     };
@@ -409,8 +409,8 @@ function drawEdges(){
             ctx.strokeStyle = nodeColor;
         }
         ctx.beginPath();
-        ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
-        ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
+        ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
+        ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);
         ctx.stroke();
     }
 }

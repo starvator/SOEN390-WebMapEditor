@@ -91,7 +91,7 @@ POI.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
-    poi.id = json.id;
+    poi.ID = json.id;
     poi.title = json.title;
     poi.description = json.description;
     
@@ -115,6 +115,7 @@ POT.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
+    pot.ID = json.id;
     pot.label = json.label;//LanguageText.fromJSON(json.label);
     pot.floorID = json.floorID; 
     
@@ -125,10 +126,30 @@ POT.fromJSON = function(json) {
 
 Edge.fromJSON = function(json) {
 
-    var e = new Edge(json.startNode, json.endNode);
+    var start = findNodeByID(json.startNode.id);
+    var end = findNodeByID(json.endNode.id);
+
+    var e = new Edge(start, end);
     
     return e;
 };
+
+function findNodeByID(id){
+    var found;
+    $.each(POIList, function(i, poi) {
+       if(poi.ID === id){
+           found = poi;
+       } 
+    });
+    
+    $.each(POTList, function(i, pot) {
+       if(pot.ID === id){
+           found = pot;
+       } 
+    });
+    
+    return found;
+}
 
 Storyline.fromJSON = function(json) {
 
