@@ -47,7 +47,7 @@ $(document).ready(function(){
             for(var val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
                     POIList[val].title = $("#spTitle").val();
-                    POIList[val].ibeacon = $("#spBeaconID").val();
+                    POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                     POIList[val].description = CKEDITOR.instances["editor1"].getData();
                     POIList[val].media = $("#attachedDocName").text();
                     POIList[val].isSet = true;
@@ -65,7 +65,7 @@ $(document).ready(function(){
             }
             if(!exists){
                 currentPOI.title = $("#spTitle").val();
-                currentPOI.ibeacon = $("#spBeaconID").val();
+                currentPOI.ibeacon.uuid = $("#spBeaconID").val();
                 currentPOI.description = CKEDITOR.instances["editor1"].getData();
                 currentPOI.media = $("#attachedDocName").text();
                 currentPOI.isSet = true;
@@ -78,7 +78,7 @@ $(document).ready(function(){
                         if (POIList[val].storyPoint[p].storylineID == active_id){
                             //Updating sp
                             POIList[val].storyPoint[p].title = $("#spTitle").val();
-                            POIList[val].ibeacon = $("#spBeaconID").val();
+                            POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                             POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
                             POIList[val].storyPoint[p].media = $("#attachedDocName").text();
                             POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
@@ -143,7 +143,7 @@ function fillEditor(poi){
             }else if(poi.isAutoOn === false){
                 $("#autoOff").click();
             }
-            $("#spBeaconID").val(poi.ibeacon);
+            $("#spBeaconID").val(poi.ibeacon.uuid);
             CKEDITOR.instances["editor1"].setData(poi.description);
             $("#attachedDocName").text(poi.media);
         }
@@ -166,7 +166,7 @@ function fillEditor(poi){
                 if (currentPOI.storyPoint[p].storylineID == active_id){
                     $("#spTitle").val(currentPOI.storyPoint[p].title);
                     $("#autoOn").click();
-                    $("#spBeaconID").val(currentPOI.ibeacon);
+                    $("#spBeaconID").val(currentPOI.ibeacon.uuid);
                     CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
                     $("#attachedDocName").text(currentPOI.storyPoint[p].media);
                     spFound = true;

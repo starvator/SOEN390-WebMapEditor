@@ -99,7 +99,7 @@ POI.fromJSON = function(json) {
     //poi.title = LanguageText.fromJSON(json.title);
     //poi.description = LanguageText.fromJSON(json.description);
     poi.floorID = json.floorID;
-    poi.ibeacon = new IBeacon(json.iBeacon.uuid, json.iBeacon.major, json.iBeacon.minor);
+    poi.ibeacon = IBeacon.fromJSON(json.iBeacon);
     poi.media = json.media;
     
     $.each(json.storyPoint, function(i, sp) {
@@ -132,6 +132,13 @@ Edge.fromJSON = function(json) {
     var e = new Edge(start, end);
     
     return e;
+};
+
+IBeacon.fromJSON = function(json) {
+    
+    var ib = new IBeacon(json.uuid, json.major, json.minor);
+  
+    return ib;
 };
 
 function findNodeByID(id){

@@ -101,7 +101,7 @@ function POI(point) {
     this.description = "";//new LanguageText('description');
     this.point = point;
     this.floorID = current_floor;
-    this.ibeacon = "";
+    this.ibeacon = new IBeacon("","","");
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
