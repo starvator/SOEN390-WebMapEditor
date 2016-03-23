@@ -196,6 +196,7 @@ var lastSelectedNode;               // During edge creation, the first selected 
 var nodeColor = "#660066";
 var hlColor = "#009900";
 var confirmedColor = "#0000FF";
+var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
 
 //For JSON use
 var floorList = [];
@@ -289,6 +290,13 @@ function drawNode(anode) {
         return true;
     }
 
+    // If currently moving the current node, move it to the mouse location
+    if(current_node_tool === "move" && lastSelectedNode === anode)
+    {
+        anode.x = mouseLocation.x;
+        anode.y = mouseLocation.y;
+    }
+
     // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
     if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
     {
@@ -345,20 +353,37 @@ function drawNodeEditingCursor() {
     // Draw a temporary point at the cursor's location when over empty space and not creating an edge
     if(!lastSelectedNode && !mouseOnNode)
     {
-        if(current_tool === "none")
+        if(current_node_tool === "point")
         {
-            // Draw a point
-            ctx.beginPath();
-            ctx.fillStyle= nodeColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
-            ctx.fill();
+            if(current_tool === "none")
+            {
+                // Draw a point
+                ctx.beginPath();
+                ctx.fillStyle= nodeColor;
+                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+                ctx.fill();
+            }
+            else
+            {
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                // Draw the selected tool
+                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            }
         }
-        else
+        else if(current_node_tool === "edge")
         {
-            ctx.font = '20px souvlaki-font-1';
+            ctx.font = '20px Glyphicons Halflings';
             ctx.fillStyle= nodeColor;
             // Draw the selected tool
-            ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            ctx.fillText(String.fromCharCode(0xe096), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
+        else if(current_node_tool === "move")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
         }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
@@ -426,7 +451,7 @@ function canvasClick(x,y) {
 function canvasClickNodeEditing(x,y)
 {
     // If clicking on empty space
-    if(!mouseOnNode && !lastSelectedNode) {
+    if(current_node_tool === "point" && !mouseOnNode && !lastSelectedNode) {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
         nodeList.push(point);
@@ -438,7 +463,7 @@ function canvasClickNodeEditing(x,y)
         }
     }
     // If clicking on a node and not yet starting an edge
-    else if(mouseOnNode && !lastSelectedNode) {
+    else if(current_node_tool === "edge" && mouseOnNode && !lastSelectedNode) {
         // Check the selected node has to possibility of connecting to another node
         if(canNodeConnect(mouseOnNode))
         {
@@ -451,10 +476,22 @@ function canvasClickNodeEditing(x,y)
         }
     }
     // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-    else if (mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+    else if (current_node_tool === "edge" && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
         // Create a new edge
         edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
         lastSelectedNode = null; // Clear the selected node
+    }
+    // On the first click start moving the node
+    else if(current_node_tool === "move" && mouseOnNode && !lastSelectedNode)
+    {
+        previousSelectedPoint.x = mouseOnNode.x;
+        previousSelectedPoint.y = mouseOnNode.y;
+        lastSelectedNode = mouseOnNode;
+    }
+    // On the second click start moving the node
+    else if(current_node_tool === "move" && lastSelectedNode)
+    {
+        lastSelectedNode = null;
     }
 }
 
@@ -496,6 +533,14 @@ function canvasClickStoryEditing()
 
 // Cancel any edge creation operations
 function cancelOperations() {
+
+    // If a node was being moved, move it back
+    if(lastSelectedNode && current_node_tool === "move")
+    {
+        lastSelectedNode.x = previousSelectedPoint.x;
+        lastSelectedNode.y = previousSelectedPoint.y;
+    }
+
     lastSelectedNode = null;
 }
 
