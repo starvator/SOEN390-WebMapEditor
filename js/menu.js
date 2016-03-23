@@ -121,9 +121,9 @@ function changeNodeEditorTool(btn) {
     // Make the clicked button active
     $(btn).addClass("active");
     
-    // Change the tool
-    current_node_tool = $(btn).data("node-tool");
-    
     // Cancel anything the current tool is doing
     cancelOperations();
+    
+    // Change the tool
+    current_node_tool = $(btn).data("node-tool");
 }

@@ -196,6 +196,7 @@ var lastSelectedNode;               // During edge creation, the first selected 
 var nodeColor = "#660066";
 var hlColor = "#009900";
 var confirmedColor = "#0000FF";
+var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
 
 //For JSON use
 var floorList = [];
@@ -289,6 +290,13 @@ function drawNode(anode) {
         return true;
     }
 
+    // If currently moving the current node, move it to the mouse location
+    if(current_node_tool === "move" && lastSelectedNode === anode)
+    {
+        anode.x = mouseLocation.x;
+        anode.y = mouseLocation.y;
+    }
+    
     // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
     if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
     {
@@ -473,6 +481,18 @@ function canvasClickNodeEditing(x,y)
         edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
         lastSelectedNode = null; // Clear the selected node
     }
+    // On the first click start moving the node
+    else if(current_node_tool === "move" && mouseOnNode && !lastSelectedNode)
+    {
+        previousSelectedPoint.x = mouseOnNode.x;
+        previousSelectedPoint.y = mouseOnNode.y;
+        lastSelectedNode = mouseOnNode;
+    }
+    // On the second click start moving the node
+    else if(current_node_tool === "move" && lastSelectedNode)
+    {
+        lastSelectedNode = null;
+    }
 }
 
 function canvasClickStoryEditing()
@@ -513,6 +533,14 @@ function canvasClickStoryEditing()
 
 // Cancel any edge creation operations
 function cancelOperations() {
+    
+    // If a node was being moved, move it back
+    if(lastSelectedNode && current_node_tool === "move")
+    {
+        lastSelectedNode.x = previousSelectedPoint.x;
+        lastSelectedNode.y = previousSelectedPoint.y;
+    }
+
     lastSelectedNode = null;
 }
 
