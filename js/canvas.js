@@ -131,7 +131,7 @@ function setCreatePOIid(){
     $("#editPOIButton").addClass("active");
     active_id = -2;
     hideInactiveStoryLines();
-    highlightPOI("editPOI");
+    highlightPOI(-2);
     redraw();
 }
 
@@ -613,7 +613,7 @@ function highlightPOI(story){
     //resets highlight list
     hlPointList = [];
     for(var val in POIList){
-        if (story=="editPOI"){
+        if (story===-2){
            hlPointList.push(POIList[val].point); 
         }
         else {

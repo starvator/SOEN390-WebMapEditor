@@ -108,12 +108,7 @@ $(document).ready(function(){
             //close the window
             $("#infoEditingForm").hide();
             $("#modal").hide();
-            if (active_id===-2){
-                highlightPOI("editPOI");
-            }
-            else {
-                highlightPOI(active_id);
-            }
+            highlightPOI(active_id);
     }
     else{
         showErrorAlert("Enter a Title.");
