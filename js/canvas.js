@@ -345,21 +345,32 @@ function drawNodeEditingCursor() {
     // Draw a temporary point at the cursor's location when over empty space and not creating an edge
     if(!lastSelectedNode && !mouseOnNode)
     {
-        if(current_tool === "none")
+        if(current_node_tool === "point")
         {
-            // Draw a point
-            ctx.beginPath();
-            ctx.fillStyle= nodeColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
-            ctx.fill();
+            if(current_tool === "none")
+            {
+                // Draw a point
+                ctx.beginPath();
+                ctx.fillStyle= nodeColor;
+                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+                ctx.fill();
+            }
+            else
+            {
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                // Draw the selected tool
+                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            }
         }
-        else
+        else if(current_node_tool === "edge")
         {
-            ctx.font = '20px souvlaki-font-1';
+            ctx.font = '20px Glyphicons Halflings';
             ctx.fillStyle= nodeColor;
             // Draw the selected tool
-            ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            ctx.fillText(String.fromCharCode(0xe096), mouseLocation.x - 10,mouseLocation.y + 10);
         }
+        
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
     else if(lastSelectedNode && !mouseOnNode)
@@ -426,7 +437,7 @@ function canvasClick(x,y) {
 function canvasClickNodeEditing(x,y)
 {
     // If clicking on empty space
-    if(!mouseOnNode && !lastSelectedNode) {
+    if(current_node_tool === "point" && !mouseOnNode && !lastSelectedNode) {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
         nodeList.push(point);
@@ -438,7 +449,7 @@ function canvasClickNodeEditing(x,y)
         }
     }
     // If clicking on a node and not yet starting an edge
-    else if(mouseOnNode && !lastSelectedNode) {
+    else if(current_node_tool === "edge" && mouseOnNode && !lastSelectedNode) {
         // Check the selected node has to possibility of connecting to another node
         if(canNodeConnect(mouseOnNode))
         {
@@ -451,7 +462,7 @@ function canvasClickNodeEditing(x,y)
         }
     }
     // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-    else if (mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+    else if (current_node_tool === "edge" && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
         // Create a new edge
         edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
         lastSelectedNode = null; // Clear the selected node

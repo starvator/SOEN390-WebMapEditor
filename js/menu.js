@@ -2,7 +2,11 @@
     This JavaScript file contains all scripts relate to operation of the menus
 */
 
+// The current POT tool (none, stair, ramp, etc.)
 var current_tool = "none";
+
+// The node editing tool (place point, create edge, move point, etc.)
+var current_node_tool = "point";
 
 $(document).ready(function(){
     // Set the click event on the POTs to change the current tool
@@ -108,4 +112,15 @@ function hidePOTMenu() {
         $("#POTMenu").css("margin-top", 0);
     });
 
+}
+
+function changeNodeEditorTool(btn) {
+    // Remove the active button
+    $("#nodeEditorMenu .btn").removeClass("active");
+    
+    // Make the clicked button active
+    $(btn).addClass("active");
+    
+    // Change the tool
+    current_node_tool = $(btn).data("node-tool");
 }
