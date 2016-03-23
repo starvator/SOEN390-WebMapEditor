@@ -370,7 +370,13 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe096), mouseLocation.x - 10,mouseLocation.y + 10);
         }
-        
+        else if(current_node_tool === "move")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
     else if(lastSelectedNode && !mouseOnNode)
