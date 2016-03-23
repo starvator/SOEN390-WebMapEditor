@@ -111,9 +111,9 @@ $(document).ready(function(){
             if (active_id===-2){
                 highlightPOI("editPOI");
             }
-        else {
-            highlightPOI(active_id);
-        }
+            else {
+                highlightPOI(active_id);
+            }
     }
     else{
         showErrorAlert("Enter a Title.");
