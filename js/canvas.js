@@ -131,6 +131,7 @@ function setCreatePOIid(){
     $("#editPOIButton").addClass("active");
     active_id = -2;
     hideInactiveStoryLines();
+    highlightPOI(editPOI);
     redraw();
 }
 
@@ -612,10 +613,15 @@ function highlightPOI(story){
     //resets highlight list
     hlPointList = [];
     for(var val in POIList){
-        for(var p in POIList[val].storyPoint){
-            if(POIList[val].storyPoint[p].storylineID == story){
-                hlPointList.push(POIList[val].point);
-                break;
+        if (story=="editPOI"){
+           hlPointList.push(POIList[val].point); 
+        }
+        else {
+            for(var p in POIList[val].storyPoint){
+                if(POIList[val].storyPoint[p].storylineID == story){
+                    hlPointList.push(POIList[val].point);
+                    break;
+                }
             }
         }
     }
