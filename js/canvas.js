@@ -131,7 +131,7 @@ function setCreatePOIid(){
     $("#editPOIButton").addClass("active");
     active_id = -2;
     hideInactiveStoryLines();
-    highlightPOI(-2);
+    highlightPOI(active_id);
     redraw();
 }
 
