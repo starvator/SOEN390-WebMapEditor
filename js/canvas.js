@@ -294,12 +294,12 @@ function drawNode(anode) {
     // If currently moving the current node, move it to the mouse location
     if(current_node_tool === "move" && lastSelectedNode === anode)
     {
-        anode.x = mouseLocation.x;
-        anode.y = mouseLocation.y;
+        anode.point.x = mouseLocation.x;
+        anode.point.y = mouseLocation.y;
     }
 
     // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-    if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+    if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.point.x) * (mouseLocation.x - anode.point.x) + (mouseLocation.y - anode.point.y) * (mouseLocation.y - anode.point.y)))
     {
         // If the mouse is near, set the node and change its colour
         mouseOnNode = anode;
@@ -308,7 +308,7 @@ function drawNode(anode) {
     else
     {
         //Add condition to take into account storyline
-        if(_.contains(hlPointList,anode))
+        if(_.contains(hlPointList,anode.point))
         {
             ctx.fillStyle = hlColor;
         }
@@ -324,27 +324,25 @@ function drawNode(anode) {
     }
 
 
-    // Note that potFound returns a POT if one is found
-    var potFound = isNodePOT(anode);
 
-    if(potFound) {
+    if(anode.label !== "none") {
         // Draw a background
         ctx.beginPath();
         ctx.fillStyle="#e6e6e6";
-        ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
+        ctx.arc(anode.point.x,anode.point.y,18,0,2*Math.PI);
         ctx.fill();
 
 
         // Draw the associated tool
         ctx.font = '20px souvlaki-font-1';
         ctx.fillStyle= nodeColor;
-        ctx.fillText(String.fromCharCode(POTtypes[potFound.label]), anode.x - 10,anode.y + 10);
+        ctx.fillText(String.fromCharCode(POTtypes[anode.label]), anode.point.x - 10,anode.point.y + 10);
     }
     else
     {
         // Draw a reglar point
         ctx.beginPath();
-        ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
+        ctx.arc(anode.point.x,anode.point.y,9,0,2*Math.PI);
         ctx.fill();
     }
 }
@@ -392,7 +390,7 @@ function drawNodeEditingCursor() {
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
-        ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+        ctx.moveTo(lastSelectedNode.point.x,lastSelectedNode.point.y);
         ctx.lineTo(mouseLocation.x,mouseLocation.y);
         ctx.stroke();
 
@@ -406,8 +404,8 @@ function drawNodeEditingCursor() {
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
-        ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
-        ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
+        ctx.moveTo(lastSelectedNode.point.x,lastSelectedNode.point.y);
+        ctx.lineTo(mouseOnNode.point.x,mouseOnNode.point.y);
         ctx.stroke();
     }
 }
@@ -455,13 +453,10 @@ function canvasClickNodeEditing(x,y)
     if(current_node_tool === "point" && !mouseOnNode && !lastSelectedNode) {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-        nodeList.push(point);
-
-        // if a POT tool is selected, create a POT
-        if(current_tool !== "none")
-        {
-            POTList.push(new POT(point, current_tool));
-        }
+		var pot = new POT(point, current_tool);
+        nodeList.push(pot);
+        POTList.push(pot);
+       
     }
     // If clicking on a node and not yet starting an edge
     else if(current_node_tool === "edge" && mouseOnNode && !lastSelectedNode) {
@@ -485,8 +480,8 @@ function canvasClickNodeEditing(x,y)
     // On the first click start moving the node
     else if(current_node_tool === "move" && mouseOnNode && !lastSelectedNode)
     {
-        previousSelectedPoint.x = mouseOnNode.x;
-        previousSelectedPoint.y = mouseOnNode.y;
+        previousSelectedPoint.x = mouseOnNode.point.x;
+        previousSelectedPoint.y = mouseOnNode.point.y;
         lastSelectedNode = mouseOnNode;
     }
     // On the second click start moving the node
@@ -514,19 +509,19 @@ function canvasClickStoryEditing()
     var found = false;
     //find point in list and fill editor
     if(POIList.length === 0){
-        var newPOI = new POI(mouseOnNode);
+        var newPOI = new POI(mouseOnNode.point);
         newPOI.storyPoint = [];
         fillEditor(newPOI);
     }else{
         for(var val in POIList){
-            if(POIList[val].point.id == mouseOnNode.id){
+            if(POIList[val].point.id == mouseOnNode.point.id){
                     fillEditor(POIList[val]);
                     found = true;
             break;
             }
         }
         if(!found){
-            var newPOI = new POI(mouseOnNode);
+            var newPOI = new POI(mouseOnNode.point);
             fillEditor(newPOI);
         }
         }
