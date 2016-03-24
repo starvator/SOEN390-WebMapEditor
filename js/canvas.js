@@ -201,7 +201,6 @@ var previousSelectedPoint = new Point(0,0); // Used to store the previous click 
 
 //For JSON use
 var floorList = [];
-var pointList = [];
 var storylineList = [];
 var hlPointList = [];
 
@@ -325,7 +324,7 @@ function drawNode(anode) {
 
 
 
-    if(anode.label !== "none") {
+    if(anode.label !== undefined && anode.label !== "none") {
         // Draw a background
         ctx.beginPath();
         ctx.fillStyle="#e6e6e6";
@@ -499,8 +498,8 @@ function canvasClickStoryEditing()
     //TODOTYLER: get the id of the currently selected storyline
     //alert(active_id);
 
-    // Cancel POI creation if the node is a POT
-    if(isNodePOT(mouseOnNode))
+    // Cancel POI creation if the node is a POT that isn't labelled "none"
+    if(mouseOnNode.label !== undefined && mouseOnNode.label !== "none")
     {
         showWarningAlert("Cannot create a storypoint or POI on a special Point of Transition");
         return false;
@@ -510,6 +509,7 @@ function canvasClickStoryEditing()
     //find point in list and fill editor
     if(POIList.length === 0){
         var newPOI = new POI(mouseOnNode.point);
+		newPOI.ID = mouseOnNode.ID;
         newPOI.storyPoint = [];
         fillEditor(newPOI);
     }else{
@@ -522,6 +522,7 @@ function canvasClickStoryEditing()
         }
         if(!found){
             var newPOI = new POI(mouseOnNode.point);
+			newPOI.ID = mouseOnNode.ID;
             fillEditor(newPOI);
         }
         }
