@@ -26,38 +26,6 @@ function Edge(origin, destination) {
     };
 }
 
-//TODO refactor and place in appropriate location later
-//This class is for any Language Text pairing such as descriptions or titles
-/** TO BE USED IN LATER STORY
-function LanguageText() {
-    this.pairs = [];
-    this.addPair = function(lang, value){
-        this.pairs.push({'language':lang, 'value':value});
-    };
-    this.toJSON = function() {
-        return this.pairs;
-    };
-    this.getByLanguage = function(lang){
-        for(var i = 0; i < this.pairs.length; i++)
-        {
-            if(this.pairs[i].language === lang)
-            {
-                return this.pairs[i].value;
-            }
-        }
-    };
-    this.setByLanguage = function(lang, value){
-        for(var i = 0; i < this.pairs.length; i++)
-        {
-            if(this.pairs[i].language === lang)
-            {
-                this.pairs[i].value = value;
-            }
-        }
-    };
-}
-**/
-
 function IBeacon(uuid, major, minor) {
     this.uuid = uuid;
     this.major = major;
@@ -110,8 +78,8 @@ function POI(point) {
     this.toJSON = function() {
         return {
             id: this.ID,
-            title: this.title,
-            description: this.description,
+            title: {language:"EN", title:this.title},
+            description: {language:"EN", description:this.description},
             x:this.point.x,
             y:this.point.y,
             floorID:this.floorID,
@@ -167,6 +135,18 @@ function Storyline(){
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
     this.floorsCovered = [];
+	
+	this.toJSON = function() {
+        return {
+            id: this.ID,
+            title: {language:"EN", title:this.title},
+            description: {language:"EN", description:this.description},
+            path:this.path,
+            thumbnail:this.thumbnail,
+            walkingTimeInMinutes:this.walkingTimeInMinutes,
+			floorsCovered:this.floorsCovered
+        };
+    };
 }
 
 function StoryPoint() {
@@ -176,6 +156,16 @@ function StoryPoint() {
     this.description = "";//new LanguageText();
     this.media = new Media();
     SP_id++;
+	
+	this.toJSON = function() {
+        return {
+            id: this.ID,
+			storylineID:this.storylineID;
+            title: {language:"EN", title:this.title},
+            description: {language:"EN", description:this.description},
+            media:this.media
+        };
+    };
 }
 
 // End Classes
