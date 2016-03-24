@@ -160,7 +160,7 @@ function StoryPoint() {
 	this.toJSON = function() {
         return {
             id: this.ID,
-			storylineID:this.storylineID;
+			storylineID:this.storylineID,
             title: {language:"EN", title:this.title},
             description: {language:"EN", description:this.description},
             media:this.media
