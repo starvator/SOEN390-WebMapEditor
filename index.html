@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/bootstrap.override.css">
-
     <link rel="stylesheet" href="css/textEditor.css">
+
     <link rel="stylesheet" href="css/stylesheet.css">
     <link rel="stylesheet" href="css/canvas.css">
 
@@ -29,19 +29,19 @@
     <script src="qunit/jquery.simulate.drag-n-drop.js"></script> 
     <script src="qunit/s2_tests.js"></script>
     <script src="qunit/s3_tests.js"></script>
-    <script src="qunit/s4_tests.js"></script>
 
     <script src="js/compute.js" data-cover></script>
-    <script src="js/json.js" data-cover></script>
     <script src="js/canvas.js" data-cover></script>
+    <script src="js/json.js" data-cover></script>
     <script src="js/floorList.js" data-cover></script>
     <script src="js/menu.js" data-cover></script>
     <script src="ckeditor/ckeditor.js"></script>
     <script src="js/panAndZoom.js" data-cover></script>
     <script src="js/textEditor.js" data-cover></script>
     <script src="js/storylines.js" data-cover></script>
-    <script src="js/alert.js" data-cover></script>
-    <script src="js/underscore-min.js" data-cover></script> 
+    <script src="js/alert.js"></script>
+    <script src="js/underscore-min.js"></script>
+
 </head>
 
 <body>
@@ -84,7 +84,7 @@
                                 </li>
                                 <li id = "submitButton" onclick="addNewStoryLine()"><a href="#">Submit</a></li>
                                 <li id = "editButton" onclick="editStoryLine()"><a href="#">Edit</a></li>
-                                <li onclick="setCreatePOIid()"><a href="#">Edit a Point of Interest</a></li>
+                                <li id = "editPOIButton" onclick="setCreatePOIid()"><a href="#">Edit a Point of Interest</a></li>
                             </ul>
                         </div>
                         <!-- MAP LAYOUT MENU -->
@@ -100,8 +100,10 @@
                                 <div class="btn btn-default" onclick="showNodesMenu()">Edit Points of Transition <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                                 </br>
+                                <div class="btn btn-default btn-file">Load Map<input type="file" id="inputFile"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                </div>
                                 <!-- TODO: offer the user to name the file? -->
-                                <div class="btn btn-default" onclick="download('mapData.json',createJSON())">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <div class="btn btn-default" onclick="confirmSave()">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div id="floorEditorMenu">
@@ -121,7 +123,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="fileUpload">Floor map svg image</label>
-                                        <input id="fileUpload" type="file" accept=".svg" />
+                                        <input id="fileUpload" type="file" accept="image/*" />
                                     </div>
                                     <input type="submit" class="btn btn-default" value="Add Floor" />
                                 </form>
@@ -134,11 +136,12 @@
                                 </ol>
                                 <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Map Layout Menu</div>
                                 </br>
-
-                                Click map to add points!</br>
-                                <div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
                                 </br>
-                                <div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                                <div id="placeNodeButton" class="btn btn-default active" onclick="changeNodeEditorTool(this)" data-node-tool="point"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="edge"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="move"><span class="glyphicon glyphicon-move" aria-hidden="true"></span> Point mover</div>
                             </div>
                         </div>
                     </div>
@@ -178,7 +181,7 @@
             </div>
         </div>
     </div>
-
+    <div id="modal" hidden></div>
     <div id="infoEditingForm" hidden>
         <div class="form-group">
             <span id="infoEditingFormTitle"></span>
@@ -203,6 +206,14 @@
             <span class="input-group-addon">iBeacon ID</span>
             <input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
         </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Major</span>
+            <input type="text" id="spBeaconMajor" class="form-control" placeholder="Major here">
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Minor</span>
+            <input type="text" id="spBeaconMinor" class="form-control" placeholder="Minor here">
+        </div>
         <!-- HTML EDITOR -->
         <div class="form-group">
             <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
@@ -214,7 +225,7 @@
             <span class="input-group-addon" id="attachedDocName"></span>
             <div class="btn btn-danger" id="clearAttachField">x</div>
             <div type="button" id="attachADoc" class="btn btn-default">Attach Doc</div>
-            <input id="uploadFile" type="file" />
+            <input id="uploadFile" type="file" multiple />
         </div>
         <div class="form-group">
             <div type="button" class="btn btn-success pull-right" id="SaveStoryPointInfo">Save</div>

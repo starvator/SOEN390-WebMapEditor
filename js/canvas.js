@@ -3,8 +3,7 @@
 //the id generator
 var i=0;
 
-var POI_id = 0;
-var POT_id = 0;
+var Node_ID = 0;
 var SP_id = 0;
 
 function Point(x,y,floor) {
@@ -19,11 +18,9 @@ function Edge(origin, destination) {
     this.origin = origin;
     this.destination = destination;
     this.toJSON = function() {
-    //TODO: finish and add appropriate methods
         return {
-            startNode: this.origin,
-            endNode:this.destination,
-            floorNumber:'TODO to be retrieved',
+            startNode: this.origin.ID,
+            endNode:this.destination.ID,
             distance:distance(this.origin, this.destination)
             };
     };
@@ -31,6 +28,7 @@ function Edge(origin, destination) {
 
 //TODO refactor and place in appropriate location later
 //This class is for any Language Text pairing such as descriptions or titles
+/** TO BE USED IN LATER STORY
 function LanguageText() {
     this.pairs = [];
     this.addPair = function(lang, value){
@@ -58,6 +56,7 @@ function LanguageText() {
         }
     };
 }
+**/
 
 function IBeacon(uuid, major, minor) {
     this.uuid = uuid;
@@ -95,17 +94,18 @@ function File(type) {
 }
 
 function POI(point) {
-    this.ID = POI_id;
-    POI_id++;
+    this.ID = Node_ID;
+    Node_ID++;
     this.isSet = false;
-    this.title = new LanguageText('title');
-    this.description = new LanguageText('description');
+    this.title = "";//new LanguageText('title');
+    this.description = "";//new LanguageText('description');
     this.point = point;
-        this.floorID = current_floor;
-    this.ibeacon = "";
+    this.floorID = current_floor;
+    this.ibeacon = new IBeacon("","","");
     //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
+    this.isAutoOn = true;
 
     this.toJSON = function() {
         return {
@@ -117,22 +117,28 @@ function POI(point) {
             floorID:this.floorID,
             iBeacon:this.ibeacon,
             media:this.media, //TODO
-            storyPoint:this.storyPoint //TODO
+            storyPoint:this.storyPoint, //TODO
+            autoOn:this.isAutoOn
         };
     };
 }
 
 function setCreatePOIid(){
+    $("#"+active_id).removeClass("active");
+    $("#editPOIButton").addClass("active");
     active_id = -2;
+    hideInactiveStoryLines();
+    highlightPOI(active_id);
     redraw();
 }
 
 function POT(point, label) {
-    this.ID = POT_id;
-    POT_id++;
+    this.ID = Node_ID;
+    Node_ID++;
     this.label = label;
     this.point = point;
     this.floorID = current_floor;
+    this.storyline = active_id;
 
 
     this.toJSON = function() {
@@ -155,8 +161,8 @@ function FloorPlan() {
 
 function Storyline(){
     this.ID = "";//gets defined in storylines.js
-    this.title = new LanguageText();
-    this.description = new LanguageText();
+    this.title = "";//new LanguageText();
+    this.description = "";//new LanguageText();
     this.path = [];
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
@@ -166,8 +172,8 @@ function Storyline(){
 function StoryPoint() {
     this.ID = SP_id;
     this.storylineID = active_id;
-    this.title = new LanguageText();
-    this.description = new LanguageText();
+    this.title = "";//new LanguageText();
+    this.description = "";//new LanguageText();
     this.media = new Media();
     SP_id++;
 }
@@ -191,6 +197,7 @@ var lastSelectedNode;               // During edge creation, the first selected 
 var nodeColor = "#660066";
 var hlColor = "#009900";
 var confirmedColor = "#0000FF";
+var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
 
 //For JSON use
 var floorList = [];
@@ -259,67 +266,95 @@ function redraw() {
 
     // Draw all stored transition nodes on the map
     jQuery.each(nodeList,function(i,anode){
-
-        // If the node is not on the current floor, ignore it
-        if(anode.floorID !== current_floor)
-        {
-            return true;
-        }
-
-        // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
-        if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
-        {
-            // If the mouse is near, set the node and change its colour
-            mouseOnNode = anode;
-            ctx.fillStyle=confirmedColor;
-        }
-        else
-        {
-            //Add condition to take into account storyline
-            ctx.fillStyle= nodeColor;
-            for (var val in hlPointList){
-                if (anode.id === hlPointList[val].id){
-                    ctx.fillStyle = hlColor;
-                }
-            }
-        }
-
-        // The last selected node during edge creation is a different colour
-        if(anode === lastSelectedNode) {
-            ctx.fillStyle=confirmedColor;
-        }
-
-
-        // Note that potFound returns a POT if one is found
-        var potFound = isNodePOT(anode);
-
-        if(potFound) {
-            // Draw a background
-            ctx.beginPath();
-            ctx.fillStyle="#e6e6e6";
-            ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
-            ctx.fill();
-
-
-            // Draw the associated tool
-            ctx.font = '20px souvlaki-font-1';
-            ctx.fillStyle= nodeColor;
-            ctx.fillText(String.fromCharCode(POTtypes[potFound.label]), anode.x - 10,anode.y + 10);
-        }
-        else
-        {
-            // Draw a reglar point
-            ctx.beginPath();
-            ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
-            ctx.fill();
-        }
+        drawNode(anode);
     });
 
     // When placing a node
     if(nodeEditingMode)
     {
+        drawNodeEditingCursor();
+    }
+    if (storylinesEditingMode && !mouseOnNode){
         // Draw a temporary point at the cursor's location when over empty space and not creating an edge
-        if(!lastSelectedNode && !mouseOnNode)
+        ctx.beginPath();
+        ctx.fillStyle= nodeColor;
+        ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+        ctx.fill();
+    }
+}
+
+// A function to draw a node on the canvas
+function drawNode(anode) {
+    // If the node is not on the current floor, ignore it
+    if(anode.floorID !== current_floor)
+    {
+        return true;
+    }
+
+    // If currently moving the current node, move it to the mouse location
+    if(current_node_tool === "move" && lastSelectedNode === anode)
+    {
+        anode.x = mouseLocation.x;
+        anode.y = mouseLocation.y;
+    }
+
+    // If we are in node editing mode, and a node has not already been found, check to see if the mouse is near the current node
+    if((nodeEditingMode || storylinesEditingMode) && !mouseOnNode && NODE_SNAP_DIST_SQUARED > ((mouseLocation.x - anode.x) * (mouseLocation.x - anode.x) + (mouseLocation.y - anode.y) * (mouseLocation.y - anode.y)))
+    {
+        // If the mouse is near, set the node and change its colour
+        mouseOnNode = anode;
+        ctx.fillStyle=confirmedColor;
+    }
+    else
+    {
+        //Add condition to take into account storyline
+        if(_.contains(hlPointList,anode))
+        {
+            ctx.fillStyle = hlColor;
+        }
+        else
+        {
+            ctx.fillStyle = nodeColor;
+        }
+    }
+
+    // The last selected node during edge creation is a different colour
+    if(anode === lastSelectedNode) {
+        ctx.fillStyle=confirmedColor;
+    }
+
+
+    // Note that potFound returns a POT if one is found
+    var potFound = isNodePOT(anode);
+
+    if(potFound) {
+        // Draw a background
+        ctx.beginPath();
+        ctx.fillStyle="#e6e6e6";
+        ctx.arc(anode.x,anode.y,18,0,2*Math.PI);
+        ctx.fill();
+
+
+        // Draw the associated tool
+        ctx.font = '20px souvlaki-font-1';
+        ctx.fillStyle= nodeColor;
+        ctx.fillText(String.fromCharCode(POTtypes[potFound.label]), anode.x - 10,anode.y + 10);
+    }
+    else
+    {
+        // Draw a reglar point
+        ctx.beginPath();
+        ctx.arc(anode.x,anode.y,9,0,2*Math.PI);
+        ctx.fill();
+    }
+}
+
+// Functionality to draw a cursor on the map when in node editing mode
+function drawNodeEditingCursor() {
+    // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+    if(!lastSelectedNode && !mouseOnNode)
+    {
+        if(current_node_tool === "point")
         {
             if(current_tool === "none")
             {
@@ -337,50 +372,43 @@ function redraw() {
                 ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
             }
         }
-        // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-        else if(lastSelectedNode && !mouseOnNode)
+        else if(current_node_tool === "edge")
         {
-            ctx.strokeStyle = confirmedColor;
-            ctx.beginPath();
-            ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
-            ctx.lineTo(mouseLocation.x,mouseLocation.y);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.fillStyle=confirmedColor;
-            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
-            ctx.fill();
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe096), mouseLocation.x - 10,mouseLocation.y + 10);
         }
-        // When creating an edge and hovering on top of a node, draw a line to that node
-        else if (lastSelectedNode && mouseOnNode)
+        else if(current_node_tool === "move")
         {
-            var pointsTrue = 0;
-            for(var val in hlPointList){
-                if(hlPointList[val].id === lastSelectedNode.id){
-                    pointsTrue++;
-                }
-                if(hlPointList[val].id === mouseOnNode.id){
-                    pointsTrue++;
-                }
-                if(pointsTrue === 2){
-                    ctx.strokeStyle = hlColor;
-                }
-                else{
-                    ctx.strokeStyle = confirmedColor;
-                }
-            }
-            ctx.beginPath();
-            ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
-            ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
-            ctx.stroke();
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
         }
     }
-    if (storylinesEditingMode && !mouseOnNode){
-        // Draw a temporary point at the cursor's location when over empty space and not creating an edge
+    // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
+    else if(lastSelectedNode && !mouseOnNode)
+    {
+        ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
-        ctx.fillStyle= nodeColor;
-        ctx.arc(mouseLocation.x,mouseLocation.y,7,0,2*Math.PI);
+        ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+        ctx.lineTo(mouseLocation.x,mouseLocation.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle=confirmedColor;
+        ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
         ctx.fill();
+    }
+    // When creating an edge and hovering on top of a node, draw a line to that node
+    else if (lastSelectedNode && mouseOnNode)
+    {
+        ctx.strokeStyle = confirmedColor;
+        ctx.beginPath();
+        ctx.moveTo(lastSelectedNode.x,lastSelectedNode.y);
+        ctx.lineTo(mouseOnNode.x,mouseOnNode.y);
+        ctx.stroke();
     }
 }
 
@@ -406,87 +434,114 @@ function drawEdges(){
             ctx.strokeStyle = nodeColor;
         }
         ctx.beginPath();
-        ctx.moveTo(edgeList[e].origin.x,edgeList[e].origin.y);
-        ctx.lineTo(edgeList[e].destination.x,edgeList[e].destination.y);
+        ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
+        ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);
         ctx.stroke();
     }
 }
 
 function canvasClick(x,y) {
     if(nodeEditingMode) {
-
-        // If clicking on empty space
-        if(!mouseOnNode && !lastSelectedNode) {
-            // Store a new node in the list of transition nodes
-            var point = new Point(x, y, current_floor);
-            nodeList.push(point);
-
-            // if a POT tool is selected, create a POT
-            if(current_tool !== "none")
-            {
-                POTList.push(new POT(point, current_tool));
-            }
-        }
-        // If clicking on a node and not yet starting an edge
-        else if(mouseOnNode && !lastSelectedNode) {
-            // Check the selected node has to possibility of connecting to another node
-            if(canNodeConnect(mouseOnNode))
-            {
-                // Select this first node for edge creation
-                lastSelectedNode = mouseOnNode;
-            }
-            else
-            {
-                showWarningAlert("The point you are creating a transition from cannot be connected to another point!");
-            }
-        }
-        // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-        else if (mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
-            // Create a new edge
-            edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
-            lastSelectedNode = null; // Clear the selected node
-        }
+        canvasClickNodeEditing(x,y);
     }
     else if (storylinesEditingMode && mouseOnNode){
-    //*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
-        //TODOTYLER: get the id of the current point of interest
-        //alert(mouseOnNode.id);
-        //TODOTYLER: get the id of the currently selected storyline
-        //alert(active_id);
+        canvasClickStoryEditing();
+    }
+}
 
-        // Cancel POI creation if the node is a POT
-        if(isNodePOT(mouseOnNode))
+function canvasClickNodeEditing(x,y)
+{
+    // If clicking on empty space
+    if(current_node_tool === "point" && !mouseOnNode && !lastSelectedNode) {
+        // Store a new node in the list of transition nodes
+        var point = new Point(x, y, current_floor);
+        nodeList.push(point);
+
+        // if a POT tool is selected, create a POT
+        if(current_tool !== "none")
         {
-            showWarningAlert("Cannot create a storypoint or POI on a special Point of Transition");
-            return false;
-        }
-
-        var found = false;
-        //find point in list and fill editor
-        if(POIList.length === 0){
-            var newPOI = new POI(mouseOnNode);
-            newPOI.storyPoint = [];
-            fillEditor(newPOI);
-        }else{
-            for(var val in POIList){
-                if(POIList[val].point.id === mouseOnNode.id){
-                        fillEditor(POIList[val]);
-                        found = true;
-                break;
-                }
-            }
-            if(!found){
-                var newPOI = new POI(mouseOnNode);
-                fillEditor(newPOI);
-            }
+            POTList.push(new POT(point, current_tool));
         }
     }
-    else{
+    // If clicking on a node and not yet starting an edge
+    else if(current_node_tool === "edge" && mouseOnNode && !lastSelectedNode) {
+        // Check the selected node has to possibility of connecting to another node
+        if(canNodeConnect(mouseOnNode))
+        {
+            // Select this first node for edge creation
+            lastSelectedNode = mouseOnNode;
+        }
+        else
+        {
+            showWarningAlert("The point you are creating a transition from cannot be connected to another point!");
+        }
+    }
+    // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
+    else if (current_node_tool === "edge" && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+        // Create a new edge
+        edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
+        lastSelectedNode = null; // Clear the selected node
+    }
+    // On the first click start moving the node
+    else if(current_node_tool === "move" && mouseOnNode && !lastSelectedNode)
+    {
+        previousSelectedPoint.x = mouseOnNode.x;
+        previousSelectedPoint.y = mouseOnNode.y;
+        lastSelectedNode = mouseOnNode;
+    }
+    // On the second click start moving the node
+    else if(current_node_tool === "move" && lastSelectedNode)
+    {
+        lastSelectedNode = null;
+    }
+}
+
+function canvasClickStoryEditing()
+{
+    //*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
+    //TODOTYLER: get the id of the current point of interest
+    //alert(mouseOnNode.id);
+    //TODOTYLER: get the id of the currently selected storyline
+    //alert(active_id);
+
+    // Cancel POI creation if the node is a POT
+    if(isNodePOT(mouseOnNode))
+    {
+        showWarningAlert("Cannot create a storypoint or POI on a special Point of Transition");
+        return false;
+    }
+
+    var found = false;
+    //find point in list and fill editor
+    if(POIList.length === 0){
+        var newPOI = new POI(mouseOnNode);
+        newPOI.storyPoint = [];
+        fillEditor(newPOI);
+    }else{
+        for(var val in POIList){
+            if(POIList[val].point.id == mouseOnNode.id){
+                    fillEditor(POIList[val]);
+                    found = true;
+            break;
+            }
+        }
+        if(!found){
+            var newPOI = new POI(mouseOnNode);
+            fillEditor(newPOI);
+        }
     }
 }
 
 // Cancel any edge creation operations
 function cancelOperations() {
+
+    // If a node was being moved, move it back
+    if(lastSelectedNode && current_node_tool === "move")
+    {
+        lastSelectedNode.x = previousSelectedPoint.x;
+        lastSelectedNode.y = previousSelectedPoint.y;
+    }
+
     lastSelectedNode = null;
 }
 
@@ -532,9 +587,6 @@ function isNodePOT(node) {
         if(POTList[pot].point === node)
         {
             return POTList[pot];
-
-            potFound = true;
-            break;
         }
     }
 }
@@ -558,10 +610,15 @@ function highlightPOI(story){
     //resets highlight list
     hlPointList = [];
     for(var val in POIList){
-        for(var p in POIList[val].storyPoint){
-            if(POIList[val].storyPoint[p].storylineID === story){
-                hlPointList.push(POIList[val].point);
-                break;
+        if (story===-2){
+           hlPointList.push(POIList[val].point); 
+        }
+        else {
+            for(var p in POIList[val].storyPoint){
+                if(POIList[val].storyPoint[p].storylineID == story){
+                    hlPointList.push(POIList[val].point);
+                    break;
+                }
             }
         }
     }
