@@ -46,7 +46,7 @@ $(document).ready(function(){
             }
             for(var val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
-                    POIList[val].title = $("#spTitle").val();
+                    POIList[val].title[currentLanguage] = $("#spTitle").val();
                     POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                     POIList[val].ibeacon.major = $("#spBeaconMajor").val();
                     POIList[val].ibeacon.minor = $("#spBeaconMinor").val();
@@ -66,7 +66,7 @@ $(document).ready(function(){
                 }
             }
             if(!exists){
-                currentPOI.title = $("#spTitle").val();
+                currentPOI.title[currentLanguage] = $("#spTitle").val();
                 currentPOI.ibeacon.uuid = $("#spBeaconID").val();
                 currentPOI.ibeacon.major = $("#spBeaconMajor").val();
                 currentPOI.ibeacon.minor = $("#spBeaconMinor").val();
@@ -84,7 +84,7 @@ $(document).ready(function(){
                     for(var p in POIList[val].storyPoint){
                         if (POIList[val].storyPoint[p].storylineID == active_id){
                             //Updating sp
-                            POIList[val].storyPoint[p].title = $("#spTitle").val();
+                            POIList[val].storyPoint[p].title[currentLanguage] = $("#spTitle").val();
                             POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                             POIList[val].ibeacon.major = $("#spBeaconMajor").val();
                             POIList[val].ibeacon.minor = $("#spBeaconMinor").val();
@@ -93,7 +93,7 @@ $(document).ready(function(){
                             POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                             //Adding the point to the storyline list.
                             //get into <a> and change POIList[val].title
-                            $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
+                            $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title[currentLanguage]);
                             storylineList[active_id].path.push(currentPOI.ID);
                             spCreated = true;
                         }
@@ -102,12 +102,12 @@ $(document).ready(function(){
                     if(!spCreated){
                         //Create storypoint
                         var newStoryPoint = new StoryPoint();
-                        newStoryPoint.title = $("#spTitle").val();
+                        newStoryPoint.title[currentLanguage] = $("#spTitle").val();
                         newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
                         newStoryPoint.media = $("#attachedDocName").text();
                         POIList[val].storyPoint.push(newStoryPoint);
                         //Adding the point to the storyline list.
-                        $("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
+                        $("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title[currentLanguage] +'</a></li>');
                         storylineList[active_id].path.push(currentPOI.ID);
                         spCreated = false;
                     }

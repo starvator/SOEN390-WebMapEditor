@@ -103,7 +103,7 @@ function setCreatePOIid(){
 function POT(point, label) {
     this.ID = Node_ID;
     Node_ID++;
-    this.label = "";
+    this.label = label;
     this.point = point;
     this.floorID = current_floor;
     this.storyline = active_id;
