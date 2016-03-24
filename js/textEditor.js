@@ -163,6 +163,8 @@ function fillEditor(poi){
                 $("#autoOff").click();
             }
             $("#spBeaconID").val("");
+			$("#spBeaconMajor").val("");
+			$("#spBeaconMinor").val("");
             CKEDITOR.instances["editor1"].setData("");
             $("#attachedDocName").text("");
         }
@@ -187,6 +189,8 @@ function fillEditor(poi){
                 $("#spTitle").val("");
                 $("#autoOn").click();
                 $("#spBeaconID").val("");
+				$("#spBeaconMajor").val("");
+				$("#spBeaconMinor").val("");
                 CKEDITOR.instances["editor1"].setData("");
                 $("#attachedDocName").text("");
                 spFound = false;
