@@ -75,7 +75,7 @@ function editStoryLine(){
             storyline = storylineList[i];
         }
     }
-    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.getByLanguage("en") +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.getByLanguage("en") +'" /></a>');
+    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description +'" /></a>');
     $("#submitButton").hide();
     $("#editButton").html('<a href="#">Save</a>');
     $("#editButton").attr("onclick","saveStoryLine()");

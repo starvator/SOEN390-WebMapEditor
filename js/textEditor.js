@@ -75,6 +75,9 @@ $(document).ready(function(){
                 currentPOI.isSet = true;
                 currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
                 POIList.push(currentPOI);
+				
+				//Remove POT it used to be
+				POTList = _.reject(POTList, function(el) { return el.point.x === currentPOI.point.x && el.point.y === currentPOI.point.y; });
             }
             for(val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
@@ -163,6 +166,8 @@ function fillEditor(poi){
                 $("#autoOff").click();
             }
             $("#spBeaconID").val("");
+			$("#spBeaconMajor").val("");
+			$("#spBeaconMinor").val("");
             CKEDITOR.instances["editor1"].setData("");
             $("#attachedDocName").text("");
         }
@@ -187,6 +192,8 @@ function fillEditor(poi){
                 $("#spTitle").val("");
                 $("#autoOn").click();
                 $("#spBeaconID").val("");
+				$("#spBeaconMajor").val("");
+				$("#spBeaconMinor").val("");
                 CKEDITOR.instances["editor1"].setData("");
                 $("#attachedDocName").text("");
                 spFound = false;
