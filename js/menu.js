@@ -156,3 +156,7 @@ function updateNodeEditorTool(btn)
     // Change the tool
     current_node_tool = $(btn).data("node-tool");
 }
+
+function changeLanguage() {
+	currentLanguage = $("#languageDropdown :selected").val();
+}
