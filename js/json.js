@@ -88,8 +88,8 @@ StoryPoint.fromJSON = function(json) {
 
     var sp = new StoryPoint();
     sp.storylineID = json.storylineID;
-    sp.title = json.title;//LanguageText.fromJSON(json.title);
-    sp.description = json.description;//LanguageText.fromJSON(json.description);
+    sp.title = json.title[0].title;//LanguageText.fromJSON(json.title);
+    sp.description = json.description[0].description;//LanguageText.fromJSON(json.description);
     sp.media = json.media;
     
     return sp;
@@ -100,8 +100,8 @@ POI.fromJSON = function(json) {
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
     poi.ID = json.id;
-    poi.title = json.title;
-    poi.description = json.description;
+    poi.title = json.title[0].title;
+    poi.description = json.description[0].description;
     
     //TODO: LanguageText formats?
     //poi.title = LanguageText.fromJSON(json.title);
@@ -170,8 +170,8 @@ Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
     s.ID = json.ID;
-    s.title = json.title;//LanguageText.fromJSON(json.title);
-    s.description = json.description;//LanguageText.fromJSON(json.description);
+    s.title = json.title[0].title;//LanguageText.fromJSON(json.title);
+    s.description = json.description[0].description;//LanguageText.fromJSON(json.description);
     s.path = json.path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;

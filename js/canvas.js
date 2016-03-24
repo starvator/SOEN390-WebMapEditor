@@ -78,8 +78,8 @@ function POI(point) {
     this.toJSON = function() {
         return {
             id: this.ID,
-            title: {language:"EN", title:this.title},
-            description: {language:"EN", description:this.description},
+            title: [{language:"EN", title:this.title}],
+            description: [{language:"EN", description:this.description}],
             x:this.point.x,
             y:this.point.y,
             floorID:this.floorID,
@@ -139,8 +139,8 @@ function Storyline(){
 	this.toJSON = function() {
         return {
             id: this.ID,
-            title: {language:"EN", title:this.title},
-            description: {language:"EN", description:this.description},
+            title: [{language:"EN", title:this.title}],
+            description: [{language:"EN", description:this.description}],
             path:this.path,
             thumbnail:this.thumbnail,
             walkingTimeInMinutes:this.walkingTimeInMinutes,
@@ -161,8 +161,8 @@ function StoryPoint() {
         return {
             id: this.ID,
 			storylineID:this.storylineID,
-            title: {language:"EN", title:this.title},
-            description: {language:"EN", description:this.description},
+            title: [{language:"EN", title:this.title}],
+            description: [{language:"EN", description:this.description}],
             media:this.media
         };
     };
