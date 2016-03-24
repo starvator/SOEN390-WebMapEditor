@@ -1,5 +1,13 @@
 var jsonMap;
 
+function confirmSave(){
+    if (confirm("Please confirm that you have reviewed your Storylines before saving:") == true) {
+        download('mapData.json',createJSON());
+    } else {
+		alert("You have not saved your work.");
+    }
+}
+
 function createJSON() {
     /*
     JSON File Outline, as specified and agreed upon by team leaders
