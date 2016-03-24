@@ -114,7 +114,7 @@ POI.fromJSON = function(json) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
     });
     
-    nodeList.push(ppp);
+    nodeList.push(poi);
     
     return poi;
 };
@@ -127,15 +127,15 @@ POT.fromJSON = function(json) {
     pot.label = json.label;//LanguageText.fromJSON(json.label);
     pot.floorID = json.floorID; 
     
-    nodeList.push(ppp);
+    nodeList.push(pot);
     
     return pot;
 };
 
 Edge.fromJSON = function(json) {
 
-    var start = findNodeByID(json.startNode.id);
-    var end = findNodeByID(json.endNode.id);
+    var start = findNodeByID(json.startNode);
+    var end = findNodeByID(json.endNode);
 
     var e = new Edge(start, end);
     
