@@ -668,7 +668,16 @@ function deleteNode(node){
         }
     }
     
+    //remove all POT
+    for (var val=POTList.length-1; val>=0;val--){
+        if (POTList[val].point.id === idOfNode){
+           POTList = removeFromList(POTList[val], POTList.slice());
+        }
+    }
+    
     //remove all StoryPoints
+    
+    
     redraw();
 }
 
