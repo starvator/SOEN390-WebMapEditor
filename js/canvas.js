@@ -245,6 +245,9 @@ $(function(){
     //if backspace or delete key
     if( key == 8 || key == 46 ){
         if (current_node_tool ==="delete" && lastSelectedNode){
+            if(!confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?")){
+                return false;
+            }
             deleteNode(lastSelectedNode);
             return false;
         }
