@@ -238,7 +238,6 @@ $(function(){
     canvas.addEventListener('mousewheel',handleScroll,false);
 
     //detect a delete button press
-    //TODO: allow for the delete key to be pressed inside a textbox
     $('body').on('keydown', function() {
     var key = event.keyCode || event.charCode;
 
