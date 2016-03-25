@@ -650,34 +650,46 @@ function highlightPOI(story){
 }
 
 function deleteNode(node){
-    var idOfNode = node.point.id;
+    var idOfNodePoint = node.point.id;
+    var idOfNode = node.ID;
     //remove the node fromt he list
     nodeList = removeFromList(node, nodeList.slice());
 
     //delete all connecting edges
     for (var val=edgeList.length-1; val>=0;val--){
-        if (edgeList[val].origin.point.id === idOfNode || edgeList[val].destination.point.id === idOfNode){
+        if (edgeList[val].origin.point.id === idOfNodePoint || edgeList[val].destination.point.id === idOfNodePoint){
             edgeList = removeFromList(edgeList[val], edgeList.slice());
         }
     }
     
     //remove all POI
     for (var val=POIList.length-1; val>=0;val--){
-        if (POIList[val].point.id === idOfNode){
+        if (POIList[val].point.id === idOfNodePoint){
            POIList = removeFromList(POIList[val], POIList.slice());
         }
     }
     
     //remove all POT
     for (var val=POTList.length-1; val>=0;val--){
-        if (POTList[val].point.id === idOfNode){
+        if (POTList[val].point.id === idOfNodePoint){
            POTList = removeFromList(POTList[val], POTList.slice());
         }
     }
     
     //remove all StoryPoints
+    for (var storyLineVal in storylineList){
+        //loop through the path
+        for (var val= storylineList[storyLineVal].path.length-1;val>=0;val--){
+            if (storylineList[storyLineVal].path[val] === idOfNode){
+                //delete it from the list
+                storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
+                //go into the dom and remove it from the GUI
+               
+            }
+        }
+    }
     
-    
+    //redraw
     redraw();
 }
 
