@@ -650,17 +650,24 @@ function highlightPOI(story){
 }
 
 function deleteNode(node){
-    var idOfNode = node.ID;
+    var idOfNode = node.point.id;
     //remove the node fromt he list
     nodeList = removeFromList(node, nodeList.slice());
 
     //delete all connecting edges
     for (var val=edgeList.length-1; val>=0;val--){
-        if (edgeList[val].origin.ID === idOfNode || edgeList[val].destination.ID === idOfNode){
+        if (edgeList[val].origin.point.id === idOfNode || edgeList[val].destination.point.id === idOfNode){
             edgeList = removeFromList(edgeList[val], edgeList.slice());
         }
     }
+    
     //remove all POI
+    for (var val=POIList.length-1; val>=0;val--){
+        if (POIList[val].point.id === idOfNode){
+           POIList = removeFromList(POIList[val], POIList.slice());
+        }
+    }
+    
     //remove all StoryPoints
     redraw();
 }
