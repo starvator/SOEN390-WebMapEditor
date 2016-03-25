@@ -684,7 +684,7 @@ function deleteNode(node){
                 //delete it from the list
                 storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
                 //go into the dom and remove it from the GUI
-               
+                $("#"+storylineList[storyLineVal].ID+"_pointList").find("#"+idOfNode+"_a").parent().css( "background-color", "red" );
             }
         }
     }
