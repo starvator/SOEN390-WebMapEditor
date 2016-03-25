@@ -237,6 +237,19 @@ $(function(){
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
 
+    //detect a delete button press
+    $('body').on('keydown', function() {
+    var key = event.keyCode || event.charCode;
+
+    //if backspace or delete key
+    if( key == 8 || key == 46 ){
+        if (current_node_tool ==="delete" && lastSelectedNode){
+            deleteNode(lastSelectedNode);
+        }
+        return false;
+    }
+  });
+    
     loadInitialFloor();
 });
 
@@ -383,9 +396,16 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
         }
+        else if (current_node_tool ==="delete")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe014), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-    else if(lastSelectedNode && !mouseOnNode)
+    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "delete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -399,7 +419,7 @@ function drawNodeEditingCursor() {
         ctx.fill();
     }
     // When creating an edge and hovering on top of a node, draw a line to that node
-    else if (lastSelectedNode && mouseOnNode)
+    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "delete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -487,6 +507,15 @@ function canvasClickNodeEditing(x,y)
     else if(current_node_tool === "move" && lastSelectedNode)
     {
         lastSelectedNode = null;
+    }
+    else if(current_node_tool === "delete" && mouseOnNode)
+    {
+        lastSelectedNode = mouseOnNode;
+    }
+    else if (current_node_tool === "delete" && !mouseOnNode)
+    {
+        lastSelectedNode = null;
+        redraw();
     }
 }
 
@@ -618,6 +647,15 @@ function highlightPOI(story){
             }
         }
     }
+}
+
+function deleteNode(node){
+    //remove the node fromt he list
+    nodeList = removeFromList(node, nodeList.slice());
+    //delete all connecting edges
+    //remove all POI
+    //remove all StoryPoints
+    redraw();
 }
 
 function resizeCanvas(){
