@@ -246,8 +246,8 @@ $(function(){
     if( key == 8 || key == 46 ){
         if (current_node_tool ==="delete" && lastSelectedNode){
             deleteNode(lastSelectedNode);
+            return false;
         }
-        return false;
     }
   });
     
@@ -694,6 +694,7 @@ function deleteNode(node){
     }
     
     //redraw
+    lastSelectedNode = null;
     redraw();
 }
 
