@@ -238,6 +238,7 @@ $(function(){
     canvas.addEventListener('mousewheel',handleScroll,false);
 
     //detect a delete button press
+    //TODO: allow for the delete key to be pressed inside a textbox
     $('body').on('keydown', function() {
     var key = event.keyCode || event.charCode;
 
@@ -662,17 +663,15 @@ function deleteNode(node){
         }
     }
     
-    //remove all POI
+    //remove all POI and StoryPoints from the GUI
     for (var val=POIList.length-1; val>=0;val--){
         if (POIList[val].point.id === idOfNodePoint){
+            //GUI
+            for (var gui in POIList[val].storyPoint){
+                $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
+            }
+            //remove all POI
            POIList = removeFromList(POIList[val], POIList.slice());
-        }
-    }
-    
-    //remove all POT
-    for (var val=POTList.length-1; val>=0;val--){
-        if (POTList[val].point.id === idOfNodePoint){
-           POTList = removeFromList(POTList[val], POTList.slice());
         }
     }
     
@@ -683,9 +682,14 @@ function deleteNode(node){
             if (storylineList[storyLineVal].path[val] === idOfNode){
                 //delete it from the list
                 storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
-                //go into the dom and remove it from the GUI
-                $("#"+storylineList[storyLineVal].ID+"_pointList").find("#"+idOfNode+"_a").parent().css( "background-color", "red" );
             }
+        }
+    }
+    
+    //remove all POT
+    for (var val=POTList.length-1; val>=0;val--){
+        if (POTList[val].point.id === idOfNodePoint){
+           POTList = removeFromList(POTList[val], POTList.slice());
         }
     }
     
