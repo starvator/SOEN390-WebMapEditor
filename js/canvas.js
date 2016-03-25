@@ -655,7 +655,7 @@ function highlightPOI(story){
 function deleteNode(node){
     var idOfNodePoint = node.point.id;
     var idOfNode = node.ID;
-    //remove the node fromt he list
+    //remove the node fromt the list
     nodeList = removeFromList(node, nodeList.slice());
 
     //delete all connecting edges
@@ -673,7 +673,7 @@ function deleteNode(node){
                 $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
             }
             //remove all POI
-           POIList = removeFromList(POIList[val], POIList.slice());
+            POIList = removeFromList(POIList[val], POIList.slice());
         }
     }
     
