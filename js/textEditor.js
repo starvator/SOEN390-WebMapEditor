@@ -126,10 +126,12 @@ $(document).ready(function(){
 });
 //Open editor of of point of a given id
 function openEditorByPointID(id){
-    for(val in POIList){
-        if(POIList[val].ID == id){
-            fillEditor(POIList[val]);
-            break;
+    for(var val in POIList){
+        for (var point in POIList[val].storyPoint){
+            if (POIList[val].storyPoint[point].ID == id){
+                fillEditor(POIList[val]);
+                break;
+            }
         }
     }
 }

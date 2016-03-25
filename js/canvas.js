@@ -237,6 +237,22 @@ $(function(){
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
 
+    //detect a delete button press
+    $('body').on('keydown', function() {
+    var key = event.keyCode || event.charCode;
+
+    //if backspace or delete key
+    if( key == 8 || key == 46 ){
+        if (current_node_tool ==="delete" && lastSelectedNode){
+            if(!confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?")){
+                return false;
+            }
+            deleteNode(lastSelectedNode);
+            return false;
+        }
+    }
+  });
+    
     loadInitialFloor();
 });
 
@@ -383,9 +399,16 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
         }
+        else if (current_node_tool ==="delete")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe014), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-    else if(lastSelectedNode && !mouseOnNode)
+    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "delete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -399,7 +422,7 @@ function drawNodeEditingCursor() {
         ctx.fill();
     }
     // When creating an edge and hovering on top of a node, draw a line to that node
-    else if (lastSelectedNode && mouseOnNode)
+    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "delete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -487,6 +510,15 @@ function canvasClickNodeEditing(x,y)
     else if(current_node_tool === "move" && lastSelectedNode)
     {
         lastSelectedNode = null;
+    }
+    else if(current_node_tool === "delete" && mouseOnNode)
+    {
+        lastSelectedNode = mouseOnNode;
+    }
+    else if (current_node_tool === "delete" && !mouseOnNode)
+    {
+        lastSelectedNode = null;
+        redraw();
     }
 }
 
@@ -618,6 +650,54 @@ function highlightPOI(story){
             }
         }
     }
+}
+
+function deleteNode(node){
+    var idOfNodePoint = node.point.id;
+    var idOfNode = node.ID;
+    //remove the node fromt the list
+    nodeList = removeFromList(node, nodeList.slice());
+
+    //delete all connecting edges
+    for (var val=edgeList.length-1; val>=0;val--){
+        if (edgeList[val].origin.point.id === idOfNodePoint || edgeList[val].destination.point.id === idOfNodePoint){
+            edgeList = removeFromList(edgeList[val], edgeList.slice());
+        }
+    }
+    
+    //remove all POI and StoryPoints from the GUI
+    for (var val=POIList.length-1; val>=0;val--){
+        if (POIList[val].point.id === idOfNodePoint){
+            //GUI
+            for (var gui in POIList[val].storyPoint){
+                $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
+            }
+            //remove all POI
+            POIList = removeFromList(POIList[val], POIList.slice());
+        }
+    }
+    
+    //remove all StoryPoints
+    for (var storyLineVal in storylineList){
+        //loop through the path
+        for (var val= storylineList[storyLineVal].path.length-1;val>=0;val--){
+            if (storylineList[storyLineVal].path[val] === idOfNode){
+                //delete it from the list
+                storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
+            }
+        }
+    }
+    
+    //remove all POT
+    for (var val=POTList.length-1; val>=0;val--){
+        if (POTList[val].point.id === idOfNodePoint){
+           POTList = removeFromList(POTList[val], POTList.slice());
+        }
+    }
+    
+    //redraw
+    lastSelectedNode = null;
+    redraw();
 }
 
 function resizeCanvas(){
