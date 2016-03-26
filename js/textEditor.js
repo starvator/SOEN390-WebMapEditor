@@ -123,7 +123,30 @@ $(document).ready(function(){
         showErrorAlert("Enter a Title.");
     }
     });
+    
+    $("#DeletePOIButton").click(function(){
+        if (!confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any storypoint associated with it.")){
+            return false;
+        }
+        deletePOI();
+        //close the window
+        $("#infoEditingForm").hide();
+        $("#modal").hide();
+    });
+
+    $("#DeleteStoryPointButton").click(function(){
+        if (!confirm("Are you sure you want to delete the storypoint?")){
+            return false;
+        }
+        deleteStoryPoint();
+        //close the window
+        $("#infoEditingForm").hide();
+        $("#modal").hide();
+    });
+    
 });
+
+
 //Open editor of of point of a given id
 function openEditorByPointID(id){
     for(var val in POIList){
