@@ -754,10 +754,34 @@ function deleteNode(node){
     redraw();
 }
 
-function deleteStoryPoint(){
-    //remove from the entry in POIList -> Storypoint
+function deleteStoryPoint(){    
+    var poiID = currentPOI.ID; //delete this from storyline[].path
+    var storypointID = active_id;
+    
+    for (var val in POIList){
+        if (POIList[val].ID === poiID){
+            //remove from GUI
+            $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
+            
+            //delete it in the POIList
+            POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
+            break;
+        }
+    }
+    
     //remove id from storyline
-    //remove from GUI
+    for (var val in storylineList){
+        if (storylineList[val].ID == active_id){
+            for (var i in storylineList[val].path){
+                if (storylineList[val].path[i] === POIID){
+                    storylineList[val].path = removeFromList(storylineList[val].path[i], storylineList[val].path.slice());
+                    break;
+                }
+            }
+        }
+    }
+    highlightPOI(active_id);
+    redraw();
 }
 
 function deletePOI(){
@@ -781,7 +805,8 @@ function deletePOI(){
             break;
         }
     }
-    setCreatePOIid();
+    highlightPOI(active_id);
+    redraw();
 }
 
 function deleteEdge(val){

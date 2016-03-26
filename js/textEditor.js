@@ -192,6 +192,7 @@ function fillEditor(poi){
                     CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
                     $("#attachedDocName").text(currentPOI.storyPoint[p].media);
                     spFound = true;
+                    POIID= poi.ID;
                 }
             }
             //If the storyPoint doesnt exist, create it
