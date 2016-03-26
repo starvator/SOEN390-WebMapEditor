@@ -200,6 +200,7 @@ var hlColor = "#009900";
 var confirmedColor = "#0000FF";
 var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
 var canDeleteEdge;                  // The index of the current selected edge in edgeList in edge delete mode, if it can be deleted
+var POIID;
 
 //For JSON use
 var floorList = [];
@@ -739,6 +740,13 @@ function deleteNode(node){
                 storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
             }
         }
+		//loop through the floorsCovered
+		for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
+            if (storylineList[storyLineVal].floorsCovered[val] === idOfNode){
+                //delete it from the list
+                storylineList[storyLineVal].floorsCovered = removeFromList(storylineList[storyLineVal].floorsCovered[val], storylineList[storyLineVal].floorsCovered.slice());
+            }
+        }
     }
     
     //remove all POT
@@ -750,6 +758,72 @@ function deleteNode(node){
     
     //redraw
     lastSelectedNode = null;
+    redraw();
+}
+
+function deleteStoryPoint(){    
+    var poiID = currentPOI.ID; //delete this from storyline[].path
+    var storypointID = active_id;
+    
+    for (var val in POIList){
+        if (POIList[val].ID === poiID){
+            //remove from GUI
+            $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
+            
+            //delete it in the POIList
+            POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
+            break;
+        }
+    }
+    
+    //remove id from storyline
+    for (var val in storylineList){
+        if (storylineList[val].ID == active_id){
+            for (var i in storylineList[val].path){
+                if (storylineList[val].path[i] === POIID){
+                    storylineList[val].path = removeFromList(storylineList[val].path[i], storylineList[val].path.slice());
+                    break;
+                }
+            }
+			for (var i in storylineList[val].floorsCovered){
+                if (storylineList[val].floorsCovered[i] === POIID){
+                    storylineList[val].floorsCovered = removeFromList(storylineList[val].floorsCovered[i], storylineList[val].floorsCovered.slice());
+                    break;
+                }
+            }
+        }
+    }
+    highlightPOI(active_id);
+    redraw();
+}
+
+function deletePOI(){
+    //remove POI from POIList
+    for (var val in POIList){
+        if (POIList[val].ID == POIID){
+            //remove gui
+            for (var gui in POIList[val].storyPoint){
+                $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
+            }
+            POIList = removeFromList(POIList[val], POIList.slice());
+            
+            //remove reference to id from storyline to the storypoint
+            for (var i in storylineList){
+                for (var j in storylineList[i].path){
+                    if (storylineList[i].path[j] === POIID){
+                        storylineList[i].path = removeFromList(storylineList[i].path[j], storylineList[i].path.slice());
+                    }
+                }
+				for (var j in storylineList[i].floorCovered){
+                    if (storylineList[i].floorCovered[j] === POIID){
+                        storylineList[i].floorCovered = removeFromList(storylineList[i].floorCovered[j], storylineList[i].floorCovered.slice());
+                    }
+                }
+            }
+            break;
+        }
+    }
+    highlightPOI(active_id);
     redraw();
 }
 
