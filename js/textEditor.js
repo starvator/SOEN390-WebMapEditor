@@ -208,7 +208,11 @@ function fillEditor(poi){
             for(var p in currentPOI.storyPoint){
                 if (currentPOI.storyPoint[p].storylineID == active_id){
                     $("#spTitle").val(currentPOI.storyPoint[p].title);
-                    $("#autoOn").click();
+                    if(poi.isAutoOn === true){
+                        $("#autoOn").click();
+                    }else if(poi.isAutoOn === false){
+                        $("#autoOff").click();
+                    }
                     $("#spBeaconID").val(currentPOI.ibeacon.uuid);
                     $("#spBeaconMajor").val(poi.ibeacon.major);
                     $("#spBeaconMinor").val(poi.ibeacon.minor);
