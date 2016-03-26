@@ -177,9 +177,10 @@
     <div id="modal" hidden></div>
     <div id="infoEditingForm" hidden>
         <div class="form-group">
-            <span id="infoEditingFormTitle"></span>
+            <span id="infoEditingFormTitle">Edit</span>
             <div id="infoEditingFormClose" class="btn btn-danger pull-right">x</div>
         </div>
+        <div id="infoEditingFormContent">
         <div class="form-group input-group">
             <span class="input-group-addon">Title</span>
             <input type="text" id="spTitle" class="form-control" placeholder="Title Here">
@@ -220,8 +221,11 @@
             <div type="button" id="attachADoc" class="btn btn-default">Attach Doc</div>
             <input id="uploadFile" type="file" multiple />
         </div>
+</div>
         <div class="form-group">
             <div type="button" class="btn btn-success pull-right" id="SaveStoryPointInfo">Save</div>
+            <div type="button" class="btn btn-danger" id="SaveStoryPointInfo">Delete Point Of Interest</div>
+            <div type="button" class="btn btn-warning" id="SaveStoryPointInfo">Delete StoryPoint</div>
             <span>&nbsp;</span>
         </div>
     </div>
