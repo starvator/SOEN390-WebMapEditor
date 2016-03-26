@@ -194,10 +194,12 @@ var mouseLocation = new Point(0,0); // Location of the mouse on the canvas
 var mouseOnNode;                    // The node that the mouse is currently hovering over
 var edgeList = [];                  // List of edges between transition points
 var lastSelectedNode;               // During edge creation, the first selected node
+var lastlastSelectedNode;           // During deleting an edge, we need to know 2 nodes to delete the edge between them
 var nodeColor = "#660066";
 var hlColor = "#009900";
 var confirmedColor = "#0000FF";
 var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
+var canDeleteEdge;                  // The index of the current selected edge in edgeList in edge delete mode, if it can be deleted
 
 //For JSON use
 var floorList = [];
@@ -243,11 +245,17 @@ $(function(){
 
     //if backspace or delete key
     if( key == 8 || key == 46 ){
-        if (current_node_tool ==="delete" && lastSelectedNode){
-            if(!confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?")){
+        if (current_node_tool ==="nodeDelete"){
+            if(!lastSelectedNode || !confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?")){
                 return false;
             }
             deleteNode(lastSelectedNode);
+            return false;
+        }
+        else if (current_node_tool==="edgeDelete"){
+            if (canDeleteEdge){
+                deleteEdge(canDeleteEdge); 
+            }
             return false;
         }
     }
@@ -337,6 +345,9 @@ function drawNode(anode) {
     if(anode === lastSelectedNode) {
         ctx.fillStyle=confirmedColor;
     }
+    if (anode === lastlastSelectedNode && current_node_tool === "edgeDelete"){
+        ctx.fillStyle=confirmedColor;
+    }
 
 
 
@@ -399,7 +410,14 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
         }
-        else if (current_node_tool ==="delete")
+        else if (current_node_tool ==="nodeDelete")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe083), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
+        else if (current_node_tool ==="edgeDelete")
         {
             ctx.font = '20px Glyphicons Halflings';
             ctx.fillStyle= nodeColor;
@@ -408,7 +426,7 @@ function drawNodeEditingCursor() {
         }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "delete")
+    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -422,13 +440,28 @@ function drawNodeEditingCursor() {
         ctx.fill();
     }
     // When creating an edge and hovering on top of a node, draw a line to that node
-    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "delete")
+    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
         ctx.moveTo(lastSelectedNode.point.x,lastSelectedNode.point.y);
         ctx.lineTo(mouseOnNode.point.x,mouseOnNode.point.y);
         ctx.stroke();
+    }
+    else if (lastSelectedNode && lastlastSelectedNode)
+    {
+        for (var val in edgeList){
+            if ((edgeList[val].origin.point.id===lastlastSelectedNode.point.id && edgeList[val].destination.point.id===lastSelectedNode.point.id)||(edgeList[val].origin.point.id===lastSelectedNode.point.id && edgeList[val].destination.point.id===lastlastSelectedNode.point.id)) {
+                ctx.strokeStyle = confirmedColor;
+                ctx.beginPath();
+                ctx.moveTo(lastlastSelectedNode.point.x,lastlastSelectedNode.point.y);
+                ctx.lineTo(lastSelectedNode.point.x,lastSelectedNode.point.y);
+                ctx.stroke();
+                canDeleteEdge = val;
+                return;
+            }
+        }
+        canDeleteEdge = false;
     }
 }
 
@@ -511,12 +544,27 @@ function canvasClickNodeEditing(x,y)
     {
         lastSelectedNode = null;
     }
-    else if(current_node_tool === "delete" && mouseOnNode)
+    else if(current_node_tool === "nodeDelete" && mouseOnNode)
     {
         lastSelectedNode = mouseOnNode;
     }
-    else if (current_node_tool === "delete" && !mouseOnNode)
+    else if (current_node_tool === "nodeDelete" && !mouseOnNode)
     {
+        lastSelectedNode = null;
+        redraw();
+    }
+    else if (current_node_tool === "edgeDelete" && mouseOnNode){
+        if (!lastlastSelectedNode){
+            lastlastSelectedNode = mouseOnNode;    
+        }
+        else {
+            lastSelectedNode = mouseOnNode;
+        }
+        redraw();
+    }
+    else if (current_node_tool === "edgeDelete" && !mouseOnNode)
+    {
+        lastlastSelectedNode = null;
         lastSelectedNode = null;
         redraw();
     }
@@ -569,8 +617,13 @@ function cancelOperations() {
         lastSelectedNode.x = previousSelectedPoint.x;
         lastSelectedNode.y = previousSelectedPoint.y;
     }
-
+    else if (current_node_tool === "edgeDelete")
+    {
+        lastlastSelectedNode = null;
+    }
+    
     lastSelectedNode = null;
+    redraw();
 }
 
 // Check to see if the set of nodes is in the current list of nodes
@@ -697,6 +750,14 @@ function deleteNode(node){
     
     //redraw
     lastSelectedNode = null;
+    redraw();
+}
+
+function deleteEdge(val){
+    edgeList = removeFromList(edgeList[val], edgeList.slice());
+    canDeleteEdge = null;
+    lastSelectedNode = null;
+    lastlastSelectedNode = null;
     redraw();
 }
 
