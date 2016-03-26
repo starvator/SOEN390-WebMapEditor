@@ -30,6 +30,7 @@
     <script src="js/storylines.js"></script>
     <script src="js/alert.js"></script>
     <script src="js/underscore-min.js"></script>
+	<script src="js/bootbox.min.js"></script>
 
 </head>
 
@@ -92,7 +93,7 @@
                                 <div class="btn btn-default btn-file">Load Map<input type="file" id="inputFile"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                                 <!-- TODO: offer the user to name the file? -->
-                                <div class="btn btn-default" onclick="confirmSave()">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <div id="JSONsave" class="btn btn-default" onclick="confirmSave()">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div id="floorEditorMenu">

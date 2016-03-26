@@ -1,11 +1,40 @@
 var jsonMap;
 
 function confirmSave(){
+	var saveButton = $('#JSONsave');
+	var result = false;
+	bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
+	saveButton.show("Confirm result: "+result);
+	if(result == true){
+		var name = "mapData";
+		
+		bootbox.prompt({
+		  title: "Please name the export file:",
+		  value: "mapData",
+		  callback: function(result) {
+			if (result === null) {
+			  name = "mapData.json";
+			  download(name,createJSON());
+			} else {
+			name = result.concat(".json");
+			download(name,createJSON());
+			}
+		  }
+		});
+	}
+	else {
+		bootbox.alert("You have not saved the map data.", function() {
+		saveButton.show("cancel");
+		}); 
+	}
+	}); 
+/*
     if (confirm("Please confirm that you have reviewed your Storylines before saving:") == true) {
         download('mapData.json',createJSON());
     } else {
 		alert("You have not saved your work.");
     }
+	*/
 }
 
 function createJSON() {
