@@ -753,6 +753,18 @@ function deleteNode(node){
     redraw();
 }
 
+function deleteStoryPoint(){
+    //remove from the entry in POIList -> Storypoint
+    //remove id from storyline
+    //remove from GUI
+}
+
+funtion deletePOI(){
+    //remove POI from POIList
+    //remove reference to the containing storypoint from the gui
+    //remove reference to id from storyline to the storypoint
+}
+
 function deleteEdge(val){
     edgeList = removeFromList(edgeList[val], edgeList.slice());
     canDeleteEdge = null;
