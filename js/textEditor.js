@@ -162,6 +162,7 @@ function fillEditor(poi){
             CKEDITOR.instances["editor1"].setData(poi.description);
             $("#attachedDocName").text(poi.media);
             POIOrigin = true;
+            POIID = poi.ID;
         }
         else{
             $("#spTitle").val("");

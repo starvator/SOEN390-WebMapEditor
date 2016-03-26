@@ -200,6 +200,7 @@ var hlColor = "#009900";
 var confirmedColor = "#0000FF";
 var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
 var canDeleteEdge;                  // The index of the current selected edge in edgeList in edge delete mode, if it can be deleted
+var POIID;
 
 //For JSON use
 var floorList = [];
@@ -759,10 +760,28 @@ function deleteStoryPoint(){
     //remove from GUI
 }
 
-funtion deletePOI(){
+function deletePOI(){
     //remove POI from POIList
-    //remove reference to the containing storypoint from the gui
-    //remove reference to id from storyline to the storypoint
+    for (var val in POIList){
+        if (POIList[val].ID == POIID){
+            //remove gui
+            for (var gui in POIList[val].storyPoint){
+                $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
+            }
+            POIList = removeFromList(POIList[val], POIList.slice());
+            
+            //remove reference to id from storyline to the storypoint
+            for (var i in storylineList){
+                for (var j in storylineList[i].path){
+                    if (storylineList[i].path[j] === POIID){
+                        storylineList[i].path = removeFromList(storylineList[i].path[j], storylineList[i].path.slice());
+                    }
+                }
+            }
+            break;
+        }
+    }
+    setCreatePOIid();
 }
 
 function deleteEdge(val){
