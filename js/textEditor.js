@@ -140,6 +140,8 @@ function fillEditor(poi){
     currentPOI = poi;
     var spFound = false;
     var spslExists = false;
+    var blank = false;
+    var POIOrigin = false;
     //If no storypoint for current active_id
     for(var p in currentPOI.storyPoint){
         if(currentPOI.storyPoint[p].storylineID == active_id){
@@ -159,6 +161,7 @@ function fillEditor(poi){
             $("#spBeaconMinor").val(poi.ibeacon.minor);
             CKEDITOR.instances["editor1"].setData(poi.description);
             $("#attachedDocName").text(poi.media);
+            POIOrigin = true;
         }
         else{
             $("#spTitle").val("");
@@ -172,6 +175,7 @@ function fillEditor(poi){
 			$("#spBeaconMinor").val("");
             CKEDITOR.instances["editor1"].setData("");
             $("#attachedDocName").text("");
+            blank = true;
         }
     }
     else{
@@ -199,10 +203,12 @@ function fillEditor(poi){
                 CKEDITOR.instances["editor1"].setData("");
                 $("#attachedDocName").text("");
                 spFound = false;
+                blank = true;
             }
         }
     }
     //show the form
+    setDeleteEditorButtons(blank,POIOrigin);
     setEditorTitle();
     $("#infoEditingForm").show();
     $("#modal").show();
@@ -212,8 +218,30 @@ function setEditorTitle(){
     $("#infoEditingFormTitle").empty();
     if(active_id === -2){
         $("#infoEditingFormTitle").append('Point of Interest Editor');
+        
     }
     else{
         $("#infoEditingFormTitle").append('Storypoint Editor');
+    }
+}
+
+function setDeleteEditorButtons(newItem, poi){
+    if (newItem){
+        $('#DeletePOIButton').addClass("hidden");
+        $('#DeleteStoryPointButton').addClass("hidden");
+    }
+    //if POI only allow to delete POI
+    else if(active_id === -2){
+        $('#DeletePOIButton').removeClass("hidden");
+        $('#DeleteStoryPointButton').addClass("hidden");
+    }
+    else if(poi){
+        $('#DeletePOIButton').addClass("hidden");
+        $('#DeleteStoryPointButton').addClass("hidden");
+    }
+    //if Storypoint only allow to delete Storypoint
+    else {
+        $('#DeletePOIButton').addClass("hidden");
+        $('#DeleteStoryPointButton').removeClass("hidden");
     }
 }
