@@ -17,3 +17,49 @@ function download(filename, text) {
 
   document.body.removeChild(element);
 }
+
+function findPaths(traversed, current, target)
+{
+    var contextTraversed = traversed.slice();
+    
+    var neighbours = _.flatten(_.map(_.filter(edgeList, 
+        function(item) {return item.origin === current || item.destination === current; }),
+        function(item) {
+            var out = [];
+            
+            if(item.origin !== current)
+            {
+                out.push(item.origin);
+            }
+            
+            if(item.destination !== current)
+            {
+                out.push(item.destination);
+            }
+            
+            return out;
+        }
+    ));
+    
+    var foundPaths = [];
+    
+    for(var i = 0; i < neighbours.length; i++)
+    {
+        if(neighbours[i] ===  target)
+        {
+            var goodPath = contextTraversed.slice();
+            goodPath.push(neighbours[i])
+            foundPaths.push(goodPath);
+        }
+        else if(!_.contains(contextTraversed, neighbours[i]))
+        {
+            var newPaths = findPaths(contextTraversed, neighbours[i], target);
+            for(var i = 0; i < newPaths.length; i++)
+            {
+                foundPaths.push(newPaths);
+            }
+        }
+    }
+    
+    return foundPaths;
+}

@@ -205,7 +205,9 @@ var POIID;
 //For JSON use
 var floorList = [];
 var storylineList = [];
+
 var hlPointList = [];
+var hlEdgeList = [];
 
 var POTtypes = {
     "none": 0x63,
@@ -704,6 +706,18 @@ function highlightPOI(story){
             }
         }
     }
+    
+    hlEdgeList = [];
+    
+    if(active_id >= 0)
+    {
+        var storyPoints = storylineList[active_id].path;
+        
+        for(var i = 0; i < storyPoints.length - 1; i++)
+        {
+            
+        }
+    }    
 }
 
 function deleteNode(node){
