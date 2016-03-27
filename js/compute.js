@@ -18,21 +18,26 @@ function download(filename, text) {
   document.body.removeChild(element);
 }
 
+var myvount = 0;
+
 function findPaths(traversed, current, target)
 {
+    myvount++;
+    
     var contextTraversed = traversed.slice();
+    contextTraversed.push(current);
     
     var neighbours = _.flatten(_.map(_.filter(edgeList, 
         function(item) {return item.origin === current || item.destination === current; }),
         function(item) {
             var out = [];
             
-            if(item.origin !== current)
+            if(!_.contains(contextTraversed, item.origin))
             {
                 out.push(item.origin);
             }
             
-            if(item.destination !== current)
+            if(!_.contains(contextTraversed, item.destination))
             {
                 out.push(item.destination);
             }
@@ -51,12 +56,12 @@ function findPaths(traversed, current, target)
             goodPath.push(neighbours[i])
             foundPaths.push(goodPath);
         }
-        else if(!_.contains(contextTraversed, neighbours[i]))
+        else
         {
             var newPaths = findPaths(contextTraversed, neighbours[i], target);
-            for(var i = 0; i < newPaths.length; i++)
+            for(var j = 0; j < newPaths.length; j++)
             {
-                foundPaths.push(newPaths);
+                foundPaths.push(newPaths[j]);
             }
         }
     }
