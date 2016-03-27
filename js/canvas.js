@@ -740,6 +740,13 @@ function deleteNode(node){
                 storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
             }
         }
+		//loop through the floorsCovered
+		for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
+            if (storylineList[storyLineVal].floorsCovered[val] === idOfNode){
+                //delete it from the list
+                storylineList[storyLineVal].floorsCovered = removeFromList(storylineList[storyLineVal].floorsCovered[val], storylineList[storyLineVal].floorsCovered.slice());
+            }
+        }
     }
     
     //remove all POT
@@ -778,6 +785,12 @@ function deleteStoryPoint(){
                     break;
                 }
             }
+			for (var i in storylineList[val].floorsCovered){
+                if (storylineList[val].floorsCovered[i] === POIID){
+                    storylineList[val].floorsCovered = removeFromList(storylineList[val].floorsCovered[i], storylineList[val].floorsCovered.slice());
+                    break;
+                }
+            }
         }
     }
     highlightPOI(active_id);
@@ -799,6 +812,11 @@ function deletePOI(){
                 for (var j in storylineList[i].path){
                     if (storylineList[i].path[j] === POIID){
                         storylineList[i].path = removeFromList(storylineList[i].path[j], storylineList[i].path.slice());
+                    }
+                }
+				for (var j in storylineList[i].floorCovered){
+                    if (storylineList[i].floorCovered[j] === POIID){
+                        storylineList[i].floorCovered = removeFromList(storylineList[i].floorCovered[j], storylineList[i].floorCovered.slice());
                     }
                 }
             }

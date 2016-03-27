@@ -25,7 +25,6 @@ function addNewStoryLine(){
 
         storyline.title = name;
         storyline.description = description;
-        storyline.floorsCovered.push(current_floor);
         /** TODO LanguageText Story
         storyline.title.addPair('en', name);
         storyline.floorsCovered.push(current_floor);
