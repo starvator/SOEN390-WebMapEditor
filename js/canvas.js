@@ -26,7 +26,7 @@ function Edge(origin, destination) {
     };
 
     // Get an array of the points in the edge
-    this.pointCollection = function() { return [origin, destination]; };
+    this.pointCollection = [origin, destination];
 }
 
 //TODO refactor and place in appropriate location later
