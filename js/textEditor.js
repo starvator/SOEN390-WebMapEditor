@@ -76,8 +76,28 @@ $(document).ready(function(){
                 currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
                 POIList.push(currentPOI);
 				
+                var oldPOT = _.find(POTList, function(item) { return item.ID === currentPOI.ID; });
+                
 				//Remove POT it used to be
-				POTList = _.reject(POTList, function(el) { return el.point.x === currentPOI.point.x && el.point.y === currentPOI.point.y; });
+                POTList = _.reject(POTList, function(el) { return el === oldPOT; });
+                
+                // Replace it in the node list
+                nodeList = _.reject(nodeList, function(el) { return el === oldPOT; });
+                nodeList.push(currentPOI);
+                
+                // Replace the edge
+                for(var i = 0; i < edgeList.length; i++)
+                {
+                    if(edgeList[i].origin === oldPOT)
+                    {
+                        edgeList[i].origin = currentPOI;
+                    }
+                    
+                    if(edgeList[i].destination === oldPOT)
+                    {
+                        edgeList[i].destination = currentPOI;
+                    }
+                }
             }
             for(val in POIList){
                 if(POIList[val].ID === currentPOI.ID){

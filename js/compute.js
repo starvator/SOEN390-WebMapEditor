@@ -27,14 +27,14 @@ function findPaths(traversed, current, target)
 {
     // Get a list of all the points traversed so far
     var traversedPoints = _.reject(_.flatten(_.map(traversed, function(item) {
-        return item.pointCollection; // Flatten the array of points included in the edge
+        return edgePointArray(item); // Flatten the array of points included in the edge
     })), function(item) { return item === current; }); // Remove the current point
 
     // Get a list of edges that connect from the current point to another point that we haven't visited yet
     var validNeighbouringEdges = _.filter(edgeList,
         function(item) {
-            var connectsToCurrent = _.contains(item.pointCollection, current);
-            var connectsToTraversed = (_.intersection(item.pointCollection, traversedPoints)).length > 0;
+            var connectsToCurrent = _.contains(edgePointArray(item), current);
+            var connectsToTraversed = (_.intersection(edgePointArray(item), traversedPoints)).length > 0;
             return connectsToCurrent && !connectsToTraversed;
         }
     );
@@ -44,7 +44,7 @@ function findPaths(traversed, current, target)
     for(var i = 0; i < validNeighbouringEdges.length; i++)
     {
         // If the edge connects to the target, add it to the path and add it to the list of found paths
-        if(_.contains(validNeighbouringEdges[i].pointCollection, target))
+        if(_.contains(edgePointArray(validNeighbouringEdges[i]), target))
         {
             var goodPath = traversed.slice();
             goodPath.push(validNeighbouringEdges[i])
@@ -55,7 +55,7 @@ function findPaths(traversed, current, target)
             // Continue the search for the target
             var pendingPath = traversed.slice();
             pendingPath.push(validNeighbouringEdges[i]);
-            var nextPoint = (_.reject(validNeighbouringEdges[i].pointCollection, current))[0];
+            var nextPoint = (_.reject(edgePointArray(validNeighbouringEdges[i]), current))[0];
             var newPaths = findPaths(pendingPath, nextPoint, target);
             for(var j = 0; j < newPaths.length; j++)
             {
@@ -75,24 +75,28 @@ function findShortestPath(origin, destination) {
     var paths = findPaths([], origin, destination);
     
     // If nothing found, return an empty path
-    if(path.length === 0)
+    if(paths.length === 0)
     {
         return [];
     }
     
     var shortest = paths[0];
-    var distSqu = distanceSquared(shortest.origin, shortest.destination);
+    var distSqu = _.reduce(_.map(shortest, 
+            // Calculate the squared distance between each of the edges
+            function(item) { return distanceSquared(item.origin.point, item.destination.point); }), 
+            // Sum all the distances together
+            function(memo, num) { return memo + num; }, 0); 
     
     for(var i = 1; i < paths.length; i++)
     {
         var pathDistanceSquared = _.reduce(_.map(paths[i], 
             // Calculate the squared distance between each of the edges
-            function(item) { return distanceSquared(item.origin, item.destination); }), 
+            function(item) { return distanceSquared(item.origin.point, item.destination.point); }), 
             // Sum all the distances together
             function(memo, num) { return memo + num; }, 0); 
         
         // If the distance is smaller, use it instead
-        if(pathDistanceSquared < shortest)
+        if(pathDistanceSquared < distSqu)
         {
             shortest = paths[i];
             distSqu = pathDistanceSquared;
@@ -100,4 +104,9 @@ function findShortestPath(origin, destination) {
     }
     
     return shortest;
+}
+
+// Get an array of the points in the edge
+function edgePointArray(edge) {
+    return [edge.origin, edge.destination];
 }

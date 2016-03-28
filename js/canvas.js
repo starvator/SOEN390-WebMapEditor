@@ -24,9 +24,6 @@ function Edge(origin, destination) {
             distance:distance(this.origin, this.destination)
             };
     };
-
-    // Get an array of the points in the edge
-    this.pointCollection = [origin, destination];
 }
 
 //TODO refactor and place in appropriate location later
@@ -480,18 +477,16 @@ function drawEdges(){
         {
             continue;
         }
-
-        if(_.contains(hlPointList, edgeList[e].origin)){
-            if(_.contains(hlPointList, edgeList[e].destination)){
-                ctx.strokeStyle = hlColor;
-            }
-            else{
-                ctx.strokeStyle = nodeColor;
-            }
+        
+        if(_.contains(hlEdgeList, edgeList[e]))
+        {
+            ctx.strokeStyle = hlColor;
         }
-        else{
+        else
+        {
             ctx.strokeStyle = nodeColor;
         }
+        
         ctx.beginPath();
         ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
         ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);
@@ -611,7 +606,7 @@ function canvasClickStoryEditing()
 			newPOI.ID = mouseOnNode.ID;
             fillEditor(newPOI);
         }
-        }
+    }
 }
 
 // Cancel any edge creation operations
@@ -714,11 +709,13 @@ function highlightPOI(story){
 
     if(active_id >= 0)
     {
-        var storyPoints = storylineList[active_id].path;
+        // Map the list of IDs to a list of nodes
+        var storyPoints = _.map(storylineList[active_id].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
 
+        // Attempt to find the shortest path between each node
         for(var i = 0; i < storyPoints.length - 1; i++)
         {
-
+            hlEdgeList = _.union(hlEdgeList, findShortestPath(storyPoints[i], storyPoints[i + 1]));
         }
     }
 }
