@@ -41,6 +41,7 @@
     <script src="js/storylines.js" data-cover></script>
     <script src="js/alert.js"></script>
     <script src="js/underscore-min.js"></script>
+	<script src="js/bootbox.min.js"></script>
 
 </head>
 
@@ -103,7 +104,7 @@
                                 <div class="btn btn-default btn-file">Load Map<input type="file" id="inputFile"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                                 <!-- TODO: offer the user to name the file? -->
-                                <div class="btn btn-default" onclick="confirmSave()">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <div id="JSONsave" class="btn btn-default" onclick="confirmSave()">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div id="floorEditorMenu">
@@ -142,6 +143,10 @@
                                 <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="edge"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
                                 </br>
                                 <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="move"><span class="glyphicon glyphicon-move" aria-hidden="true"></span> Point mover</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="nodeDelete"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Node Delete tool</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="edgeDelete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Edge Delete tool</div>
                             </div>
                         </div>
                     </div>
@@ -187,6 +192,7 @@
             <span id="infoEditingFormTitle"></span>
             <div id="infoEditingFormClose" class="btn btn-danger pull-right">x</div>
         </div>
+        <div id="infoEditingFormContent">
         <div class="form-group input-group">
             <span class="input-group-addon">Title</span>
             <input type="text" id="spTitle" class="form-control" placeholder="Title Here">
@@ -227,8 +233,11 @@
             <div type="button" id="attachADoc" class="btn btn-default">Attach Doc</div>
             <input id="uploadFile" type="file" multiple />
         </div>
+</div>
         <div class="form-group">
             <div type="button" class="btn btn-success pull-right" id="SaveStoryPointInfo">Save</div>
+            <div type="button" class="btn btn-danger" id="DeletePOIButton">Delete Point Of Interest</div>
+            <div type="button" class="btn btn-warning" id="DeleteStoryPointButton">Delete StoryPoint</div>
             <span>&nbsp;</span>
         </div>
     </div>

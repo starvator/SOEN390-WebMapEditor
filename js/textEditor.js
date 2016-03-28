@@ -75,9 +75,29 @@ $(document).ready(function(){
                 currentPOI.isSet = true;
                 currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
                 POIList.push(currentPOI);
-				
+
+                var oldPOT = _.find(POTList, function(item) { return item.ID === currentPOI.ID; });
+
 				//Remove POT it used to be
-				POTList = _.reject(POTList, function(el) { return el.point.x === currentPOI.point.x && el.point.y === currentPOI.point.y; });
+                POTList = _.reject(POTList, function(el) { return el === oldPOT; });
+
+                // Replace it in the node list
+                nodeList = _.reject(nodeList, function(el) { return el === oldPOT; });
+                nodeList.push(currentPOI);
+
+                // Replace in the edge list
+                for(var i = 0; i < edgeList.length; i++)
+                {
+                    if(edgeList[i].origin === oldPOT)
+                    {
+                        edgeList[i].origin = currentPOI;
+                    }
+
+                    if(edgeList[i].destination === oldPOT)
+                    {
+                        edgeList[i].destination = currentPOI;
+                    }
+                }
             }
             for(val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
@@ -123,13 +143,50 @@ $(document).ready(function(){
         showErrorAlert("Enter a Title.");
     }
     });
+
+    $("#DeletePOIButton").click(function(){
+		var result = false;
+		bootbox.confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any Storypoint associated with it.", function(result) {
+			if(!result){
+				return;
+			}
+			else{
+				deletePOI();
+				//close the window
+				$("#infoEditingForm").hide();
+				$("#modal").hide();
+			}
+			return result;
+		});
+    });
+
+    $("#DeleteStoryPointButton").click(function(){
+		var result = false;
+		bootbox.confirm("Are you sure you want to delete the Storypoint?", function(result) {
+			if(!result){
+				return;
+			}
+			else{
+				deleteStoryPoint();
+				//close the window
+				$("#infoEditingForm").hide();
+				$("#modal").hide();
+			}
+			return result;
+		});
+    });
+
 });
+
+
 //Open editor of of point of a given id
 function openEditorByPointID(id){
-    for(val in POIList){
-        if(POIList[val].ID == id){
-            fillEditor(POIList[val]);
-            break;
+    for(var val in POIList){
+        for (var point in POIList[val].storyPoint){
+            if (POIList[val].storyPoint[point].ID == id){
+                fillEditor(POIList[val]);
+                break;
+            }
         }
     }
 }
@@ -138,6 +195,8 @@ function fillEditor(poi){
     currentPOI = poi;
     var spFound = false;
     var spslExists = false;
+    var blank = false;
+    var POIOrigin = false;
     //If no storypoint for current active_id
     for(var p in currentPOI.storyPoint){
         if(currentPOI.storyPoint[p].storylineID == active_id){
@@ -157,6 +216,8 @@ function fillEditor(poi){
             $("#spBeaconMinor").val(poi.ibeacon.minor);
             CKEDITOR.instances["editor1"].setData(poi.description);
             $("#attachedDocName").text(poi.media);
+            POIOrigin = true;
+            POIID = poi.ID;
         }
         else{
             $("#spTitle").val("");
@@ -170,6 +231,7 @@ function fillEditor(poi){
 			$("#spBeaconMinor").val("");
             CKEDITOR.instances["editor1"].setData("");
             $("#attachedDocName").text("");
+            blank = true;
         }
     }
     else{
@@ -178,13 +240,18 @@ function fillEditor(poi){
             for(var p in currentPOI.storyPoint){
                 if (currentPOI.storyPoint[p].storylineID == active_id){
                     $("#spTitle").val(currentPOI.storyPoint[p].title);
-                    $("#autoOn").click();
+                    if(poi.isAutoOn === true){
+                        $("#autoOn").click();
+                    }else if(poi.isAutoOn === false){
+                        $("#autoOff").click();
+                    }
                     $("#spBeaconID").val(currentPOI.ibeacon.uuid);
                     $("#spBeaconMajor").val(poi.ibeacon.major);
                     $("#spBeaconMinor").val(poi.ibeacon.minor);
                     CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
                     $("#attachedDocName").text(currentPOI.storyPoint[p].media);
                     spFound = true;
+                    POIID= poi.ID;
                 }
             }
             //If the storyPoint doesnt exist, create it
@@ -197,13 +264,16 @@ function fillEditor(poi){
                 CKEDITOR.instances["editor1"].setData("");
                 $("#attachedDocName").text("");
                 spFound = false;
+                blank = true;
             }
         }
     }
     //show the form
+    setDeleteEditorButtons(blank,POIOrigin);
     setEditorTitle();
     $("#infoEditingForm").show();
     $("#modal").show();
+	setFocus();
 }
 
 function setEditorTitle(){
@@ -213,5 +283,30 @@ function setEditorTitle(){
     }
     else{
         $("#infoEditingFormTitle").append('Storypoint Editor');
+    }
+}
+
+function setFocus(){
+	$("#spTitle").focus();
+}
+
+function setDeleteEditorButtons(newItem, poi){
+    if (newItem){
+        $('#DeletePOIButton').addClass("hidden");
+        $('#DeleteStoryPointButton').addClass("hidden");
+    }
+    //if POI only allow to delete POI
+    else if(active_id === -2){
+        $('#DeletePOIButton').removeClass("hidden");
+        $('#DeleteStoryPointButton').addClass("hidden");
+    }
+    else if(poi){
+        $('#DeletePOIButton').addClass("hidden");
+        $('#DeleteStoryPointButton').addClass("hidden");
+    }
+    //if Storypoint only allow to delete Storypoint
+    else {
+        $('#DeletePOIButton').addClass("hidden");
+        $('#DeleteStoryPointButton').removeClass("hidden");
     }
 }

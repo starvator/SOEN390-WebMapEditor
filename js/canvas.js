@@ -194,15 +194,20 @@ var mouseLocation = new Point(0,0); // Location of the mouse on the canvas
 var mouseOnNode;                    // The node that the mouse is currently hovering over
 var edgeList = [];                  // List of edges between transition points
 var lastSelectedNode;               // During edge creation, the first selected node
+var lastlastSelectedNode;           // During deleting an edge, we need to know 2 nodes to delete the edge between them
 var nodeColor = "#660066";
 var hlColor = "#009900";
 var confirmedColor = "#0000FF";
 var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
+var canDeleteEdge;                  // The index of the current selected edge in edgeList in edge delete mode, if it can be deleted
+var POIID;
 
 //For JSON use
 var floorList = [];
 var storylineList = [];
+
 var hlPointList = [];
+var hlEdgeList = [];
 
 var POTtypes = {
     "none": 0x63,
@@ -236,6 +241,39 @@ $(function(){
 
     canvas.addEventListener('DOMMouseScroll',handleScroll,false);
     canvas.addEventListener('mousewheel',handleScroll,false);
+
+    //detect a delete button press
+    $('body').on('keydown', function() {
+    var key = event.keyCode || event.charCode;
+
+    //if backspace or delete key
+    if( key == 8 || key == 46 || key == 13 ){
+        if (current_node_tool ==="nodeDelete"){
+			var nodeToDelete = lastSelectedNode;
+			if(!nodeToDelete){
+				bootbox.alert("Please select a node to delete first.", function() {
+				});
+				return false;
+			}
+			var result = false;
+			bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
+				if(!result){
+					return;
+				}
+				else{
+					deleteNode(nodeToDelete);
+				}
+				return result;
+			});
+        }// end of nodeDelete
+        else if (current_node_tool==="edgeDelete"){
+            if (canDeleteEdge){
+                deleteEdge(canDeleteEdge);
+            }
+            return false;
+        }// end of edgeDelete
+    }
+  });
 
     loadInitialFloor();
 });
@@ -321,6 +359,9 @@ function drawNode(anode) {
     if(anode === lastSelectedNode) {
         ctx.fillStyle=confirmedColor;
     }
+    if (anode === lastlastSelectedNode && current_node_tool === "edgeDelete"){
+        ctx.fillStyle=confirmedColor;
+    }
 
 
 
@@ -383,9 +424,23 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe068), mouseLocation.x - 10,mouseLocation.y + 10);
         }
+        else if (current_node_tool ==="nodeDelete")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe083), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
+        else if (current_node_tool ==="edgeDelete")
+        {
+            ctx.font = '20px Glyphicons Halflings';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(0xe014), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-    else if(lastSelectedNode && !mouseOnNode)
+    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -399,13 +454,28 @@ function drawNodeEditingCursor() {
         ctx.fill();
     }
     // When creating an edge and hovering on top of a node, draw a line to that node
-    else if (lastSelectedNode && mouseOnNode)
+    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
         ctx.moveTo(lastSelectedNode.point.x,lastSelectedNode.point.y);
         ctx.lineTo(mouseOnNode.point.x,mouseOnNode.point.y);
         ctx.stroke();
+    }
+    else if (lastSelectedNode && lastlastSelectedNode)
+    {
+        for (var val in edgeList){
+            if ((edgeList[val].origin.point.id===lastlastSelectedNode.point.id && edgeList[val].destination.point.id===lastSelectedNode.point.id)||(edgeList[val].origin.point.id===lastSelectedNode.point.id && edgeList[val].destination.point.id===lastlastSelectedNode.point.id)) {
+                ctx.strokeStyle = confirmedColor;
+                ctx.beginPath();
+                ctx.moveTo(lastlastSelectedNode.point.x,lastlastSelectedNode.point.y);
+                ctx.lineTo(lastSelectedNode.point.x,lastSelectedNode.point.y);
+                ctx.stroke();
+                canDeleteEdge = val;
+                return;
+            }
+        }
+        canDeleteEdge = false;
     }
 }
 
@@ -419,17 +489,15 @@ function drawEdges(){
             continue;
         }
 
-        if(_.contains(hlPointList, edgeList[e].origin)){
-            if(_.contains(hlPointList, edgeList[e].destination)){
-                ctx.strokeStyle = hlColor;
-            }
-            else{
-                ctx.strokeStyle = nodeColor;
-            }
+        if(_.contains(hlEdgeList, edgeList[e]))
+        {
+            ctx.strokeStyle = hlColor;
         }
-        else{
+        else
+        {
             ctx.strokeStyle = nodeColor;
         }
+
         ctx.beginPath();
         ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
         ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);
@@ -455,7 +523,7 @@ function canvasClickNodeEditing(x,y)
 		var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
-       
+
     }
     // If clicking on a node and not yet starting an edge
     else if(current_node_tool === "edge" && mouseOnNode && !lastSelectedNode) {
@@ -487,6 +555,30 @@ function canvasClickNodeEditing(x,y)
     else if(current_node_tool === "move" && lastSelectedNode)
     {
         lastSelectedNode = null;
+    }
+    else if(current_node_tool === "nodeDelete" && mouseOnNode)
+    {
+        lastSelectedNode = mouseOnNode;
+    }
+    else if (current_node_tool === "nodeDelete" && !mouseOnNode)
+    {
+        lastSelectedNode = null;
+        redraw();
+    }
+    else if (current_node_tool === "edgeDelete" && mouseOnNode){
+        if (!lastlastSelectedNode){
+            lastlastSelectedNode = mouseOnNode;
+        }
+        else {
+            lastSelectedNode = mouseOnNode;
+        }
+        redraw();
+    }
+    else if (current_node_tool === "edgeDelete" && !mouseOnNode)
+    {
+        lastlastSelectedNode = null;
+        lastSelectedNode = null;
+        redraw();
     }
 }
 
@@ -537,8 +629,13 @@ function cancelOperations() {
         lastSelectedNode.x = previousSelectedPoint.x;
         lastSelectedNode.y = previousSelectedPoint.y;
     }
+    else if (current_node_tool === "edgeDelete")
+    {
+        lastlastSelectedNode = null;
+    }
 
     lastSelectedNode = null;
+    redraw();
 }
 
 // Check to see if the set of nodes is in the current list of nodes
@@ -607,7 +704,7 @@ function highlightPOI(story){
     hlPointList = [];
     for(var val in POIList){
         if (story===-2){
-           hlPointList.push(POIList[val].point); 
+           hlPointList.push(POIList[val].point);
         }
         else {
             for(var p in POIList[val].storyPoint){
@@ -618,6 +715,149 @@ function highlightPOI(story){
             }
         }
     }
+
+    hlEdgeList = [];
+
+    if(active_id >= 0)
+    {
+        // Map the list of IDs to a list of nodes
+        var storyPoints = _.map(storylineList[active_id].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+
+        // Attempt to find the shortest path between each node
+        for(var i = 0; i < storyPoints.length - 1; i++)
+        {
+            hlEdgeList = _.union(hlEdgeList, findShortestPath(storyPoints[i], storyPoints[i + 1]));
+        }
+    }
+}
+
+function deleteNode(node){
+    var idOfNodePoint = node.point.id;
+    var idOfNode = node.ID;
+    //remove the node fromt the list
+    nodeList = removeFromList(node, nodeList.slice());
+
+    //delete all connecting edges
+    for (var val=edgeList.length-1; val>=0;val--){
+        if (edgeList[val].origin.point.id === idOfNodePoint || edgeList[val].destination.point.id === idOfNodePoint){
+            edgeList = removeFromList(edgeList[val], edgeList.slice());
+        }
+    }
+
+    //remove all POI and StoryPoints from the GUI
+    for (var val=POIList.length-1; val>=0;val--){
+        if (POIList[val].point.id === idOfNodePoint){
+            //GUI
+            for (var gui in POIList[val].storyPoint){
+                $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
+            }
+            //remove all POI
+            POIList = removeFromList(POIList[val], POIList.slice());
+        }
+    }
+
+    //remove all StoryPoints
+    for (var storyLineVal in storylineList){
+        //loop through the path
+        for (var val= storylineList[storyLineVal].path.length-1;val>=0;val--){
+            if (storylineList[storyLineVal].path[val] === idOfNode){
+                //delete it from the list
+                storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
+            }
+        }
+		//loop through the floorsCovered
+		for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
+            if (storylineList[storyLineVal].floorsCovered[val] === idOfNode){
+                //delete it from the list
+                storylineList[storyLineVal].floorsCovered = removeFromList(storylineList[storyLineVal].floorsCovered[val], storylineList[storyLineVal].floorsCovered.slice());
+            }
+        }
+    }
+
+    //remove all POT
+    for (var val=POTList.length-1; val>=0;val--){
+        if (POTList[val].point.id === idOfNodePoint){
+           POTList = removeFromList(POTList[val], POTList.slice());
+        }
+    }
+
+    //redraw
+    lastSelectedNode = null;
+    redraw();
+}
+
+function deleteStoryPoint(){
+    var poiID = currentPOI.ID; //delete this from storyline[].path
+    var storypointID = active_id;
+
+    for (var val in POIList){
+        if (POIList[val].ID === poiID){
+            //remove from GUI
+            $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
+
+            //delete it in the POIList
+            POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
+            break;
+        }
+    }
+
+    //remove id from storyline
+    for (var val in storylineList){
+        if (storylineList[val].ID == active_id){
+            for (var i in storylineList[val].path){
+                if (storylineList[val].path[i] === POIID){
+                    storylineList[val].path = removeFromList(storylineList[val].path[i], storylineList[val].path.slice());
+                    break;
+                }
+            }
+			for (var i in storylineList[val].floorsCovered){
+                if (storylineList[val].floorsCovered[i] === POIID){
+                    storylineList[val].floorsCovered = removeFromList(storylineList[val].floorsCovered[i], storylineList[val].floorsCovered.slice());
+                    break;
+                }
+            }
+        }
+    }
+    highlightPOI(active_id);
+    redraw();
+}
+
+function deletePOI(){
+    //remove POI from POIList
+    for (var val in POIList){
+        if (POIList[val].ID == POIID){
+            //remove gui
+            for (var gui in POIList[val].storyPoint){
+                $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
+            }
+            POIList = removeFromList(POIList[val], POIList.slice());
+
+            //remove reference to id from storyline to the storypoint
+            for (var i in storylineList){
+                for (var j in storylineList[i].path){
+                    if (storylineList[i].path[j] === POIID){
+                        storylineList[i].path = removeFromList(storylineList[i].path[j], storylineList[i].path.slice());
+                    }
+                }
+				for (var j in storylineList[i].floorCovered){
+                    if (storylineList[i].floorCovered[j] === POIID){
+                        storylineList[i].floorCovered = removeFromList(storylineList[i].floorCovered[j], storylineList[i].floorCovered.slice());
+                    }
+                }
+            }
+            break;
+        }
+    }
+    highlightPOI(active_id);
+    redraw();
+}
+
+function deleteEdge(val){
+    edgeList = removeFromList(edgeList[val], edgeList.slice());
+    canDeleteEdge = null;
+    lastSelectedNode = null;
+    lastlastSelectedNode = null;
+    redraw();
 }
 
 function resizeCanvas(){
