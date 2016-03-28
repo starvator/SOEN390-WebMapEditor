@@ -75,24 +75,24 @@ $(document).ready(function(){
                 currentPOI.isSet = true;
                 currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
                 POIList.push(currentPOI);
-				
+
                 var oldPOT = _.find(POTList, function(item) { return item.ID === currentPOI.ID; });
-                
+
 				//Remove POT it used to be
                 POTList = _.reject(POTList, function(el) { return el === oldPOT; });
-                
+
                 // Replace it in the node list
                 nodeList = _.reject(nodeList, function(el) { return el === oldPOT; });
                 nodeList.push(currentPOI);
-                
-                // Replace the edge
+
+                // Replace in the edge list
                 for(var i = 0; i < edgeList.length; i++)
                 {
                     if(edgeList[i].origin === oldPOT)
                     {
                         edgeList[i].origin = currentPOI;
                     }
-                    
+
                     if(edgeList[i].destination === oldPOT)
                     {
                         edgeList[i].destination = currentPOI;
@@ -143,7 +143,7 @@ $(document).ready(function(){
         showErrorAlert("Enter a Title.");
     }
     });
-    
+
     $("#DeletePOIButton").click(function(){
         if (!confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any storypoint associated with it.")){
             return false;
@@ -163,7 +163,7 @@ $(document).ready(function(){
         $("#infoEditingForm").hide();
         $("#modal").hide();
     });
-    
+
 });
 
 
@@ -267,7 +267,7 @@ function setEditorTitle(){
     $("#infoEditingFormTitle").empty();
     if(active_id === -2){
         $("#infoEditingFormTitle").append('Point of Interest Editor');
-        
+
     }
     else{
         $("#infoEditingFormTitle").append('Storypoint Editor');

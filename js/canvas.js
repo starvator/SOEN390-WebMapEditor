@@ -477,7 +477,7 @@ function drawEdges(){
         {
             continue;
         }
-        
+
         if(_.contains(hlEdgeList, edgeList[e]))
         {
             ctx.strokeStyle = hlColor;
@@ -486,7 +486,7 @@ function drawEdges(){
         {
             ctx.strokeStyle = nodeColor;
         }
-        
+
         ctx.beginPath();
         ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
         ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);

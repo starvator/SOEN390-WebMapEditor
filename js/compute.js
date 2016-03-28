@@ -73,28 +73,28 @@ function findShortestPath(origin, destination) {
 
     // Find all the paths between the two points
     var paths = findPaths([], origin, destination);
-    
+
     // If nothing found, return an empty path
     if(paths.length === 0)
     {
         return [];
     }
-    
+
     var shortest = paths[0];
-    var distSqu = _.reduce(_.map(shortest, 
+    var distSqu = _.reduce(_.map(shortest,
             // Calculate the squared distance between each of the edges
-            function(item) { return distanceSquared(item.origin.point, item.destination.point); }), 
+            function(item) { return distanceSquared(item.origin.point, item.destination.point); }),
             // Sum all the distances together
-            function(memo, num) { return memo + num; }, 0); 
-    
+            function(memo, num) { return memo + num; }, 0);
+
     for(var i = 1; i < paths.length; i++)
     {
-        var pathDistanceSquared = _.reduce(_.map(paths[i], 
+        var pathDistanceSquared = _.reduce(_.map(paths[i],
             // Calculate the squared distance between each of the edges
-            function(item) { return distanceSquared(item.origin.point, item.destination.point); }), 
+            function(item) { return distanceSquared(item.origin.point, item.destination.point); }),
             // Sum all the distances together
-            function(memo, num) { return memo + num; }, 0); 
-        
+            function(memo, num) { return memo + num; }, 0);
+
         // If the distance is smaller, use it instead
         if(pathDistanceSquared < distSqu)
         {
@@ -102,7 +102,7 @@ function findShortestPath(origin, destination) {
             distSqu = pathDistanceSquared;
         }
     }
-    
+
     return shortest;
 }
 
