@@ -18,73 +18,48 @@ function download(filename, text) {
   document.body.removeChild(element);
 }
 
-var myvount = 0;
-
+// Find all the possible list of non-looping edges to get from one point to the next
 function findPaths(traversed, current, target)
 {
-    myvount++;
-    
-    var contextTraversed = traversed.slice();
-    
-    /*
-    contextTraversed.push(current);
-    
-    var neighbours = _.flatten(_.map(_.filter(edgeList, 
-        function(item) {return (item.origin === current || item.destination === current); }),
-        function(item) {
-            var out = [];
-            
-            if(!_.contains(contextTraversed, item.origin))
-            {
-                out.push(item.origin);
-            }
-            
-            if(!_.contains(contextTraversed, item.destination))
-            {
-                out.push(item.destination);
-            }
-            
-            return out;
-        }
-    ));
-    */
-    
-    var traversedPoints = _.reject(_.flatten(_.map(contextTraversed, function(item) {
-        return item.pointCollection();
-    })), function(item) { return item === current; });
-            
-    var validNeighbouringEdges = _.filter(edgeList, 
+    // Get a list of all the points traversed so far
+    var traversedPoints = _.reject(_.flatten(_.map(traversed, function(item) {
+        return item.pointCollection(); // Flatten the array of points included in the edge
+    })), function(item) { return item === current; }); // Remove the current point
+
+    // Get a list of edges that connect from the current point to another point that we haven't visited yet
+    var validNeighbouringEdges = _.filter(edgeList,
         function(item) {
             var connectsToCurrent = _.contains(item.pointCollection(), current);
             var connectsToTraversed = (_.intersection(item.pointCollection(), traversedPoints)).length > 0;
-            return connectsToCurrent && !connectsToTraversed;            
+            return connectsToCurrent && !connectsToTraversed;
         }
     );
-    
-    //contextTraversed.push(current);
-    
+
     var foundPaths = [];
-    
+
     for(var i = 0; i < validNeighbouringEdges.length; i++)
     {
+        // If the edge connects to the target, add it to the path and add it to the list of found paths
         if(_.contains(validNeighbouringEdges[i].pointCollection(), target))
         {
-            var goodPath = contextTraversed.slice();
+            var goodPath = traversed.slice();
             goodPath.push(validNeighbouringEdges[i])
             foundPaths.push(goodPath);
         }
         else
         {
-            var pendingPath = contextTraversed.slice();
+            // Continue the search for the target
+            var pendingPath = traversed.slice();
             pendingPath.push(validNeighbouringEdges[i]);
             var nextPoint = (_.reject(validNeighbouringEdges[i].pointCollection(), current))[0];
             var newPaths = findPaths(pendingPath, nextPoint, target);
             for(var j = 0; j < newPaths.length; j++)
             {
+                // Add any found paths to the list of found paths
                 foundPaths.push(newPaths[j]);
             }
         }
     }
-    
+
     return foundPaths;
 }
