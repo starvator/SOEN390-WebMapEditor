@@ -24,6 +24,8 @@ function Edge(origin, destination) {
             distance:distance(this.origin, this.destination)
             };
     };
+    
+    this.pointCollection = function() { return [origin, destination]; };
 }
 
 //TODO refactor and place in appropriate location later

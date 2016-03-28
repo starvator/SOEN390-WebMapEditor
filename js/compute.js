@@ -25,10 +25,12 @@ function findPaths(traversed, current, target)
     myvount++;
     
     var contextTraversed = traversed.slice();
+    
+    /*
     contextTraversed.push(current);
     
     var neighbours = _.flatten(_.map(_.filter(edgeList, 
-        function(item) {return item.origin === current || item.destination === current; }),
+        function(item) {return (item.origin === current || item.destination === current); }),
         function(item) {
             var out = [];
             
@@ -45,20 +47,38 @@ function findPaths(traversed, current, target)
             return out;
         }
     ));
+    */
+    
+    var traversedPoints = _.reject(_.flatten(_.map(contextTraversed, function(item) {
+        return item.pointCollection();
+    })), function(item) { return item === current; });
+            
+    var validNeighbouringEdges = _.filter(edgeList, 
+        function(item) {
+            var connectsToCurrent = _.contains(item.pointCollection(), current);
+            var connectsToTraversed = (_.intersection(item.pointCollection(), traversedPoints)).length > 0;
+            return connectsToCurrent && !connectsToTraversed;            
+        }
+    );
+    
+    //contextTraversed.push(current);
     
     var foundPaths = [];
     
-    for(var i = 0; i < neighbours.length; i++)
+    for(var i = 0; i < validNeighbouringEdges.length; i++)
     {
-        if(neighbours[i] ===  target)
+        if(_.contains(validNeighbouringEdges[i].pointCollection(), target))
         {
             var goodPath = contextTraversed.slice();
-            goodPath.push(neighbours[i])
+            goodPath.push(validNeighbouringEdges[i])
             foundPaths.push(goodPath);
         }
         else
         {
-            var newPaths = findPaths(contextTraversed, neighbours[i], target);
+            var pendingPath = contextTraversed.slice();
+            pendingPath.push(validNeighbouringEdges[i]);
+            var nextPoint = (_.reject(validNeighbouringEdges[i].pointCollection(), current))[0];
+            var newPaths = findPaths(pendingPath, nextPoint, target);
             for(var j = 0; j < newPaths.length; j++)
             {
                 foundPaths.push(newPaths[j]);
