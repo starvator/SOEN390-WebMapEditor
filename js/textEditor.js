@@ -253,17 +253,21 @@ function fillEditor(poi){
     setEditorTitle();
     $("#infoEditingForm").show();
     $("#modal").show();
+	setFocus();
 }
 
 function setEditorTitle(){
     $("#infoEditingFormTitle").empty();
     if(active_id === -2){
         $("#infoEditingFormTitle").append('Point of Interest Editor');
-        
     }
     else{
         $("#infoEditingFormTitle").append('Storypoint Editor');
     }
+}
+
+function setFocus(){
+	$("#spTitle").focus();
 }
 
 function setDeleteEditorButtons(newItem, poi){
