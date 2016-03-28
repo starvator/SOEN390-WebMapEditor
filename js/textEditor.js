@@ -125,23 +125,35 @@ $(document).ready(function(){
     });
     
     $("#DeletePOIButton").click(function(){
-        if (!confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any storypoint associated with it.")){
-            return false;
-        }
-        deletePOI();
-        //close the window
-        $("#infoEditingForm").hide();
-        $("#modal").hide();
+		var result = false;
+		bootbox.confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any Storypoint associated with it.", function(result) {
+			if(!result){
+				return;
+			}
+			else{
+				deletePOI();
+				//close the window
+				$("#infoEditingForm").hide();
+				$("#modal").hide();
+			}
+			return result;
+		});
     });
 
     $("#DeleteStoryPointButton").click(function(){
-        if (!confirm("Are you sure you want to delete the storypoint?")){
-            return false;
-        }
-        deleteStoryPoint();
-        //close the window
-        $("#infoEditingForm").hide();
-        $("#modal").hide();
+		var result = false;
+		bootbox.confirm("Are you sure you want to delete the Storypoint?", function(result) {
+			if(!result){
+				return;
+			}
+			else{
+				deleteStoryPoint();
+				//close the window
+				$("#infoEditingForm").hide();
+				$("#modal").hide();
+			}
+			return result;
+		});
     });
     
 });

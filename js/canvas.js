@@ -247,18 +247,29 @@ $(function(){
     //if backspace or delete key
     if( key == 8 || key == 46 || key == 13 ){
         if (current_node_tool ==="nodeDelete"){
-            if(!lastSelectedNode || !confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?")){
-                return false;
-            }
-            deleteNode(lastSelectedNode);
-            return false;
-        }
+			var nodeToDelete = lastSelectedNode;
+			if(!nodeToDelete){
+				bootbox.alert("Please select a node to delete first.", function() {
+				});
+				return false;
+			}
+			var result = false;
+			bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
+				if(!result){
+					return;
+				}
+				else{
+					deleteNode(nodeToDelete);
+				}
+				return result;
+			});
+        }// end of nodeDelete
         else if (current_node_tool==="edgeDelete"){
             if (canDeleteEdge){
                 deleteEdge(canDeleteEdge); 
             }
             return false;
-        }
+        }// end of edgeDelete
     }
   });
     
