@@ -247,8 +247,16 @@ $(function(){
     var key = event.keyCode || event.charCode;
 
     //if backspace or delete key
-    if( key == 8 || key == 46 ){
-        if (current_node_tool ==="nodeDelete"){
+    if( key == 8 || key == 46 || key== 13 ){
+        //if delete or back button, block it if a bootbox modal is open
+        if ($('body').hasClass("modal-open") && (key == 8 || key == 46)){
+            return false;
+        }
+        // if enter button, let it work if a bootbox modal is open
+        else if ($('body').hasClass("modal-open") && key == 13){
+            return true;
+        }
+        else if (current_node_tool ==="nodeDelete"){
 			var nodeToDelete = lastSelectedNode;
 			if(!nodeToDelete){
 				bootbox.alert("Please select a node to delete first.", function() {
@@ -273,6 +281,10 @@ $(function(){
             }
             return false;
         }// end of edgeDelete
+        else {
+            //allow button through
+            return true;
+        }
     }
   });
 
