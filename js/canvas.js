@@ -247,7 +247,7 @@ $(function(){
     var key = event.keyCode || event.charCode;
 
     //if backspace or delete key
-    if( key == 8 || key == 46 || key == 13 ){
+    if( key == 8 || key == 46 ){
         if (current_node_tool ==="nodeDelete"){
 			var nodeToDelete = lastSelectedNode;
 			if(!nodeToDelete){
@@ -265,6 +265,7 @@ $(function(){
 				}
 				return result;
 			});
+            return false;
         }// end of nodeDelete
         else if (current_node_tool==="edgeDelete"){
             if (canDeleteEdge){
