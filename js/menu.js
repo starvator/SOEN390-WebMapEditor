@@ -124,8 +124,8 @@ function hidePOTMenu() {
 function changeNodeEditorTool(btn)
 {
     updateNodeEditorTool(btn);
-
-    if(current_node_tool === "point")
+    
+    if(current_node_tool === "point" || current_node_tool === "omniTool")
     {
         showPOTMenu();
     }
@@ -138,8 +138,8 @@ function changeNodeEditorTool(btn)
 // Switch to a node editor tool
 function updateNodeEditorTool(btn)
 {
-    // Don't do anything if the tool is already selected
-    if($(btn).data("node-tool") === current_node_tool)
+    // Don't do anything if the tool is already selected, or switching between point or omni tools or vice-versa
+    if($(btn).data("node-tool") === current_node_tool || _.intersect([$(btn).data("node-tool"), current_node_tool], ["point", "omniTool"]).length === 2)
     {
         return false;
     }
