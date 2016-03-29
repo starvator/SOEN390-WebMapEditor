@@ -366,6 +366,8 @@ function drawNode(anode) {
 
 
     if(anode.label !== undefined && anode.label !== "none") {
+        var currentForecolour = ctx.fillStyle;
+    
         // Draw a background
         ctx.beginPath();
         ctx.fillStyle="#e6e6e6";
@@ -375,7 +377,7 @@ function drawNode(anode) {
 
         // Draw the associated tool
         ctx.font = '20px souvlaki-font-1';
-        ctx.fillStyle= nodeColor;
+        ctx.fillStyle= currentForecolour;
         ctx.fillText(String.fromCharCode(POTtypes[anode.label]), anode.point.x - 10,anode.point.y + 10);
     }
     else
@@ -438,9 +440,27 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe014), mouseLocation.x - 10,mouseLocation.y + 10);
         }
+        else if (current_node_tool === "omniTool")
+        {
+            if(current_tool === "none")
+            {
+                // Draw a point
+                ctx.beginPath();
+                ctx.fillStyle= nodeColor;
+                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+                ctx.fill();
+            }
+            else
+            {
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                // Draw the selected tool
+                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            }
+        }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
+    else if(lastSelectedNode && !mouseOnNode && (current_node_tool === "edge" || current_node_tool === "omniTool"))
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -448,13 +468,23 @@ function drawNodeEditingCursor() {
         ctx.lineTo(mouseLocation.x,mouseLocation.y);
         ctx.stroke();
 
-        ctx.beginPath();
-        ctx.fillStyle=confirmedColor;
-        ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
-        ctx.fill();
+        if(current_tool === "none" || current_node_tool === "edge")
+        {
+            ctx.beginPath();
+            ctx.fillStyle=confirmedColor;
+            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+            ctx.fill();
+        }
+        else
+        {
+            ctx.font = '20px souvlaki-font-1';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
     }
     // When creating an edge and hovering on top of a node, draw a line to that node
-    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
+    else if (lastSelectedNode && mouseOnNode && (current_node_tool === "edge" || current_node_tool === "omniTool"))
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -539,7 +569,7 @@ function canvasClickNodeEditing(x,y)
         }
     }
     // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-    else if (current_node_tool === "edge" && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+    else if ((current_node_tool === "edge" || current_node_tool === "omniTool") && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
         // Create a new edge
         edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
         lastSelectedNode = null; // Clear the selected node
@@ -579,6 +609,39 @@ function canvasClickNodeEditing(x,y)
         lastlastSelectedNode = null;
         lastSelectedNode = null;
         redraw();
+    }
+    // If in omni mode and clicked on a node, start making an edge from it
+    else if (current_node_tool === "omniTool" && !lastSelectedNode && mouseOnNode)
+    {
+        lastSelectedNode = mouseOnNode;
+    }
+    // If in omni mode and clicked on empty spaced with the creation of an edge in progress,
+    // create a new node, create an edge, than start making a new edge from the new node
+    else if (current_node_tool === "omniTool" && lastSelectedNode && !mouseOnNode)
+    {
+        // Store a new node in the list of transition nodes
+        var point = new Point(x, y, current_floor);
+		var pot = new POT(point, current_tool);
+        nodeList.push(pot);
+        POTList.push(pot);
+        
+        // Create a new edge to the new node
+        edgeList.push(new Edge(lastSelectedNode, pot));
+        // Set the last selected node to the current node
+        lastSelectedNode = pot;
+    }
+    // If in omni mode and clicking on empty space without a previous node selected, create a new node and start
+    // making an edge from it
+    else if(current_node_tool === "omniTool" && !lastSelectedNode && !mouseOnNode)
+    {
+        // Store a new node in the list of transition nodes
+        var point = new Point(x, y, current_floor);
+		var pot = new POT(point, current_tool);
+        nodeList.push(pot);
+        POTList.push(pot);
+        
+        // Set it as the selected node
+        lastSelectedNode = pot;
     }
 }
 

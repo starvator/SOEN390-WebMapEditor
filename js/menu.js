@@ -123,9 +123,17 @@ function hidePOTMenu() {
 // Click on a node editor tool
 function changeNodeEditorTool(btn)
 {
+    var previousTool = current_node_tool;
+    
     updateNodeEditorTool(btn);
-
-    if(current_node_tool === "point")
+    
+    // If switching between point or omni tools or vice-versa, don't reanimate the POT menu
+    if(_.intersection([$(btn).data("node-tool"), previousTool], ["point", "omniTool"]).length === 2)
+    {
+        return;
+    }
+    
+    if(current_node_tool === "point" || current_node_tool === "omniTool")
     {
         showPOTMenu();
     }
