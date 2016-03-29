@@ -549,7 +549,11 @@ function drawEdges(){
 }
 
 function canvasClick(x,y) {
-    if(nodeEditingMode) {
+	//block the clock if a modal is open
+	if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
+		return false;
+	}
+    else if(nodeEditingMode) {
         canvasClickNodeEditing(x,y);
     }
     else if (storylinesEditingMode && mouseOnNode){
@@ -660,12 +664,6 @@ function canvasClickNodeEditing(x,y)
 
 function canvasClickStoryEditing()
 {
-    //*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
-    //TODOTYLER: get the id of the current point of interest
-    //alert(mouseOnNode.id);
-    //TODOTYLER: get the id of the currently selected storyline
-    //alert(active_id);
-
     // Cancel POI creation if the node is a POT that isn't labelled "none"
     if(mouseOnNode.label !== undefined && mouseOnNode.label !== "none")
     {
