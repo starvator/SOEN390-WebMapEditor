@@ -10,12 +10,7 @@ QUnit.test( "Sprint 4 user story 2.2: point editing (bathroom, stair, etc)", fun
     for(var type in POTtypes) {
 	current_tool = type;
 	canvasClick(testX,testY);
-	if(type !== "none")
-	    //check that the last added POT matches the last added node.
-	    assert.ok( nodeList[nodeList.length - 1].id == POTList[POTList.length - 1].point.id , "POT of type " + POTList[POTList.length - 1].label +" made");
-	else
-	    //if the type is "none", check that the last added node has no associated POT	
-	    assert.ok(1 == "1", "Regular point made");
+	assert.ok( nodeList[nodeList.length - 1].id == POTList[POTList.length - 1].id , "POT of type " + POTList[POTList.length - 1].label +" made");
 
 	if( testX == 400 && testY == 100) {
 	    testX = 100;

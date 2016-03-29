@@ -1,8 +1,6 @@
 QUnit.test( "Sprint 5 user story 2.3: point deletion", function( assert ) {
 	//generate a new point on the map
-	nodeEditingMode = true;
-    mouseOnNode = false;
-    lastSelectedNode = false;
+	showNodesMenu();
     var delX = 600;
     var delY = 600;
 	current_tool = "stair";
@@ -25,7 +23,13 @@ QUnit.test( "Sprint 5 user story 2.3: point deletion", function( assert ) {
 });
 
 QUnit.test( "Sprint 5 user story 2.4: point movement", function( assert ) {
-	assert.ok( 1 == "0", "point successfully moved");
+	//switch to move tool
+	changeNodeEditorTool($(".btn").find("[data-node-tool='move']"));
+	//select a node to move (in this case its ID should be like 1 if you run the WHOLE test suite)
+	canvasClick(100,100);
+	//simulate point movement
+	canvasClick(600,600);
+	assert.equal( nodeList[0].point.x, 600, "point successfully moved");
 });
 
 QUnit.test( "Sprint 5 user story 3.2: independent path placement", function( assert ) {
@@ -33,7 +37,7 @@ QUnit.test( "Sprint 5 user story 3.2: independent path placement", function( ass
 	canvasClick(100,100);
 	canvasClick(100,200);
 	//place two points, or use two pre-existing points (like form s4_tests.js)
-	//connect them with an edge
+	//connect them with an edge using the edge placement tool specifically
 	assert.ok( 1 == "0", "path successfully placed.");
 	//try connecting two points that already have an edge between them
 	assert.ok( 1 == "0", "path not duplicated.");
