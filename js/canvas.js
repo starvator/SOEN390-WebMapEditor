@@ -873,18 +873,18 @@ function deleteNode(node){
 
 function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
-    var storypointID = active_id;
+    var storypointID = active_id;	
 
-    for (var val in POIList){
-        if (POIList[val].ID === poiID){
-            //remove from GUI
-            $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
+	for(var p in currentPOI.storyPoint){
+		if (currentPOI.storyPoint[p].storylineID == active_id){
+			//remove from GUI
+			$("#StorylinesList").find("#"+currentPOI.storyPoint[p].ID+"_a").parent().remove();
 
-            //delete it in the POIList
-            POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
-            break;
-        }
-    }
+			//delete it in the POIList
+			currentPOI.storyPoint = removeFromList(currentPOI.storyPoint[p], currentPOI.storyPoint.slice());
+			break;
+		}
+	}
 
     //remove id from storyline
     for (var val in storylineList){
