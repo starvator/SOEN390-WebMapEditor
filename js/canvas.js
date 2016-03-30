@@ -790,6 +790,11 @@ function highlightPOI(story){
         }
     }
 
+    highlightEdges();
+}
+
+function highlightEdges()
+{
     hlEdgeList = [];
 
     if(active_id >= 0)
