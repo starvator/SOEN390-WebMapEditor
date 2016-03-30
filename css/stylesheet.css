@@ -50,3 +50,11 @@
     padding-top:5px;
     padding-bottom:5px;
 }
+
+.floorListItem{
+	color: black;
+}
+.floorListItem:hover
+{
+	cursor: pointer;
+}

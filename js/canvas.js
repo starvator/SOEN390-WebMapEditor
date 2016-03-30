@@ -227,7 +227,7 @@ $(function(){
 
     img = new Image();
     img.onload = function() {
-        ctx.drawImage(img, -1000, -1000);
+        ctx.drawImage(img, 0, 0);
     };
     img.src = "floor_plans/floor3.svg";
 
@@ -303,7 +303,7 @@ function redraw() {
     ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
 
     // Draw the background image
-    ctx.drawImage(img, -1000, -1000);
+    ctx.drawImage(img, 0, 0);
 
     // Clear the currently stored node
     mouseOnNode = null;
