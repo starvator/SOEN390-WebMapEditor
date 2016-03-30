@@ -157,3 +157,22 @@ function hideInactiveStoryLines(){
         }
     }
 };
+
+function updateFloorsCovered(POI){
+    var storyline;
+    for(var i = 0; i < storylineList.length; i++)
+    {
+        if(storylineList[i].ID == active_id)
+        {
+            storyline = storylineList[i];
+        }
+    }
+    for(var i = 0; i < storyline.floorsCovered.length; i++)
+    {
+        if(storyline.floorsCovered[i] === POI.floorID)
+        {
+            return;
+        }
+    }
+    storyline.floorsCovered.push(POI.floorID);
+}
