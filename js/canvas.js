@@ -126,6 +126,7 @@ function POI(point) {
 function setCreatePOIid(){
     $("#"+active_id).removeClass("active");
     $("#editPOIButton").addClass("active");
+    $('#activeButtonsList').addClass("hidden");
     active_id = -2;
     hideInactiveStoryLines();
     highlightPOI(active_id);
@@ -800,7 +801,14 @@ function highlightEdges()
     if(active_id >= 0)
     {
         // Map the list of IDs to a list of nodes
-        var storyPoints = _.map(storylineList[active_id].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+        var storyPoints;
+        for (var aid in storylineList){
+            if (storylineList[aid].ID == active_id){
+                storyPoints = _.map(storylineList[aid].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+                break;
+            }
+        }
+        
 
         // Attempt to find the shortest path between each node
         for(var i = 0; i < storyPoints.length - 1; i++)
@@ -867,18 +875,18 @@ function deleteNode(node){
 
 function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
-    var storypointID = active_id;
+    var storypointID = active_id;	
 
-    for (var val in POIList){
-        if (POIList[val].ID === poiID){
-            //remove from GUI
-            $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
+	for(var p in currentPOI.storyPoint){
+		if (currentPOI.storyPoint[p].storylineID == active_id){
+			//remove from GUI
+			$("#StorylinesList").find("#"+currentPOI.storyPoint[p].ID+"_a").parent().remove();
 
-            //delete it in the POIList
-            POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
-            break;
-        }
-    }
+			//delete it in the POIList
+			currentPOI.storyPoint = removeFromList(currentPOI.storyPoint[p], currentPOI.storyPoint.slice());
+			break;
+		}
+	}
 
     //remove id from storyline
     for (var val in storylineList){
@@ -899,6 +907,35 @@ function deleteStoryPoint(){
     }
     highlightPOI(active_id);
     redraw();
+}
+
+function deleteStoryLine(){
+    for (var val in storylineList){
+        //get the right storyline
+        if (storylineList[val].ID == active_id){
+            //for each of the storypoints in the path
+            for (var i in storylineList[val].path){
+                //find the point with this ID
+                //in each POI
+                for (var j in POIList){
+                    //for each storypoint
+                    for (var k in POIList[j].storyPoint){
+                        //if it is the right point
+                        if (POIList[j].storyPoint[k].ID == storylineList[val].path[i]){
+                            currentPOI = POIList[j];
+                            deleteStoryPoint();
+                        }
+                    }
+                }
+            }
+            storylineList = removeFromList(storylineList[val], storylineList.slice());
+            $("#"+active_id).remove();
+            $("#"+active_id+"_pointList").remove();
+            active_id = -2;
+            $('#activeButtonsList').addClass("hidden");
+            break;
+        }
+    }
 }
 
 function deletePOI(){
