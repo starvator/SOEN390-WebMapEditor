@@ -132,7 +132,7 @@ $(document).ready(function(){
                         newStoryPoint.media = $("#attachedDocName").text();
                         POIList[val].storyPoint.push(newStoryPoint);
                         //Adding the point to the storyline list.
-                        $("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
+                        $("#"+active_id+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
                         for (var aid in storylineList){
                             if (storylineList[aid].ID == active_id){
                                 storylineList[aid].path.push(currentPOI.ID);
