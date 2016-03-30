@@ -126,6 +126,7 @@ function POI(point) {
 function setCreatePOIid(){
     $("#"+active_id).removeClass("active");
     $("#editPOIButton").addClass("active");
+    $('#activeButtonsList').addClass("hidden");
     active_id = -2;
     hideInactiveStoryLines();
     highlightPOI(active_id);
@@ -930,6 +931,7 @@ function deleteStoryLine(){
             $("#"+active_id).remove();
             $("#"+active_id+"_pointList").remove();
             active_id = -2;
+            $('#activeButtonsList').addClass("hidden");
             break;
         }
     }

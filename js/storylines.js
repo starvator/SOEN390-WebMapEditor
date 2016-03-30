@@ -105,8 +105,11 @@ function editStoryLine(){
     }
     $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description +'" /></a>');
     $("#submitButton").hide();
-    $("#editButton").html('<a href="#">Save</a>');
+    $("#editButton").html('<a href="#">Save Changes</a>');
     $("#editButton").attr("onclick","saveStoryLine()");
+    $('#deleteStorylineButton').addClass("hidden");
+    $('#storylineFormInfo').addClass("hidden");
+    hideEntireInactiveStoryLines();
 }
 
 function saveStoryLine(){
@@ -128,9 +131,12 @@ function saveStoryLine(){
     storyline.description = description;//.setByLanguage("en", description);
     $("#storylineField").val("");
     $("#storylineDescription").val("");
-    $("#editButton").html('<a href="#">Edit</a>');
+    $("#editButton").html('<a href="#">Edit Active Storyline</a>');
     $("#editButton").attr("onclick","editStoryLine()");
+    $('#deleteStorylineButton').removeClass("hidden");
+    $('#storylineFormInfo').removeClass("hidden");
     $("#submitButton").show();
+    showEntireInactiveStoryLines();
 }
 
 //variable for active storyline id
@@ -143,6 +149,7 @@ function storylineClicked(elem){
     active_id = id;
     highlightPOI(active_id);
     hideInactiveStoryLines();
+    $('#activeButtonsList').removeClass("hidden");
     redraw();
 };
 
@@ -153,6 +160,34 @@ function hideInactiveStoryLines(){
             $("#"+id+"_pointList").hide();
         }
         if(id == active_id){
+            $("#"+id+"_pointList").show();
+        }
+    }
+};
+
+function hideEntireInactiveStoryLines(){
+    //all id except up to current except acctive 0_pointList
+    for(var id = 0; id < current_id; id++){
+        if(id != active_id){
+            $("#"+id).hide();
+            $("#"+id+"_pointList").hide();
+        }
+        if(id == active_id){
+            $("#"+id).show();
+            $("#"+id+"_pointList").show();
+        }
+    }
+};
+
+function showEntireInactiveStoryLines(){
+    //all id except up to current except acctive 0_pointList
+    for(var id = 0; id < current_id; id++){
+        if(id != active_id){
+            $("#"+id).show();
+            $("#"+id+"_pointList").hide();
+        }
+        if(id == active_id){
+            $("#"+id).show();
             $("#"+id+"_pointList").show();
         }
     }
