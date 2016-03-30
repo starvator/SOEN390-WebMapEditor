@@ -917,6 +917,7 @@ function deleteStoryLine(){
             }
             storylineList = removeFromList(storylineList[val], storylineList.slice());
             $("#"+active_id).remove();
+            $("#"+active_id+"_pointList").remove();
             active_id = -2;
             break;
         }
