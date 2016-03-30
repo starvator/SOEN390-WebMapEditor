@@ -37,6 +37,7 @@ function addNewStoryLine(){
         storylineClicked($("#"+current_id));
         current_id++;
         
+        // Add a sortable list to the storyline so that we can re-arrange storypoints
         addSortableToStoryline(storyline);
     }
     else{
@@ -67,6 +68,7 @@ function buildStorylineMenuFromList(){
                 });
             });
         
+        // Add a sortable list to the storyline so that we can re-arrange storypoints
         addSortableToStoryline(s);
     });
 }
@@ -74,7 +76,7 @@ function buildStorylineMenuFromList(){
 function addSortableToStoryline(storyline)
 {
     var sorter = document.getElementById(storyline.ID+"_pointList");
-    storyline.storypointSorter = Sortable.create(sorter, {
+    Sortable.create(sorter, {
         draggable:".draggable_story_point",
         handle:".glyphicon-menu-hamburger", 
         onEnd: function (/**Event*/evt) {
@@ -83,6 +85,7 @@ function addSortableToStoryline(storyline)
     });
 }
 
+// Move a storypoint and re-highlight edges
 function handleStorypointRearrange(storyline, oldIndex, newIndex)
 {
     moveInArray(storyline.path, oldIndex, newIndex);
