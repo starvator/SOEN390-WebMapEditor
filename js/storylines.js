@@ -74,7 +74,18 @@ function buildStorylineMenuFromList(){
 function addSortableToStoryline(storyline)
 {
     var sorter = document.getElementById(storyline.ID+"_pointList");
-    storyline.storypointSorter = Sortable.create(sorter, {draggable:".draggable_story_point", handle:".glyphicon-menu-hamburger"});
+    storyline.storypointSorter = Sortable.create(sorter, {
+        draggable:".draggable_story_point",
+        handle:".glyphicon-menu-hamburger", 
+        onEnd: function (/**Event*/evt) {
+            handleStorypointRearrange(storyline, evt.oldIndex, evt.newIndex);
+        }
+    });
+}
+
+function handleStorypointRearrange(storyline, oldIndex, newIndex)
+{
+    moveInArray(storyline.path, oldIndex, newIndex);
 }
 
 function editStoryLine(){
