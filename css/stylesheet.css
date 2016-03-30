@@ -55,5 +55,5 @@
     padding-left:5px;
 }
 .draggable_story_point .glyphicon {
-    cursor:n-resize;
+    cursor:ns-resize;
 }
