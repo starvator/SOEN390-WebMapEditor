@@ -129,7 +129,7 @@ $(document).ready(function(){
                         //Adding the point to the storyline list.
                         $("#"+active_id+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
                         storylineList[active_id].path.push(currentPOI.ID);
-                        storylineList[active_id].updateFloorsCovered(newStoryPoint);
+                        updateFloorsCovered(POIList[val]);
                         spCreated = false;
                     }
                 }
