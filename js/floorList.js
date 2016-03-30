@@ -21,9 +21,8 @@ $(function(){
 			}
 			else{
 				loadFloor();
-				return false;
+				return;
 			}
-			return true;
 			});
         }
 		else{
@@ -52,7 +51,6 @@ function loadFloor(){
 	$("#newFloor")[0].reset();
 	$("#default_img").hide();
 	$("#floorListHolder").show();
-	return;
 }
 
 function loadFloorsFromList(){
