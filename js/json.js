@@ -90,7 +90,12 @@ function loadFromJSON() {
             edgeList.push(Edge.fromJSON(e));
         }
     });
-
+	if(floorList.length != 0){
+		$("#floorListHolder").show();
+		$("#default_img").hide();
+		var cfloor = floorList[floorList.length - 1];
+		changeFloor(cfloor.floorID);
+	}
 }
 
 // Atomic from-JSON Constructors for Each Class

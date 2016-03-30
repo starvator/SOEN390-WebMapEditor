@@ -35,6 +35,12 @@ function showFloorsMenu()
 
 function showNodesMenu()
 {
+	if(floorList.length == 0){
+		bootbox.alert("Please create a floor first.", function() {
+		});
+		return;
+	}
+
     $("#floorEditorMenu").hide();
     $("#MapLayoutMainMenu").hide();
     $("#nodeEditorMenu").show();

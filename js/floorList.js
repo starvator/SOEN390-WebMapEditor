@@ -33,6 +33,7 @@ $(function(){
         changeFloor($("#floorNumUpload").val());
         //clear the form
         $("#newFloor")[0].reset();
+		$("#default_img").hide();
 		$("#floorListHolder").show();
         return false;
     });
@@ -69,5 +70,5 @@ function loadInitialFloor() {
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
     };
-    img.src = "floor_plans/default.png";
+    img.src = "";
 }
