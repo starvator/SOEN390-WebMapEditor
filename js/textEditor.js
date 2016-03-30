@@ -114,7 +114,12 @@ $(document).ready(function(){
                             //Adding the point to the storyline list.
                             //get into <a> and change POIList[val].title
                             $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
-                            storylineList[active_id].path.push(currentPOI.ID);
+                            for (var aid in storylineList){
+                                if (storylineList[aid].ID == active_id){
+                                    storylineList[aid].path.push(currentPOI.ID);
+                                    break;
+                                }
+                            }
                             spCreated = true;
                         }
                     }
@@ -128,7 +133,12 @@ $(document).ready(function(){
                         POIList[val].storyPoint.push(newStoryPoint);
                         //Adding the point to the storyline list.
                         $("#"+active_id+"_pointList").append('<li><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
-                        storylineList[active_id].path.push(currentPOI.ID);
+                        for (var aid in storylineList){
+                            if (storylineList[aid].ID == active_id){
+                                storylineList[aid].path.push(currentPOI.ID);
+                                break;
+                            }
+                        }
                         spCreated = false;
                     }
                 }

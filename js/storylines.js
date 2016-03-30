@@ -67,7 +67,7 @@ function buildStorylineMenuFromList(){
 function editStoryLine(){
 
     var storyline;
-    for(var i = 0; i < storylineList.length; i++)
+    for(var i in storylineList)
     {
         if(storylineList[i].ID == active_id)
         {

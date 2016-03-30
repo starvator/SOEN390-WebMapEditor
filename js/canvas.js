@@ -795,7 +795,13 @@ function highlightPOI(story){
     if(active_id >= 0)
     {
         // Map the list of IDs to a list of nodes
-        var storyPoints = _.map(storylineList[active_id].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+        for (var aid in storylineList){
+            if (storylineList[aid].ID == active_id){
+                var storyPoints = _.map(storylineList[aid].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+                break;
+            }
+        }
+        
 
         // Attempt to find the shortest path between each node
         for(var i = 0; i < storyPoints.length - 1; i++)
