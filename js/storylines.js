@@ -86,6 +86,7 @@ function addSortableToStoryline(storyline)
 function handleStorypointRearrange(storyline, oldIndex, newIndex)
 {
     moveInArray(storyline.path, oldIndex, newIndex);
+    highlightEdges();
 }
 
 function editStoryLine(){
