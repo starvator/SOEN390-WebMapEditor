@@ -1,6 +1,11 @@
 var jsonMap;
 
 function confirmSave(){
+	if(floorList.length == 0){
+		bootbox.alert("Please create a map first, or import your work from a previous session.", function() {
+		});
+		return;
+	}
 	var saveButton = $('#JSONsave');
 	var result = false;
 	bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
@@ -90,12 +95,6 @@ function loadFromJSON() {
             edgeList.push(Edge.fromJSON(e));
         }
     });
-	if(floorList.length != 0){
-		$("#floorListHolder").show();
-		$("#default_img").hide();
-		var cfloor = floorList[floorList.length - 1];
-		changeFloor(cfloor.floorID);
-	}
 }
 
 // Atomic from-JSON Constructors for Each Class
