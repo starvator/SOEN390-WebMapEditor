@@ -158,21 +158,23 @@ function hideInactiveStoryLines(){
     }
 };
 
-function updateFloorsCovered(POI){
-    var storyline;
-    for(var i = 0; i < storylineList.length; i++)
+function findFloorsCovered(storyline){
+    storyline.floorsCovered.push(storyline.path[0]);
+    var duplicate;
+    for(var i = 0; i < storyline.path.length; i++)
     {
-        if(storylineList[i].ID == active_id)
+        duplicate = false;
+        for(var floor = 1; floor < storyline.floorsCovered.length; floor++)
         {
-            storyline = storylineList[i];
+            if(storyline.path[i].floorID === storyline.floorsCovered[floor])
+            {
+                duplicate = true;
+                floor = storyline.floorsCovered.length;
+            }
+        }
+        if(!duplicate)
+        {
+            storyline.floorsCovered.push(storyline.path[i])
         }
     }
-    for(var i = 0; i < storyline.floorsCovered.length; i++)
-    {
-        if(storyline.floorsCovered[i] === POI.floorID)
-        {
-            return;
-        }
-    }
-    storyline.floorsCovered.push(POI.floorID);
 }
