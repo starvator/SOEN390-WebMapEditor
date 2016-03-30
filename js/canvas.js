@@ -801,9 +801,10 @@ function highlightEdges()
     if(active_id >= 0)
     {
         // Map the list of IDs to a list of nodes
+        var storyPoints;
         for (var aid in storylineList){
             if (storylineList[aid].ID == active_id){
-                var storyPoints = _.map(storylineList[aid].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+                storyPoints = _.map(storylineList[aid].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
                 break;
             }
         }
