@@ -12,11 +12,11 @@ function addNewStoryLine(){
         var storyline = new Storyline();
         if(description){
         $("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</br>' + description +'</a></li>' +
-        '<ul id="'+ current_id +'_pointList"></ul>');
+        '<ul id="'+ current_id +'_pointList" class="list-group"></ul>');
         }
         else{
         $("#StorylinesList").append('<li id="'+ current_id +'" onclick="storylineClicked(this)"><a href="#">'+ name +'</a></li>' +
-        '<ul id="'+ current_id +'_pointList"></ul>');
+        '<ul id="'+ current_id +'_pointList" class="list-group"></ul>');
         }
         $("#StorylinesList").find(".active").removeClass("active");
         $("#"+current_id).addClass("active");
@@ -36,6 +36,8 @@ function addNewStoryLine(){
         storylineList.push(storyline);
         storylineClicked($("#"+current_id));
         current_id++;
+        
+        addSortableToStoryline(storyline);
     }
     else{
         showWarningAlert("Enter a name for the storyline.");
@@ -46,22 +48,33 @@ function buildStorylineMenuFromList(){
     jQuery.each(storylineList, function(i, s){
         if(s.description){
         $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</br>' + s.description +'</a></li>' +
-        '<ul id="'+ s.ID +'_pointList"></ul>');
+        '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         else{
         $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</a></li>' +
-        '<ul id="'+ s.ID +'_pointList"></ul>');
+        '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
+        
+        
+        
         current_id++;
 
         $.each(POIList, function(i, poi) {
                 $.each(poi.storyPoint, function(j, sp) {
                     if(sp.storylineID == s.ID) {
-                        $("#"+s.ID+"_pointList").append('<li><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title +'</a></li>');
+                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title +'</a></li>');
                     }
                 });
             });
+        
+        addSortableToStoryline(s);
     });
+}
+
+function addSortableToStoryline(storyline)
+{
+    var sorter = document.getElementById(storyline.ID+"_pointList");
+    storyline.storypointSorter = Sortable.create(sorter, {draggable:".draggable_story_point", handle:".glyphicon-menu-hamburger"});
 }
 
 function editStoryLine(){

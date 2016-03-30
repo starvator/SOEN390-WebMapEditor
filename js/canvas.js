@@ -176,6 +176,7 @@ function StoryPoint() {
     this.description = "";//new LanguageText();
     this.media = new Media();
     SP_id++;
+    this.storypointSorter = null;
 }
 
 // End Classes
