@@ -78,7 +78,8 @@ function addSortableToStoryline(storyline)
     var sorter = document.getElementById(storyline.ID+"_pointList");
     Sortable.create(sorter, {
         draggable:".draggable_story_point",
-        handle:".glyphicon-menu-hamburger", 
+        handle:".glyphicon-menu-hamburger",
+        animation: 150,        
         onEnd: function (/**Event*/evt) {
             handleStorypointRearrange(storyline, evt.oldIndex, evt.newIndex);
         }
