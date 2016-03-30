@@ -6,6 +6,7 @@
 }
 
 #mainMenu {
+	padding-top:5px;
 }
 
 #mainMenu div, #nodeEditorMenu div {
@@ -61,4 +62,26 @@
 
 #default_img{
 	width:100%;
+}
+
+#sidebar .nav{
+    max-height: 130px;
+	min-width:300px;
+    overflow-y:scroll; 
+}
+
+.scrollListContainer
+{
+	display:inline-block;
+}
+
+#sidebar .well
+{
+	padding:3px;
+	min-width:300px;
+	background-color: rgb(22, 105, 173);
+}
+
+.floorListTitle{
+	font-size:20px;
 }
