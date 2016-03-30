@@ -157,3 +157,14 @@ function hideInactiveStoryLines(){
         }
     }
 };
+
+function updateFloorsCovered(newStorypoint){
+	for(var i = 0; i < floorscovered.length; i++)
+	{
+		if(floorscovered[i] === newStorypoint.POI.floorID)
+		{
+			return;
+		}
+	}
+	floorscovered.push(newStorypoint.POI.floorID);
+}
