@@ -896,6 +896,33 @@ function deleteStoryPoint(){
     redraw();
 }
 
+function deleteStoryLine(){
+    for (var val in storylineList){
+        //get the right storyline
+        if (storylineList[val].ID == active_id){
+            //for each of the storypoints in the path
+            for (var i in storylineList[val].path){
+                //find the point with this ID
+                //in each POI
+                for (var j in POIList){
+                    //for each storypoint
+                    for (var k in POIList[j].storyPoint){
+                        //if it is the right point
+                        if (POIList[j].storyPoint[k].ID == storylineList[val].path[i]){
+                            currentPOI = POIList[j];
+                            deleteStoryPoint();
+                        }
+                    }
+                }
+            }
+            storylineList = removeFromList(storylineList[val], storylineList.slice());
+            $("#"+active_id).remove();
+            active_id = -2;
+            break;
+        }
+    }
+}
+
 function deletePOI(){
     //remove POI from POIList
     for (var val in POIList){
