@@ -208,7 +208,7 @@ function findFloorsCovered(storyline){
         duplicate = false;
         for(var floor = 0; floor < storyline.floorsCovered.length; floor++)
         {
-            if(loop.floorID === storyline.floorsCovered[floor])
+            if(loopPOI.floorID === storyline.floorsCovered[floor])
             {
                 duplicate = true;
                 break;
