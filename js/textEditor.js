@@ -78,7 +78,7 @@ $(document).ready(function(){
 
                 var oldPOT = _.find(POTList, function(item) { return item.ID === currentPOI.ID; });
 
-				//Remove POT it used to be
+                //Remove POT it used to be
                 POTList = _.reject(POTList, function(el) { return el === oldPOT; });
 
                 // Replace it in the node list
@@ -149,35 +149,35 @@ $(document).ready(function(){
     });
 
     $("#DeletePOIButton").click(function(){
-		var result = false;
-		bootbox.confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any Storypoint associated with it.", function(result) {
-			if(!result){
-				return;
-			}
-			else{
-				deletePOI();
-				//close the window
-				$("#infoEditingForm").hide();
-				$("#modal").hide();
-			}
-			return result;
-		});
+        var result = false;
+        bootbox.confirm("Are you sure you want to delete the point of interest? This will delete the point of interest and any Storypoint associated with it.", function(result) {
+            if(!result){
+                return;
+            }
+            else{
+                deletePOI();
+                //close the window
+                $("#infoEditingForm").hide();
+                $("#modal").hide();
+            }
+            return result;
+        });
     });
 
     $("#DeleteStoryPointButton").click(function(){
-		var result = false;
-		bootbox.confirm("Are you sure you want to delete the Storypoint?", function(result) {
-			if(!result){
-				return;
-			}
-			else{
-				deleteStoryPoint();
-				//close the window
-				$("#infoEditingForm").hide();
-				$("#modal").hide();
-			}
-			return result;
-		});
+        var result = false;
+        bootbox.confirm("Are you sure you want to delete the Storypoint?", function(result) {
+            if(!result){
+                return;
+            }
+            else{
+                deleteStoryPoint();
+                //close the window
+                $("#infoEditingForm").hide();
+                $("#modal").hide();
+            }
+            return result;
+        });
     });
 
 });
@@ -231,8 +231,8 @@ function fillEditor(poi){
                 $("#autoOff").click();
             }
             $("#spBeaconID").val("");
-			$("#spBeaconMajor").val("");
-			$("#spBeaconMinor").val("");
+            $("#spBeaconMajor").val("");
+            $("#spBeaconMinor").val("");
             CKEDITOR.instances["editor1"].setData("");
             $("#attachedDocName").text("");
             blank = true;
@@ -263,8 +263,8 @@ function fillEditor(poi){
                 $("#spTitle").val("");
                 $("#autoOn").click();
                 $("#spBeaconID").val("");
-				$("#spBeaconMajor").val("");
-				$("#spBeaconMinor").val("");
+                $("#spBeaconMajor").val("");
+                $("#spBeaconMinor").val("");
                 CKEDITOR.instances["editor1"].setData("");
                 $("#attachedDocName").text("");
                 spFound = false;
@@ -277,7 +277,7 @@ function fillEditor(poi){
     setEditorTitle();
     $("#infoEditingForm").show();
     $("#modal").show();
-	setFocus();
+    setFocus();
 }
 
 function setEditorTitle(){
@@ -291,7 +291,7 @@ function setEditorTitle(){
 }
 
 function setFocus(){
-	$("#spTitle").focus();
+    $("#spTitle").focus();
 }
 
 function setDeleteEditorButtons(newItem, poi){
