@@ -197,18 +197,18 @@ function findFloorsCovered(storyline){
     var duplicate;
     for(var i = 0; i < storyline.path.length; i++)
     {
-        var currentPOI;
+        var loopPOI;
         for(var j = 0; j < POIList.length; j++)
         {
             if(POIList[j].ID === storyline.path[i])
             {
-                currentPOI = POIList[j];
+                loopPOI = POIList[j];
             }
         }
         duplicate = false;
         for(var floor = 0; floor < storyline.floorsCovered.length; floor++)
         {
-            if(currentPOI.floorID === storyline.floorsCovered[floor])
+            if(loop.floorID === storyline.floorsCovered[floor])
             {
                 duplicate = true;
                 break;
@@ -216,7 +216,7 @@ function findFloorsCovered(storyline){
         }
         if(!duplicate)
         {
-            storyline.floorsCovered.push(currentPOI.floorID)
+            storyline.floorsCovered.push(loopPOI.floorID)
         }
     }
 }
