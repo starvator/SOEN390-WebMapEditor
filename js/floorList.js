@@ -93,7 +93,8 @@ function deleteFloor(){
         catch(err){
         }
     }
-    //if no other floors, reset to initial
+    //if no other floors, reset to initial and hide delete button
+    $("#deletecurrentfloor").hide();
     //TODO: denis implement showing your initial loading screen here
     alert("DENIS WILL HAVE A THING HERE");
 }
