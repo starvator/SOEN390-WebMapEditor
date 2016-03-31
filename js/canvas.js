@@ -168,6 +168,19 @@ function Storyline(){
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
     this.floorsCovered = [];
+    
+    this.toJSON = function() {
+        findFloorsCovered(this);
+        return {
+            id: this.ID,
+            title: this.title,
+            description: this.description,
+            path: this.path,
+            thumbnail: this.thumbnail,
+            walkingTimeInMinutes: this.walkingTimeInMinutes,
+            floorsCovered: this.floorsCovered
+        };
+    };
 }
 
 function StoryPoint() {
@@ -258,22 +271,22 @@ $(function(){
             return true;
         }
         else if (current_node_tool ==="nodeDelete"){
-			var nodeToDelete = lastSelectedNode;
-			if(!nodeToDelete){
-				bootbox.alert("Please select a node to delete first.", function() {
-				});
-				return false;
-			}
-			var result = false;
-			bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
-				if(!result){
-					return;
-				}
-				else{
-					deleteNode(nodeToDelete);
-				}
-				return result;
-			});
+            var nodeToDelete = lastSelectedNode;
+            if(!nodeToDelete){
+                bootbox.alert("Please select a node to delete first.", function() {
+                });
+                return false;
+            }
+            var result = false;
+            bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
+                if(!result){
+                    return;
+                }
+                else{
+                    deleteNode(nodeToDelete);
+                }
+                return result;
+            });
             return false;
         }// end of nodeDelete
         else if (current_node_tool==="edgeDelete"){
@@ -550,10 +563,10 @@ function drawEdges(){
 }
 
 function canvasClick(x,y) {
-	//block the clock if a modal is open
-	if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
-		return false;
-	}
+    //block the clock if a modal is open
+    if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
+        return false;
+    }
     else if(nodeEditingMode) {
         canvasClickNodeEditing(x,y);
     }
@@ -568,7 +581,7 @@ function canvasClickNodeEditing(x,y)
     if(current_node_tool === "point" && !mouseOnNode && !lastSelectedNode) {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-		var pot = new POT(point, current_tool);
+        var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
 
@@ -639,7 +652,7 @@ function canvasClickNodeEditing(x,y)
     {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-		var pot = new POT(point, current_tool);
+        var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
         
@@ -654,7 +667,7 @@ function canvasClickNodeEditing(x,y)
     {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-		var pot = new POT(point, current_tool);
+        var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
         
@@ -676,7 +689,7 @@ function canvasClickStoryEditing()
     //find point in list and fill editor
     if(POIList.length === 0){
         var newPOI = new POI(mouseOnNode.point);
-		newPOI.ID = mouseOnNode.ID;
+        newPOI.ID = mouseOnNode.ID;
         newPOI.storyPoint = [];
         fillEditor(newPOI);
     }else{
@@ -689,7 +702,7 @@ function canvasClickStoryEditing()
         }
         if(!found){
             var newPOI = new POI(mouseOnNode.point);
-			newPOI.ID = mouseOnNode.ID;
+            newPOI.ID = mouseOnNode.ID;
             fillEditor(newPOI);
         }
     }
@@ -852,8 +865,8 @@ function deleteNode(node){
                 storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
             }
         }
-		//loop through the floorsCovered
-		for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
+        //loop through the floorsCovered
+        for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
             if (storylineList[storyLineVal].floorsCovered[val] === idOfNode){
                 //delete it from the list
                 storylineList[storyLineVal].floorsCovered = removeFromList(storylineList[storyLineVal].floorsCovered[val], storylineList[storyLineVal].floorsCovered.slice());
@@ -875,18 +888,18 @@ function deleteNode(node){
 
 function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
-    var storypointID = active_id;	
+    var storypointID = active_id;   
 
-	for(var p in currentPOI.storyPoint){
-		if (currentPOI.storyPoint[p].storylineID == active_id){
-			//remove from GUI
-			$("#StorylinesList").find("#"+currentPOI.storyPoint[p].ID+"_a").parent().remove();
+    for(var p in currentPOI.storyPoint){
+        if (currentPOI.storyPoint[p].storylineID == active_id){
+            //remove from GUI
+            $("#StorylinesList").find("#"+currentPOI.storyPoint[p].ID+"_a").parent().remove();
 
-			//delete it in the POIList
-			currentPOI.storyPoint = removeFromList(currentPOI.storyPoint[p], currentPOI.storyPoint.slice());
-			break;
-		}
-	}
+            //delete it in the POIList
+            currentPOI.storyPoint = removeFromList(currentPOI.storyPoint[p], currentPOI.storyPoint.slice());
+            break;
+        }
+    }
 
     //remove id from storyline
     for (var val in storylineList){
@@ -897,7 +910,7 @@ function deleteStoryPoint(){
                     break;
                 }
             }
-			for (var i in storylineList[val].floorsCovered){
+            for (var i in storylineList[val].floorsCovered){
                 if (storylineList[val].floorsCovered[i] === POIID){
                     storylineList[val].floorsCovered = removeFromList(storylineList[val].floorsCovered[i], storylineList[val].floorsCovered.slice());
                     break;
@@ -955,7 +968,7 @@ function deletePOI(){
                         storylineList[i].path = removeFromList(storylineList[i].path[j], storylineList[i].path.slice());
                     }
                 }
-				for (var j in storylineList[i].floorCovered){
+                for (var j in storylineList[i].floorCovered){
                     if (storylineList[i].floorCovered[j] === POIID){
                         storylineList[i].floorCovered = removeFromList(storylineList[i].floorCovered[j], storylineList[i].floorCovered.slice());
                     }

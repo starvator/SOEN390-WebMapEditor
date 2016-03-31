@@ -192,3 +192,31 @@ function showEntireInactiveStoryLines(){
         }
     }
 };
+
+function findFloorsCovered(storyline){
+    var duplicate;
+    for(var i = 0; i < storyline.path.length; i++)
+    {
+        var currentPOI;
+        for(var j = 0; j < POIList.length; j++)
+        {
+            if(POIList[j].ID === storyline.path[i])
+            {
+                currentPOI = POIList[j];
+            }
+        }
+        duplicate = false;
+        for(var floor = 0; floor < storyline.floorsCovered.length; floor++)
+        {
+            if(currentPOI.floorID === storyline.floorsCovered[floor])
+            {
+                duplicate = true;
+                break;
+            }
+        }
+        if(!duplicate)
+        {
+            storyline.floorsCovered.push(currentPOI.floorID)
+        }
+    }
+}
