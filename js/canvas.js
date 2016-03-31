@@ -167,6 +167,19 @@ function Storyline(){
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
     this.floorsCovered = [];
+    
+    this.toJSON = function() {
+        findFloorsCovered(this);
+        return {
+            id: this.ID,
+            title: this.title,
+            description: this.description,
+            path: this.path,
+            thumbnail: this.thumbnail,
+            walkingTimeInMinutes: this.walkingTimeInMinutes,
+            floorsCovered: this.floorsCovered
+        };
+    };
 }
 
 function StoryPoint() {
