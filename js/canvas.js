@@ -205,7 +205,9 @@ var POIID;
 //For JSON use
 var floorList = [];
 var storylineList = [];
+
 var hlPointList = [];
+var hlEdgeList = [];
 
 var POTtypes = {
     "none": 0x63,
@@ -245,23 +247,47 @@ $(function(){
     var key = event.keyCode || event.charCode;
 
     //if backspace or delete key
-    if( key == 8 || key == 46 || key == 13 ){
-        if (current_node_tool ==="nodeDelete"){
-            if(!lastSelectedNode || !confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?")){
-                return false;
-            }
-            deleteNode(lastSelectedNode);
+    if( key == 8 || key == 46 || key== 13 ){
+        //if delete or back button, block it if a bootbox modal is open
+        if ($('body').hasClass("modal-open") && (key == 8 || key == 46)){
             return false;
         }
+        // if enter button, let it work if a bootbox modal is open
+        else if ($('body').hasClass("modal-open") && key == 13){
+            return true;
+        }
+        else if (current_node_tool ==="nodeDelete"){
+			var nodeToDelete = lastSelectedNode;
+			if(!nodeToDelete){
+				bootbox.alert("Please select a node to delete first.", function() {
+				});
+				return false;
+			}
+			var result = false;
+			bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
+				if(!result){
+					return;
+				}
+				else{
+					deleteNode(nodeToDelete);
+				}
+				return result;
+			});
+            return false;
+        }// end of nodeDelete
         else if (current_node_tool==="edgeDelete"){
             if (canDeleteEdge){
-                deleteEdge(canDeleteEdge); 
+                deleteEdge(canDeleteEdge);
             }
             return false;
+        }// end of edgeDelete
+        else {
+            //allow button through
+            return true;
         }
     }
   });
-    
+
     loadInitialFloor();
 });
 
@@ -353,6 +379,8 @@ function drawNode(anode) {
 
 
     if(anode.label !== undefined && anode.label !== "none") {
+        var currentForecolour = ctx.fillStyle;
+    
         // Draw a background
         ctx.beginPath();
         ctx.fillStyle="#e6e6e6";
@@ -362,7 +390,7 @@ function drawNode(anode) {
 
         // Draw the associated tool
         ctx.font = '20px souvlaki-font-1';
-        ctx.fillStyle= nodeColor;
+        ctx.fillStyle= currentForecolour;
         ctx.fillText(String.fromCharCode(POTtypes[anode.label]), anode.point.x - 10,anode.point.y + 10);
     }
     else
@@ -425,9 +453,27 @@ function drawNodeEditingCursor() {
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe014), mouseLocation.x - 10,mouseLocation.y + 10);
         }
+        else if (current_node_tool === "omniTool")
+        {
+            if(current_tool === "none")
+            {
+                // Draw a point
+                ctx.beginPath();
+                ctx.fillStyle= nodeColor;
+                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+                ctx.fill();
+            }
+            else
+            {
+                ctx.font = '20px souvlaki-font-1';
+                ctx.fillStyle= nodeColor;
+                // Draw the selected tool
+                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+            }
+        }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
-    else if(lastSelectedNode && !mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
+    else if(lastSelectedNode && !mouseOnNode && (current_node_tool === "edge" || current_node_tool === "omniTool"))
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -435,13 +481,23 @@ function drawNodeEditingCursor() {
         ctx.lineTo(mouseLocation.x,mouseLocation.y);
         ctx.stroke();
 
-        ctx.beginPath();
-        ctx.fillStyle=confirmedColor;
-        ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
-        ctx.fill();
+        if(current_tool === "none" || current_node_tool === "edge")
+        {
+            ctx.beginPath();
+            ctx.fillStyle=confirmedColor;
+            ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
+            ctx.fill();
+        }
+        else
+        {
+            ctx.font = '20px souvlaki-font-1';
+            ctx.fillStyle= nodeColor;
+            // Draw the selected tool
+            ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
+        }
     }
     // When creating an edge and hovering on top of a node, draw a line to that node
-    else if (lastSelectedNode && mouseOnNode && current_node_tool !== "nodeDelete" && current_node_tool !== "edgeDelete")
+    else if (lastSelectedNode && mouseOnNode && (current_node_tool === "edge" || current_node_tool === "omniTool"))
     {
         ctx.strokeStyle = confirmedColor;
         ctx.beginPath();
@@ -476,17 +532,15 @@ function drawEdges(){
             continue;
         }
 
-        if(_.contains(hlPointList, edgeList[e].origin)){
-            if(_.contains(hlPointList, edgeList[e].destination)){
-                ctx.strokeStyle = hlColor;
-            }
-            else{
-                ctx.strokeStyle = nodeColor;
-            }
+        if(_.contains(hlEdgeList, edgeList[e]))
+        {
+            ctx.strokeStyle = hlColor;
         }
-        else{
+        else
+        {
             ctx.strokeStyle = nodeColor;
         }
+
         ctx.beginPath();
         ctx.moveTo(edgeList[e].origin.point.x,edgeList[e].origin.point.y);
         ctx.lineTo(edgeList[e].destination.point.x,edgeList[e].destination.point.y);
@@ -495,7 +549,11 @@ function drawEdges(){
 }
 
 function canvasClick(x,y) {
-    if(nodeEditingMode) {
+	//block the clock if a modal is open
+	if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
+		return false;
+	}
+    else if(nodeEditingMode) {
         canvasClickNodeEditing(x,y);
     }
     else if (storylinesEditingMode && mouseOnNode){
@@ -512,7 +570,7 @@ function canvasClickNodeEditing(x,y)
 		var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
-       
+
     }
     // If clicking on a node and not yet starting an edge
     else if(current_node_tool === "edge" && mouseOnNode && !lastSelectedNode) {
@@ -528,7 +586,7 @@ function canvasClickNodeEditing(x,y)
         }
     }
     // If clicking on a second node to create an edge (cannot click on the same node or create an already existing edge)
-    else if (current_node_tool === "edge" && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
+    else if ((current_node_tool === "edge" || current_node_tool === "omniTool") && mouseOnNode && lastSelectedNode && mouseOnNode !== lastSelectedNode && !nodesInEdges(mouseOnNode, lastSelectedNode)) {
         // Create a new edge
         edgeList.push(new Edge(lastSelectedNode, mouseOnNode));
         lastSelectedNode = null; // Clear the selected node
@@ -556,7 +614,7 @@ function canvasClickNodeEditing(x,y)
     }
     else if (current_node_tool === "edgeDelete" && mouseOnNode){
         if (!lastlastSelectedNode){
-            lastlastSelectedNode = mouseOnNode;    
+            lastlastSelectedNode = mouseOnNode;
         }
         else {
             lastSelectedNode = mouseOnNode;
@@ -569,16 +627,43 @@ function canvasClickNodeEditing(x,y)
         lastSelectedNode = null;
         redraw();
     }
+    // If in omni mode and clicked on a node, start making an edge from it
+    else if (current_node_tool === "omniTool" && !lastSelectedNode && mouseOnNode)
+    {
+        lastSelectedNode = mouseOnNode;
+    }
+    // If in omni mode and clicked on empty spaced with the creation of an edge in progress,
+    // create a new node, create an edge, than start making a new edge from the new node
+    else if (current_node_tool === "omniTool" && lastSelectedNode && !mouseOnNode)
+    {
+        // Store a new node in the list of transition nodes
+        var point = new Point(x, y, current_floor);
+		var pot = new POT(point, current_tool);
+        nodeList.push(pot);
+        POTList.push(pot);
+        
+        // Create a new edge to the new node
+        edgeList.push(new Edge(lastSelectedNode, pot));
+        // Set the last selected node to the current node
+        lastSelectedNode = pot;
+    }
+    // If in omni mode and clicking on empty space without a previous node selected, create a new node and start
+    // making an edge from it
+    else if(current_node_tool === "omniTool" && !lastSelectedNode && !mouseOnNode)
+    {
+        // Store a new node in the list of transition nodes
+        var point = new Point(x, y, current_floor);
+		var pot = new POT(point, current_tool);
+        nodeList.push(pot);
+        POTList.push(pot);
+        
+        // Set it as the selected node
+        lastSelectedNode = pot;
+    }
 }
 
 function canvasClickStoryEditing()
 {
-    //*******NOTE: in the current form POI's cannot have multiple storylines associated to them. -JD
-    //TODOTYLER: get the id of the current point of interest
-    //alert(mouseOnNode.id);
-    //TODOTYLER: get the id of the currently selected storyline
-    //alert(active_id);
-
     // Cancel POI creation if the node is a POT that isn't labelled "none"
     if(mouseOnNode.label !== undefined && mouseOnNode.label !== "none")
     {
@@ -606,7 +691,7 @@ function canvasClickStoryEditing()
 			newPOI.ID = mouseOnNode.ID;
             fillEditor(newPOI);
         }
-        }
+    }
 }
 
 // Cancel any edge creation operations
@@ -622,7 +707,7 @@ function cancelOperations() {
     {
         lastlastSelectedNode = null;
     }
-    
+
     lastSelectedNode = null;
     redraw();
 }
@@ -693,7 +778,7 @@ function highlightPOI(story){
     hlPointList = [];
     for(var val in POIList){
         if (story===-2){
-           hlPointList.push(POIList[val].point); 
+           hlPointList.push(POIList[val].point);
         }
         else {
             for(var p in POIList[val].storyPoint){
@@ -702,6 +787,20 @@ function highlightPOI(story){
                     break;
                 }
             }
+        }
+    }
+
+    hlEdgeList = [];
+
+    if(active_id >= 0)
+    {
+        // Map the list of IDs to a list of nodes
+        var storyPoints = _.map(storylineList[active_id].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+
+        // Attempt to find the shortest path between each node
+        for(var i = 0; i < storyPoints.length - 1; i++)
+        {
+            hlEdgeList = _.union(hlEdgeList, findShortestPath(storyPoints[i], storyPoints[i + 1]));
         }
     }
 }
@@ -718,7 +817,7 @@ function deleteNode(node){
             edgeList = removeFromList(edgeList[val], edgeList.slice());
         }
     }
-    
+
     //remove all POI and StoryPoints from the GUI
     for (var val=POIList.length-1; val>=0;val--){
         if (POIList[val].point.id === idOfNodePoint){
@@ -730,7 +829,7 @@ function deleteNode(node){
             POIList = removeFromList(POIList[val], POIList.slice());
         }
     }
-    
+
     //remove all StoryPoints
     for (var storyLineVal in storylineList){
         //loop through the path
@@ -748,34 +847,34 @@ function deleteNode(node){
             }
         }
     }
-    
+
     //remove all POT
     for (var val=POTList.length-1; val>=0;val--){
         if (POTList[val].point.id === idOfNodePoint){
            POTList = removeFromList(POTList[val], POTList.slice());
         }
     }
-    
+
     //redraw
     lastSelectedNode = null;
     redraw();
 }
 
-function deleteStoryPoint(){    
+function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
     var storypointID = active_id;
-    
+
     for (var val in POIList){
         if (POIList[val].ID === poiID){
             //remove from GUI
             $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
-            
+
             //delete it in the POIList
             POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
             break;
         }
     }
-    
+
     //remove id from storyline
     for (var val in storylineList){
         if (storylineList[val].ID == active_id){
@@ -806,7 +905,7 @@ function deletePOI(){
                 $("#StorylinesList").find("#"+POIList[val].storyPoint[gui].ID+"_a").parent().remove();
             }
             POIList = removeFromList(POIList[val], POIList.slice());
-            
+
             //remove reference to id from storyline to the storypoint
             for (var i in storylineList){
                 for (var j in storylineList[i].path){
