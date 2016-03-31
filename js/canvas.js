@@ -102,7 +102,6 @@ function POI(point) {
     this.point = point;
     this.floorID = current_floor;
     this.ibeacon = new IBeacon("","","");
-    //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
     this.isAutoOn = true;
@@ -563,7 +562,7 @@ function drawEdges(){
 }
 
 function canvasClick(x,y) {
-    //block the clock if a modal is open
+    //block the click if a modal is open
     if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
         return false;
     }
