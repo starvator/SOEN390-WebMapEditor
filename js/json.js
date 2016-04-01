@@ -110,6 +110,11 @@ function loadFromJSON() {
             floorList[eval(fp.floorID)] = (FloorPlan.fromJSON(fp));
         }
     });
+    //remove the path from the url of the floorplan
+    for (var val in floorList){
+        var tempPath = floorList[val].imagePath.split("/");
+        floorList[val].imagePath = tempPath[tempPath.length-1];
+    }
 
     //storylineList
     $.each(jsonMap.storyline, function(i, sl) {
