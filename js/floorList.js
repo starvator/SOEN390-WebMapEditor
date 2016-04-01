@@ -79,7 +79,7 @@ function deleteFloor(){
             deleteNode(nodeList[val]);
         }
     }
-    //remove the floor fromt he floorlist
+    //remove the floor from the floorlist
     delete floorList[current_floor];
     loadFloorsFromList();
     for (var val=0; floorList.length>val;val++){
