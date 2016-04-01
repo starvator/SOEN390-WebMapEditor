@@ -10,7 +10,7 @@ $(function(){
             showErrorAlert("You must enter a floor number.");
             return false;
         }
-        if ($("#floorNumUpload").val()<1){
+        if ($("#floorNumUpload").val()<0){
             showErrorAlert("Floor numbers must be greater than 0.");
             return false;
         }
