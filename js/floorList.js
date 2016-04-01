@@ -11,7 +11,7 @@ $(function(){
             return false;
         }
         if ($("#floorNumUpload").val()<0){
-            showErrorAlert("Floor numbers must be greater than 0.");
+            showErrorAlert("Floor numbers must be greater than or equal to 0.");
             return false;
         }
         if ($("#floorNumUpload").val()>99){

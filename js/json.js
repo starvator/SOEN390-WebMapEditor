@@ -23,6 +23,33 @@ function confirmSave(){
         });
         return false;
     }
+	
+	if((edgeList.length == 0)){
+		bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
+        });
+		return false;
+	}
+	//check if the graph is valid
+	for(var n=0; nodeList.length>n;n++){
+		var idOfNode = nodeList[n].point.id;
+		//alert(idOfNode);
+		var hasEdge = false;
+		forEachEdge:
+		for (var val in edgeList){
+			if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
+			}
+			else{
+				hasEdge = true;
+				break forEachEdge;
+			}
+		}
+		if(!hasEdge){
+			bootbox.alert("Whoops! One of your points isn't connected. Please review your map before saving.", function() {
+			});
+			return false;
+		}
+	}
+
     var result = false;
     bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
     saveButton.show("Confirm result: "+result);
@@ -33,9 +60,9 @@ function confirmSave(){
           title: "Please name the export file:",
           value: "mapData",
           callback: function(result) {
-            if (result === null) {
-              name = "mapData.json";
-              download(name,createJSON());
+            if (result == null) {
+				bootbox.alert("You have not saved the map data.", function() {
+				});
             } else {
             name = result.concat(".json");
             download(name,createJSON());
@@ -120,7 +147,7 @@ function loadFromJSON() {
 FloorPlan.fromJSON = function(json) {
 
     var fp = new FloorPlan();
-    fp.floorID = json.floorID;
+    fp.floorID = parseInt(json.floorID);
     fp.imagePath = json.imagePath;
     fp.imageWidth = json.imageWidth;
     fp.imageHeight = json.imageHeight;
@@ -131,7 +158,7 @@ FloorPlan.fromJSON = function(json) {
 StoryPoint.fromJSON = function(json) {
 
     var sp = new StoryPoint();
-    sp.storylineID = json.storylineID;
+    sp.storylineID = parseInt(json.storylineID);
     sp.title = json.title;//LanguageText.fromJSON(json.title);
     sp.description = json.description;//LanguageText.fromJSON(json.description);
     sp.media = json.media;
@@ -143,15 +170,15 @@ POI.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
-    poi.ID = json.id;
+    poi.ID = parseInt(json.id);
     poi.title = json.title;
     poi.description = json.description;
     
     //TODO: LanguageText formats?
     //poi.title = LanguageText.fromJSON(json.title);
     //poi.description = LanguageText.fromJSON(json.description);
-    poi.floorID = json.floorID;
-    poi.ibeacon = IBeacon.fromJSON(json.iBeacon);
+    poi.floorID = parseInt(json.floorID);
+    poi.ibeacon = IBeacon.fromJSON(json.ibeacon);
     poi.media = json.media;
     
     $.each(json.storyPoint, function(i, sp) {
@@ -167,9 +194,9 @@ POT.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
-    pot.ID = json.id;
-    pot.label = json.label;//LanguageText.fromJSON(json.label);
-    pot.floorID = json.floorID; 
+    pot.ID = parseInt(json.id);
+    pot.label = json.label.toLowerCase();
+    pot.floorID = parseInt(json.floorID); 
     
     nodeList.push(pot);
     
@@ -213,7 +240,11 @@ function findNodeByID(id){
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-    s.ID = json.ID;
+	if(parseInt(json.id) !== undefined)
+		s.ID = parseInt(json.id);
+	else if(parseInt(json.ID) !== undefined){
+		s.ID = parseInt(json.ID);
+	}
     s.title = json.title;//LanguageText.fromJSON(json.title);
     s.description = json.description;//LanguageText.fromJSON(json.description);
     s.path = json.path;
