@@ -60,7 +60,7 @@ function confirmSave(){
           title: "Please name the export file:",
           value: "mapData",
           callback: function(result) {
-            if (result == null) {
+            if (result === null) {
                 bootbox.alert("You have not saved the map data.", function() {
                 });
             } else {
