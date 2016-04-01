@@ -102,7 +102,6 @@ function POI(point) {
     this.point = point;
     this.floorID = current_floor;
     this.ibeacon = new IBeacon("","","");
-    //TODO: verify autotrigger toggle functionality
     this.media = new Media();
     this.storyPoint = [];
     this.isAutoOn = true;
@@ -126,6 +125,7 @@ function POI(point) {
 function setCreatePOIid(){
     $("#"+active_id).removeClass("active");
     $("#editPOIButton").addClass("active");
+    $('#activeButtonsList').addClass("hidden");
     active_id = -2;
     hideInactiveStoryLines();
     highlightPOI(active_id);
@@ -167,6 +167,19 @@ function Storyline(){
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
     this.floorsCovered = [];
+    
+    this.toJSON = function() {
+        findFloorsCovered(this);
+        return {
+            id: this.ID,
+            title: this.title,
+            description: this.description,
+            path: this.path,
+            thumbnail: this.thumbnail,
+            walkingTimeInMinutes: this.walkingTimeInMinutes,
+            floorsCovered: this.floorsCovered
+        };
+    };
 }
 
 function StoryPoint() {
@@ -257,22 +270,22 @@ $(function(){
             return true;
         }
         else if (current_node_tool ==="nodeDelete"){
-			var nodeToDelete = lastSelectedNode;
-			if(!nodeToDelete){
-				bootbox.alert("Please select a node to delete first.", function() {
-				});
-				return false;
-			}
-			var result = false;
-			bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
-				if(!result){
-					return;
-				}
-				else{
-					deleteNode(nodeToDelete);
-				}
-				return result;
-			});
+            var nodeToDelete = lastSelectedNode;
+            if(!nodeToDelete){
+                bootbox.alert("Please select a node to delete first.", function() {
+                });
+                return false;
+            }
+            var result = false;
+            bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
+                if(!result){
+                    return;
+                }
+                else{
+                    deleteNode(nodeToDelete);
+                }
+                return result;
+            });
             return false;
         }// end of nodeDelete
         else if (current_node_tool==="edgeDelete"){
@@ -549,10 +562,10 @@ function drawEdges(){
 }
 
 function canvasClick(x,y) {
-	//block the clock if a modal is open
-	if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
-		return false;
-	}
+    //block the click if a modal is open
+    if ($('body').hasClass("modal-open") || !$('#modal').is(":hidden")){
+        return false;
+    }
     else if(nodeEditingMode) {
         canvasClickNodeEditing(x,y);
     }
@@ -567,7 +580,7 @@ function canvasClickNodeEditing(x,y)
     if(current_node_tool === "point" && !mouseOnNode && !lastSelectedNode) {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-		var pot = new POT(point, current_tool);
+        var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
 
@@ -638,7 +651,7 @@ function canvasClickNodeEditing(x,y)
     {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-		var pot = new POT(point, current_tool);
+        var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
         
@@ -653,7 +666,7 @@ function canvasClickNodeEditing(x,y)
     {
         // Store a new node in the list of transition nodes
         var point = new Point(x, y, current_floor);
-		var pot = new POT(point, current_tool);
+        var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
         
@@ -675,7 +688,7 @@ function canvasClickStoryEditing()
     //find point in list and fill editor
     if(POIList.length === 0){
         var newPOI = new POI(mouseOnNode.point);
-		newPOI.ID = mouseOnNode.ID;
+        newPOI.ID = mouseOnNode.ID;
         newPOI.storyPoint = [];
         fillEditor(newPOI);
     }else{
@@ -688,7 +701,7 @@ function canvasClickStoryEditing()
         }
         if(!found){
             var newPOI = new POI(mouseOnNode.point);
-			newPOI.ID = mouseOnNode.ID;
+            newPOI.ID = mouseOnNode.ID;
             fillEditor(newPOI);
         }
     }
@@ -790,12 +803,24 @@ function highlightPOI(story){
         }
     }
 
+    highlightEdges();
+}
+
+function highlightEdges()
+{
     hlEdgeList = [];
 
     if(active_id >= 0)
     {
         // Map the list of IDs to a list of nodes
-        var storyPoints = _.map(storylineList[active_id].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+        var storyPoints;
+        for (var aid in storylineList){
+            if (storylineList[aid].ID == active_id){
+                storyPoints = _.map(storylineList[aid].path, function(pathID) { return _.find(nodeList, function(node) { return pathID === node.ID; }); });
+                break;
+            }
+        }
+        
 
         // Attempt to find the shortest path between each node
         for(var i = 0; i < storyPoints.length - 1; i++)
@@ -839,8 +864,8 @@ function deleteNode(node){
                 storylineList[storyLineVal].path = removeFromList(storylineList[storyLineVal].path[val], storylineList[storyLineVal].path.slice());
             }
         }
-		//loop through the floorsCovered
-		for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
+        //loop through the floorsCovered
+        for (var val= storylineList[storyLineVal].floorsCovered.length-1;val>=0;val--){
             if (storylineList[storyLineVal].floorsCovered[val] === idOfNode){
                 //delete it from the list
                 storylineList[storyLineVal].floorsCovered = removeFromList(storylineList[storyLineVal].floorsCovered[val], storylineList[storyLineVal].floorsCovered.slice());
@@ -862,15 +887,15 @@ function deleteNode(node){
 
 function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
-    var storypointID = active_id;
+    var storypointID = active_id;   
 
-    for (var val in POIList){
-        if (POIList[val].ID === poiID){
+    for(var p in currentPOI.storyPoint){
+        if (currentPOI.storyPoint[p].storylineID == active_id){
             //remove from GUI
-            $("#StorylinesList").find("#"+POIList[val].storyPoint[active_id].ID+"_a").parent().remove();
+            $("#StorylinesList").find("#"+currentPOI.storyPoint[p].ID+"_a").parent().remove();
 
             //delete it in the POIList
-            POIList[val].storyPoint = removeFromList(POIList[val].storyPoint[active_id], POIList[val].storyPoint.slice());
+            currentPOI.storyPoint = removeFromList(currentPOI.storyPoint[p], currentPOI.storyPoint.slice());
             break;
         }
     }
@@ -884,7 +909,7 @@ function deleteStoryPoint(){
                     break;
                 }
             }
-			for (var i in storylineList[val].floorsCovered){
+            for (var i in storylineList[val].floorsCovered){
                 if (storylineList[val].floorsCovered[i] === POIID){
                     storylineList[val].floorsCovered = removeFromList(storylineList[val].floorsCovered[i], storylineList[val].floorsCovered.slice());
                     break;
@@ -894,6 +919,35 @@ function deleteStoryPoint(){
     }
     highlightPOI(active_id);
     redraw();
+}
+
+function deleteStoryLine(){
+    for (var val in storylineList){
+        //get the right storyline
+        if (storylineList[val].ID == active_id){
+            //for each of the storypoints in the path
+            for (var i in storylineList[val].path){
+                //find the point with this ID
+                //in each POI
+                for (var j in POIList){
+                    //for each storypoint
+                    for (var k in POIList[j].storyPoint){
+                        //if it is the right point
+                        if (POIList[j].storyPoint[k].ID == storylineList[val].path[i]){
+                            currentPOI = POIList[j];
+                            deleteStoryPoint();
+                        }
+                    }
+                }
+            }
+            storylineList = removeFromList(storylineList[val], storylineList.slice());
+            $("#"+active_id).remove();
+            $("#"+active_id+"_pointList").remove();
+            active_id = -2;
+            $('#activeButtonsList').addClass("hidden");
+            break;
+        }
+    }
 }
 
 function deletePOI(){
@@ -913,7 +967,7 @@ function deletePOI(){
                         storylineList[i].path = removeFromList(storylineList[i].path[j], storylineList[i].path.slice());
                     }
                 }
-				for (var j in storylineList[i].floorCovered){
+                for (var j in storylineList[i].floorCovered){
                     if (storylineList[i].floorCovered[j] === POIID){
                         storylineList[i].floorCovered = removeFromList(storylineList[i].floorCovered[j], storylineList[i].floorCovered.slice());
                     }

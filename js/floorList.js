@@ -9,6 +9,14 @@ $(function(){
             showErrorAlert("You must enter a floor number.");
             return false;
         }
+        if ($("#floorNumUpload").val()<1){
+            showErrorAlert("Floor numbers must be greater than 0.");
+            return false;
+        }
+        if ($("#floorNumUpload").val()>99){
+            showErrorAlert("Floor numbers must be less than 100.");
+            return false;
+        }
         //if no file selected
         if (!$("#fileUpload")[0].files[0]){
             showErrorAlert("You must select a file.");
@@ -71,4 +79,29 @@ function loadInitialFloor() {
         $("#floorList").append('<li id="floor'+val+'" onclick="floorClicked(this)"><a href="#">Floor '+val+'</a></li>');
     }
     changeFloor(1);
+}
+
+function deleteFloor(){
+    for(var val=nodeList.length-1; val>=0;val--){
+        if (nodeList[val].floorID === current_floor){
+            deleteNode(nodeList[val]);
+        }
+    }
+    //remove the floor from the floorlist
+    delete floorList[current_floor];
+    loadFloorsFromList();
+    for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                changeFloor(val);
+                return;
+            }
+        }
+        catch(err){
+        }
+    }
+    //if no other floors, reset to initial and hide delete button
+    $("#deletecurrentfloor").hide();
+    //TODO: denis implement showing your initial loading screen here
+    alert("DENIS WILL HAVE A THING HERE");
 }
