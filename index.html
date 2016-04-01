@@ -51,12 +51,17 @@
         <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-5">
                 <div id="sidebarMenu">
-                    <select id="languageDropdown" onclick="changeLanguage()">
-					  <option value="EN">English</option> <!-- TODO MAKE THIS PRETTY -->
-					  <option value="FR">Francais</option>
-					  <option value="ES">Espagnol</option>
-					  <option value="DE">Deutsch</option>
-					</select>
+                    <div id="languageDropdownContainer" class="form-group">
+                        <div class="input-group">
+                        <div class="input-group-addon">Language</div>
+                        <select id="languageDropdown" onclick="changeLanguage()" class="form-control">
+                          <option value="EN">English</option> <!-- TODO MAKE THIS PRETTY -->
+                          <option value="FR">Francais</option>
+                          <option value="ES">Espagnol</option>
+                          <option value="DE">Deutsch</option>
+                        </select>
+                        </div>
+                    </div>
                     <div>Floor List:</div>
                     <ul id="floorList" class="nav nav-pills nav-stacked">
                     </ul>

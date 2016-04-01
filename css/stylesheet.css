@@ -57,3 +57,7 @@
 .draggable_story_point .glyphicon {
     cursor:ns-resize;
 }
+
+#languageDropdownContainer {
+    padding-top:5px;
+}
