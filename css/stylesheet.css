@@ -57,3 +57,18 @@
 .draggable_story_point .glyphicon {
     cursor:ns-resize;
 }
+
+.draggable_ghost {
+    opacity: .5;
+    background: #C8EBFB;
+    color: #C8EBFB;
+    height:30px;
+}
+
+.draggable_ghost .glyphicon {
+    display: none;
+}
+
+.draggable_ghost a {
+    visibility:hidden;
+}
