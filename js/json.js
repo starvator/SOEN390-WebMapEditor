@@ -1,33 +1,54 @@
 var jsonMap;
 
 function confirmSave(){
-	var saveButton = $('#JSONsave');
-	var result = false;
-	bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
-	saveButton.show("Confirm result: "+result);
-	if(result == true){
-		var name = "mapData";
-		
-		bootbox.prompt({
-		  title: "Please name the export file:",
-		  value: "mapData",
-		  callback: function(result) {
-			if (result === null) {
-			  name = "mapData.json";
-			  download(name,createJSON());
-			} else {
-			name = result.concat(".json");
-			download(name,createJSON());
-			}
-		  }
-		});
-	}
-	else {
-		bootbox.alert("You have not saved the map data.", function() {
-		saveButton.show("cancel");
-		}); 
-	}
-	}); 
+    if(floorList.length == 0){
+        bootbox.alert("Please create a map first, or import your work from a previous session.", function() {
+        });
+        return;
+    }
+    var saveButton = $('#JSONsave');
+    var hasFloor = false;
+    for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                hasFloor = true;
+                break;
+            }
+        }
+        catch(err){
+        }
+    }
+    if(!hasFloor){
+        bootbox.alert("An empty project cannot be saved. Please create a floor or import a floor plan", function() {
+        });
+        return false;
+    }
+    var result = false;
+    bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
+    saveButton.show("Confirm result: "+result);
+    if(result == true){
+        var name = "mapData";
+        
+        bootbox.prompt({
+          title: "Please name the export file:",
+          value: "mapData",
+          callback: function(result) {
+            if (result === null) {
+              name = "mapData.json";
+              download(name,createJSON());
+            } else {
+            name = result.concat(".json");
+            download(name,createJSON());
+            }
+          }
+        });
+    }
+    else {
+        bootbox.alert("You have not saved the map data.", function() {
+        saveButton.show("cancel");
+        }); 
+    }
+    }); 
 }
 
 function createJSON() {
@@ -49,6 +70,8 @@ function createJSON() {
 }
 
 function loadFromJSON() {
+    $("#deletecurrentfloor").show();
+
     floorList = [];
     storylineList = [];
     POIList = [];
@@ -90,7 +113,6 @@ function loadFromJSON() {
             edgeList.push(Edge.fromJSON(e));
         }
     });
-
 }
 
 // Atomic from-JSON Constructors for Each Class
