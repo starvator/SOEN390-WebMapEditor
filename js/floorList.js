@@ -3,6 +3,7 @@ var current_floor = 0;
 
 $(function(){
     $("#deletecurrentfloor").hide();
+	$("#resetButton").hide();
     //handle the new floor submit
     $('#newFloorAddButton').click(function () {
         //if no floor number
@@ -60,6 +61,7 @@ function loadFloor(){
     //clear the form
     $("#newFloor")[0].reset();
     $("#default_img").hide();
+	$("#resetButton").show();
     $("#floorListHolder").show();
 }
 
@@ -83,6 +85,7 @@ function loadFloorsFromList(){
     if(hasFloor){
         $("#floorListHolder").show();
         $("#default_img").hide();
+		$("#resetButton").show();
         var cfloor = floorList[floorList.length - 1];
         for (var val=0; floorList.length>val;val++){
             try {
@@ -168,5 +171,6 @@ function deleteFloor(){
         var p2 = ctx.transformedPoint(canvas.width,canvas.height);
         ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
         $("#default_img").show();
+		$("#resetButton").hide();
     }
 }

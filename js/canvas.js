@@ -1031,6 +1031,10 @@ function resizeCanvas(){
 
 //resize the canvas whenever its container is resized.
 $(window).on('resize', function(){
-    resizeCanvas();
-    redraw();
+    recenter();
 });
+
+function recenter(){
+	resizeCanvas();
+    redraw();
+}
