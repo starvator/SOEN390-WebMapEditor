@@ -4,7 +4,7 @@ var current_floor = 0;
 $(function(){
     $("#deletecurrentfloor").hide();
     //handle the new floor submit
-    $('#newFloor').submit(function () {
+    $('#newFloorAddButton').click(function () {
         //if no floor number
         if (!$("#floorNumUpload").val()){
             showErrorAlert("You must enter a floor number.");
