@@ -21,7 +21,7 @@ function Edge(origin, destination) {
         return {
             startNode: this.origin.ID,
             endNode:this.destination.ID,
-            distance:distance(this.origin, this.destination)
+            distance:distance(this.origin.point, this.destination.point)
             };
     };
 }
