@@ -7,6 +7,22 @@ function confirmSave(){
 		return;
 	}
 	var saveButton = $('#JSONsave');
+	var hasFloor = false;
+	for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                hasFloor = true;
+                break;
+            }
+        }
+        catch(err){
+        }
+    }
+	if(!hasFloor){
+		bootbox.alert("An empty project cannot be saved. Please create a floor or import a floor plan", function() {
+        });
+        return false;
+	}
 	var result = false;
 	bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
 	saveButton.show("Confirm result: "+result);

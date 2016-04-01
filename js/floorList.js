@@ -44,7 +44,7 @@ function loadFloor(){
 	//add to array
 	var floor = new FloorPlan();
 	floor.floorID = $("#floorNumUpload").val();
-	floor.imagePath = $("#fileUpload")[0].files[0].name;// DK HEEEEEERE
+	floor.imagePath = $("#fileUpload")[0].files[0].name;
 	floor.imageWidth = 0;//TODO
 	floor.imageHeight = 0;//TODO
 	floorList[$("#floorNumUpload").val()] = floor;
@@ -67,11 +67,32 @@ function loadFloorsFromList(){
             $("#floorList").append('<li class="list-group-item floorListItem" id="floor'+val+'" onclick="floorClicked(this)">Floor '+val+'</a></li>');
     }
 	//for importing existing work
-	if(floorList.length != 0){
+	var hasFloor = false;
+    for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+				hasFloor = true;
+                break;
+            }
+        }
+        catch(err){
+        }
+    }
+	if(hasFloor){
 		$("#floorListHolder").show();
 		$("#default_img").hide();
 		var cfloor = floorList[floorList.length - 1];
-		changeFloor(cfloor.floorID);
+		for (var val=0; floorList.length>val;val++){
+			try {
+				if (floorList[val].floorID != null){
+					changeFloor(val);
+					deleteShown = true;
+					break;
+				}
+			}
+			catch(err){
+			}
+		}
 	}
 }
 
@@ -102,7 +123,7 @@ function loadInitialFloor() {
     img.src = "";
     var floor = new FloorPlan();
     floor.floorID = 1;
-    floor.imagePath  = "floor3.svg";
+    floor.imagePath  = "";
     floor.imageWidth = 0;//TODO
     floor.imageHeight = 0;//TODO
     floorList[1] = floor;
@@ -123,18 +144,27 @@ function deleteFloor(){
     //remove the floor from the floorlist
     delete floorList[current_floor];
     loadFloorsFromList();
+	var deleteShown = false;
     for (var val=0; floorList.length>val;val++){
         try {
             if (floorList[val].floorID != null){
                 changeFloor(val);
-                return;
+				deleteShown = true;
+                break;
             }
         }
         catch(err){
         }
     }
-    //if no other floors, reset to initial and hide delete button
-    $("#deletecurrentfloor").hide();
-    //TODO: denis implement showing your initial loading screen here
-    alert("DENIS WILL HAVE A THING HERE");
+	if(!deleteShown){
+		$("#deletecurrentfloor").hide();
+		$("#floorListHolder").hide();
+		//reset floor list to avoid having unneeded indexes
+		floorList = [];
+		var p1 = ctx.transformedPoint(0,0);
+		img.src="";
+		var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+		ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+		$("#default_img").show();
+	}
 }

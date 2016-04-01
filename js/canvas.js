@@ -242,7 +242,7 @@ $(function(){
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
     };
-    img.src = "floor_plans/floor3.svg";
+    img.src = "";
 
     // Register events
     document.getElementsByTagName("BODY")[0].addEventListener('mousemove', mouseMove, false);
@@ -300,8 +300,26 @@ $(function(){
         }
     }
   });
-
-    loadInitialFloor();
+	var hasInitialFloor = false;
+	for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                hasInitialFloor = true;
+                break;
+            }
+        }
+        catch(err){
+        }
+    }
+	if(!hasInitialFloor){
+		//do not draw anything yet
+		//hide floor list still
+		$("#floorListHolder").hide();
+        return false;
+	}
+	else{
+		loadInitialFloor();
+	}
 });
 
 function changeIMGsource(source){

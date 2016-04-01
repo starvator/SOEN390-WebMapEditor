@@ -185,12 +185,12 @@ function deleteActiveStoryline(){
 
 function deleteCurrentFloor(){
     bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
-				if(!result){
-					return;
-				}
-				else{
-					deleteFloor();
-				}
-				return result;
-			});
+		if(!result){
+			return;
+		}
+		else{
+			deleteFloor();
+		}
+			return result;
+		});
 }
