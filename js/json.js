@@ -23,33 +23,31 @@ function confirmSave(){
         });
         return false;
     }
-	
-	if((edgeList.length == 0)){
-		bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
+    
+    if((edgeList.length == 0)){
+        bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
         });
-		return false;
-	}
-	//check if the graph is valid
-	for(var n=0; nodeList.length>n;n++){
-		var idOfNode = nodeList[n].point.id;
-		//alert(idOfNode);
-		var hasEdge = false;
-		forEachEdge:
-		for (var val in edgeList){
-			if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
-			}
-			else{
-				hasEdge = true;
-				break forEachEdge;
-			}
-		}
-		if(!hasEdge){
-			bootbox.alert("Whoops! One of your points isn't connected. Please review your map before saving.", function() {
-			});
-			return false;
-		}
-	}
-
+        return false;
+    }
+    //check if the graph is valid
+    for(var n=0; nodeList.length>n;n++){
+        var idOfNode = nodeList[n].point.id;
+        var hasEdge = false;
+        forEachEdge:
+        for (var val in edgeList){
+            if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
+            }
+            else{
+                hasEdge = true;
+                break forEachEdge;
+            }
+        }
+        if(!hasEdge){
+            bootbox.alert("Whoops! One of your points isn't connected. Please review your map before saving.", function() {
+            });
+            return false;
+        }
+    }
     var result = false;
     bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
     saveButton.show("Confirm result: "+result);
@@ -60,9 +58,9 @@ function confirmSave(){
           title: "Please name the export file:",
           value: "mapData",
           callback: function(result) {
-            if (result == null) {
-				bootbox.alert("You have not saved the map data.", function() {
-				});
+            if (result === null) {
+                bootbox.alert("You have not saved the map data.", function() {
+                });
             } else {
             name = result.concat(".json");
             download(name,createJSON());
@@ -240,11 +238,11 @@ function findNodeByID(id){
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-	if(parseInt(json.id) !== undefined)
-		s.ID = parseInt(json.id);
-	else if(parseInt(json.ID) !== undefined){
-		s.ID = parseInt(json.ID);
-	}
+    if(parseInt(json.id) !== undefined)
+        s.ID = parseInt(json.id);
+    else if(parseInt(json.ID) !== undefined){
+        s.ID = parseInt(json.ID);
+    }
     s.title = json.title;//LanguageText.fromJSON(json.title);
     s.description = json.description;//LanguageText.fromJSON(json.description);
     s.path = json.path;
