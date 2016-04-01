@@ -176,3 +176,7 @@ function deleteActiveStoryline(){
                 return result;
             });
 }
+
+function changeLanguage() {
+    currentLanguage = $("#languageDropdown :selected").val();
+}

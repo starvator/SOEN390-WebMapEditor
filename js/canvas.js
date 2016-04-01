@@ -26,38 +26,6 @@ function Edge(origin, destination) {
     };
 }
 
-//TODO refactor and place in appropriate location later
-//This class is for any Language Text pairing such as descriptions or titles
-/** TO BE USED IN LATER STORY
-function LanguageText() {
-    this.pairs = [];
-    this.addPair = function(lang, value){
-        this.pairs.push({'language':lang, 'value':value});
-    };
-    this.toJSON = function() {
-        return this.pairs;
-    };
-    this.getByLanguage = function(lang){
-        for(var i = 0; i < this.pairs.length; i++)
-        {
-            if(this.pairs[i].language === lang)
-            {
-                return this.pairs[i].value;
-            }
-        }
-    };
-    this.setByLanguage = function(lang, value){
-        for(var i = 0; i < this.pairs.length; i++)
-        {
-            if(this.pairs[i].language === lang)
-            {
-                this.pairs[i].value = value;
-            }
-        }
-    };
-}
-**/
-
 function IBeacon(uuid, major, minor) {
     this.uuid = uuid;
     this.major = major;
@@ -97,8 +65,8 @@ function POI(point) {
     this.ID = Node_ID;
     Node_ID++;
     this.isSet = false;
-    this.title = "";//new LanguageText('title');
-    this.description = "";//new LanguageText('description');
+    this.title = {};//new LanguageText('title');
+    this.description = {};//new LanguageText('description');
     this.point = point;
     this.floorID = current_floor;
     this.ibeacon = new IBeacon("","","");
@@ -161,8 +129,8 @@ function FloorPlan() {
 
 function Storyline(){
     this.ID = "";//gets defined in storylines.js
-    this.title = "";//new LanguageText();
-    this.description = "";//new LanguageText();
+    this.title = {};//new LanguageText();
+    this.description = {};//new LanguageText();
     this.path = [];
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
@@ -185,8 +153,8 @@ function Storyline(){
 function StoryPoint() {
     this.ID = SP_id;
     this.storylineID = active_id;
-    this.title = "";//new LanguageText();
-    this.description = "";//new LanguageText();
+    this.title = {};//new LanguageText();
+    this.description = {};//new LanguageText();
     this.media = new Media();
     SP_id++;
 }
@@ -214,6 +182,7 @@ var confirmedColor = "#0000FF";
 var previousSelectedPoint = new Point(0,0); // Used to store the previous click location of the mouse so that we can cancel a move
 var canDeleteEdge;                  // The index of the current selected edge in edgeList in edge delete mode, if it can be deleted
 var POIID;
+var currentLanguage = "EN";
 
 //For JSON use
 var floorList = [];

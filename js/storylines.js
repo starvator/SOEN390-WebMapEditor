@@ -23,8 +23,8 @@ function addNewStoryLine(){
         active_id = current_id;
         storyline.ID = current_id;
 
-        storyline.title = name;
-        storyline.description = description;
+        storyline.title[currentLanguage] = name;
+        storyline.description[currentLanguage] = description;
         /** TODO LanguageText Story
         storyline.title.addPair('en', name);
         storyline.floorsCovered.push(current_floor);
@@ -47,12 +47,12 @@ function addNewStoryLine(){
 
 function buildStorylineMenuFromList(){
     jQuery.each(storylineList, function(i, s){
-        if(s.description){
-        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</br>' + s.description +'</a></li>' +
+        if(s.description[currentLanguage]){
+        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title[currentLanguage] +'</br>' + s.description[currentLanguage] +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         else{
-        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</a></li>' +
+        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title[currentLanguage] +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         
@@ -63,7 +63,7 @@ function buildStorylineMenuFromList(){
         $.each(POIList, function(i, poi) {
                 $.each(poi.storyPoint, function(j, sp) {
                     if(sp.storylineID == s.ID) {
-                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title +'</a></li>');
+                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title[currentLanguage] +'</a></li>');
                     }
                 });
             });
@@ -103,7 +103,7 @@ function editStoryLine(){
             storyline = storylineList[i];
         }
     }
-    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description +'" /></a>');
+    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title[currentLanguage] +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description[currentLanguage] +'" /></a>');
     $("#submitButton").hide();
     $("#editButton").html('<a href="#">Save Changes</a>');
     $("#editButton").attr("onclick","saveStoryLine()");
@@ -127,8 +127,8 @@ function saveStoryLine(){
     name = $("#storylineField").val();
     description = $("#storylineDescription").val();
     $("#"+active_id).html('<a href="#">'+ name +'</br>' + description +'</a>');
-    storyline.title = name;//.setByLanguage("en", name);
-    storyline.description = description;//.setByLanguage("en", description);
+    storyline.title[currentLanguage] = name;//.setByLanguage("en", name);
+    storyline.description[currentLanguage] = description;//.setByLanguage("en", description);
     $("#storylineField").val("");
     $("#storylineDescription").val("");
     $("#editButton").html('<a href="#">Edit Active Storyline</a>');

@@ -46,11 +46,11 @@ $(document).ready(function(){
             }
             for(var val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
-                    POIList[val].title = $("#spTitle").val();
+                    POIList[val].title[currentLanguage] = $("#spTitle").val();
                     POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                     POIList[val].ibeacon.major = $("#spBeaconMajor").val();
                     POIList[val].ibeacon.minor = $("#spBeaconMinor").val();
-                    POIList[val].description = CKEDITOR.instances["editor1"].getData();
+                    POIList[val].description[currentLanguage] = CKEDITOR.instances["editor1"].getData();
                     POIList[val].media = $("#attachedDocName").text();
                     POIList[val].isSet = true;
                     POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
@@ -66,11 +66,11 @@ $(document).ready(function(){
                 }
             }
             if(!exists){
-                currentPOI.title = $("#spTitle").val();
+                currentPOI.title[currentLanguage] = $("#spTitle").val();
                 currentPOI.ibeacon.uuid = $("#spBeaconID").val();
                 currentPOI.ibeacon.major = $("#spBeaconMajor").val();
                 currentPOI.ibeacon.minor = $("#spBeaconMinor").val();
-                currentPOI.description = CKEDITOR.instances["editor1"].getData();
+                currentPOI.description[currentLanguage] = CKEDITOR.instances["editor1"].getData();
                 currentPOI.media = $("#attachedDocName").text();
                 currentPOI.isSet = true;
                 currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
@@ -104,16 +104,16 @@ $(document).ready(function(){
                     for(var p in POIList[val].storyPoint){
                         if (POIList[val].storyPoint[p].storylineID == active_id){
                             //Updating sp
-                            POIList[val].storyPoint[p].title = $("#spTitle").val();
+                            POIList[val].storyPoint[p].title[currentLanguage] = $("#spTitle").val();
                             POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                             POIList[val].ibeacon.major = $("#spBeaconMajor").val();
                             POIList[val].ibeacon.minor = $("#spBeaconMinor").val();
-                            POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
+                            POIList[val].storyPoint[p].description[currentLanguage] = CKEDITOR.instances["editor1"].getData();
                             POIList[val].storyPoint[p].media = $("#attachedDocName").text();
                             POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                             //Adding the point to the storyline list.
                             //get into <a> and change POIList[val].title
-                            $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
+                            $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title[currentLanguage]);
                             spCreated = true;
                         }
                     }
@@ -121,12 +121,12 @@ $(document).ready(function(){
                     if(!spCreated){
                         //Create storypoint
                         var newStoryPoint = new StoryPoint();
-                        newStoryPoint.title = $("#spTitle").val();
-                        newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
+                        newStoryPoint.title[currentLanguage] = $("#spTitle").val();
+                        newStoryPoint.description[currentLanguage] = CKEDITOR.instances["editor1"].getData();
                         newStoryPoint.media = $("#attachedDocName").text();
                         POIList[val].storyPoint.push(newStoryPoint);
                         //Adding the point to the storyline list.
-                        $("#"+active_id+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
+                        $("#"+active_id+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title[currentLanguage] +'</a></li>');
                         for (var aid in storylineList){
                             if (storylineList[aid].ID == active_id){
                                 storylineList[aid].path.push(currentPOI.ID);
@@ -209,7 +209,7 @@ function fillEditor(poi){
     }
     if(!spslExists){
         if(poi.isSet){
-            $("#spTitle").val(poi.title);
+            $("#spTitle").val(poi.title[currentLanguage]);
             if(poi.isAutoOn === true){
                 $("#autoOn").click();
             }else if(poi.isAutoOn === false){
@@ -218,7 +218,7 @@ function fillEditor(poi){
             $("#spBeaconID").val(poi.ibeacon.uuid);
             $("#spBeaconMajor").val(poi.ibeacon.major);
             $("#spBeaconMinor").val(poi.ibeacon.minor);
-            CKEDITOR.instances["editor1"].setData(poi.description);
+            CKEDITOR.instances["editor1"].setData(poi.description[currentLanguage]);
             $("#attachedDocName").text(poi.media);
             POIOrigin = true;
             POIID = poi.ID;
@@ -243,7 +243,7 @@ function fillEditor(poi){
             //find the storyPoint associated to the storyline
             for(var p in currentPOI.storyPoint){
                 if (currentPOI.storyPoint[p].storylineID == active_id){
-                    $("#spTitle").val(currentPOI.storyPoint[p].title);
+                    $("#spTitle").val(currentPOI.storyPoint[p].title[currentLanguage]);
                     if(poi.isAutoOn === true){
                         $("#autoOn").click();
                     }else if(poi.isAutoOn === false){
@@ -252,7 +252,7 @@ function fillEditor(poi){
                     $("#spBeaconID").val(currentPOI.ibeacon.uuid);
                     $("#spBeaconMajor").val(poi.ibeacon.major);
                     $("#spBeaconMinor").val(poi.ibeacon.minor);
-                    CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
+                    CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description[currentLanguage]);
                     $("#attachedDocName").text(currentPOI.storyPoint[p].media);
                     spFound = true;
                     POIID= poi.ID;
