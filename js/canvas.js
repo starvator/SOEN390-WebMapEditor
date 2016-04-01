@@ -65,8 +65,8 @@ function POI(point) {
     this.ID = Node_ID;
     Node_ID++;
     this.isSet = false;
-    this.title = {};//new LanguageText('title');
-    this.description = {};//new LanguageText('description');
+    this.title = new LanguageText("title");
+    this.description = new LanguageText("description");
     this.point = point;
     this.floorID = current_floor;
     this.ibeacon = new IBeacon("","","");
@@ -129,8 +129,8 @@ function FloorPlan() {
 
 function Storyline(){
     this.ID = "";//gets defined in storylines.js
-    this.title = {};//new LanguageText();
-    this.description = {};//new LanguageText();
+    this.title = new LanguageText("title");
+    this.description = new LanguageText("description");
     this.path = [];
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
@@ -153,10 +153,29 @@ function Storyline(){
 function StoryPoint() {
     this.ID = SP_id;
     this.storylineID = active_id;
-    this.title = {};//new LanguageText();
-    this.description = {};//new LanguageText();
+    this.title = new LanguageText("title");
+    this.description = new LanguageText("description");
     this.media = new Media();
     SP_id++;
+}
+
+function LanguageText(message) {
+    this.values = {};
+    this.contentType = message;
+    this.get = function() {
+        if(this.values[currentLanguage] === undefined)
+        {
+            return "No " + this.contentType + " set for " + languageNames[currentLanguage];
+        }
+        else 
+        {
+            return this.values[currentLanguage];
+        }        
+    }
+    
+    this.set = function(value) {
+        this.values[currentLanguage] = value;
+    }
 }
 
 // End Classes
@@ -201,6 +220,13 @@ var POTtypes = {
     "entrance": 0x6e,
     "emergency-exit": 0x6d
 };
+
+var languageNames = {
+    "EN": "English",
+    "FR": "French",
+    "ES": "Spanish",
+    "DE": "German"
+}
 
 $(function(){
     canvas = document.getElementById('floorPlan');
