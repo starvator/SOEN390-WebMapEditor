@@ -79,7 +79,8 @@ function addSortableToStoryline(storyline)
     Sortable.create(sorter, {
         draggable:".draggable_story_point",
         handle:".glyphicon-menu-hamburger",
-        animation: 150,        
+        animation: 100,
+        ghostClass: "draggable_ghost",
         onEnd: function (/**Event*/evt) {
             handleStorypointRearrange(storyline, evt.oldIndex, evt.newIndex);
         }
