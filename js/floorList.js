@@ -2,6 +2,7 @@ var floorList = [];
 var current_floor = 0;
 
 $(function(){
+	$("#deletecurrentfloor").hide();
     //handle the new floor submit
     $('#newFloor').submit(function () {
         //if no floor number
@@ -42,6 +43,7 @@ $(function(){
 
 function loadFloor(){
 	//add to array
+	$("#deletecurrentfloor").show();
 	var floor = new FloorPlan();
 	floor.floorID = $("#floorNumUpload").val();
 	floor.imagePath = $("#fileUpload")[0].files[0].name;

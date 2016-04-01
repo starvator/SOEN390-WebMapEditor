@@ -70,6 +70,8 @@ function createJSON() {
 }
 
 function loadFromJSON() {
+	$("#deletecurrentfloor").show();
+
     floorList = [];
     storylineList = [];
     POIList = [];
