@@ -159,9 +159,14 @@ function StoryPoint() {
     SP_id++;
 }
 
+// Used to store text in multiple languages
 function LanguageText(message) {
     this.values = {};
+    
+    // What to call this content in the event of an error
     this.contentType = message;
+    
+    // Get the text, if no text exists for the current language return a message
     this.get = function() {
         if(this.values[currentLanguage] === undefined)
         {
@@ -173,6 +178,7 @@ function LanguageText(message) {
         }        
     }
     
+    // Set the text based on the current language
     this.set = function(value) {
         this.values[currentLanguage] = value;
     }
