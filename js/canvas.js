@@ -300,8 +300,8 @@ $(function(){
         }
     }
   });
-	var hasInitialFloor = false;
-	for (var val=0; floorList.length>val;val++){
+    var hasInitialFloor = false;
+    for (var val=0; floorList.length>val;val++){
         try {
             if (floorList[val].floorID != null){
                 hasInitialFloor = true;
@@ -311,15 +311,15 @@ $(function(){
         catch(err){
         }
     }
-	if(!hasInitialFloor){
-		//do not draw anything yet
-		//hide floor list still
-		$("#floorListHolder").hide();
+    if(!hasInitialFloor){
+        //do not draw anything yet
+        //hide floor list still
+        $("#floorListHolder").hide();
         return false;
-	}
-	else{
-		loadInitialFloor();
-	}
+    }
+    else{
+        loadInitialFloor();
+    }
 });
 
 function changeIMGsource(source){
