@@ -80,3 +80,28 @@ function loadInitialFloor() {
     }
     changeFloor(1);
 }
+
+function deleteFloor(){
+    for(var val=nodeList.length-1; val>=0;val--){
+        if (nodeList[val].floorID === current_floor){
+            deleteNode(nodeList[val]);
+        }
+    }
+    //remove the floor from the floorlist
+    delete floorList[current_floor];
+    loadFloorsFromList();
+    for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                changeFloor(val);
+                return;
+            }
+        }
+        catch(err){
+        }
+    }
+    //if no other floors, reset to initial and hide delete button
+    $("#deletecurrentfloor").hide();
+    //TODO: denis implement showing your initial loading screen here
+    alert("DENIS WILL HAVE A THING HERE");
+}
