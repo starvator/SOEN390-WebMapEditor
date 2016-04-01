@@ -1,5 +1,81 @@
 var jsonMap;
 
+function confirmSave(){
+    if(floorList.length == 0){
+        bootbox.alert("Please create a map first, or import your work from a previous session.", function() {
+        });
+        return;
+    }
+    var saveButton = $('#JSONsave');
+    var hasFloor = false;
+    for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                hasFloor = true;
+                break;
+            }
+        }
+        catch(err){
+        }
+    }
+    if(!hasFloor){
+        bootbox.alert("An empty project cannot be saved. Please create a floor or import a floor plan", function() {
+        });
+        return false;
+    }
+    
+    if((edgeList.length == 0)){
+        bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
+        });
+        return false;
+    }
+    //check if the graph is valid
+    for(var n=0; nodeList.length>n;n++){
+        var idOfNode = nodeList[n].point.id;
+        var hasEdge = false;
+        forEachEdge:
+        for (var val in edgeList){
+            if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
+            }
+            else{
+                hasEdge = true;
+                break forEachEdge;
+            }
+        }
+        if(!hasEdge){
+            bootbox.alert("Whoops! One of your points isn't connected. Please review your map before saving.", function() {
+            });
+            return false;
+        }
+    }
+    var result = false;
+    bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
+    saveButton.show("Confirm result: "+result);
+    if(result == true){
+        var name = "mapData";
+        
+        bootbox.prompt({
+          title: "Please name the export file:",
+          value: "mapData",
+          callback: function(result) {
+            if (result === null) {
+                bootbox.alert("You have not saved the map data.", function() {
+                });
+            } else {
+            name = result.concat(".json");
+            download(name,createJSON());
+            }
+          }
+        });
+    }
+    else {
+        bootbox.alert("You have not saved the map data.", function() {
+        saveButton.show("cancel");
+        }); 
+    }
+    }); 
+}
+
 function createJSON() {
     /*
     JSON File Outline, as specified and agreed upon by team leaders
@@ -19,13 +95,15 @@ function createJSON() {
 }
 
 function loadFromJSON() {
+    $("#deletecurrentfloor").show();
+
     floorList = [];
     storylineList = [];
     POIList = [];
     POTList = [];
     nodeList = [];
     edgeList = [];
-    
+
     //floorList
     $.each(jsonMap.floorPlan, function(i, fp) {
         if(fp !== null) {
@@ -60,7 +138,6 @@ function loadFromJSON() {
             edgeList.push(Edge.fromJSON(e));
         }
     });
-
 }
 
 // Atomic from-JSON Constructors for Each Class
@@ -68,7 +145,7 @@ function loadFromJSON() {
 FloorPlan.fromJSON = function(json) {
 
     var fp = new FloorPlan();
-    fp.floorID = json.floorID;
+    fp.floorID = parseInt(json.floorID);
     fp.imagePath = json.imagePath;
     fp.imageWidth = json.imageWidth;
     fp.imageHeight = json.imageHeight;
@@ -79,7 +156,7 @@ FloorPlan.fromJSON = function(json) {
 StoryPoint.fromJSON = function(json) {
 
     var sp = new StoryPoint();
-    sp.storylineID = json.storylineID;
+    sp.storylineID = parseInt(json.storylineID);
     sp.title = json.title;//LanguageText.fromJSON(json.title);
     sp.description = json.description;//LanguageText.fromJSON(json.description);
     sp.media = json.media;
@@ -91,22 +168,22 @@ POI.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
-    poi.id = json.id;
+    poi.ID = parseInt(json.id);
     poi.title = json.title;
     poi.description = json.description;
     
     //TODO: LanguageText formats?
     //poi.title = LanguageText.fromJSON(json.title);
     //poi.description = LanguageText.fromJSON(json.description);
-    poi.floorID = json.floorID;
-    poi.ibeacon = new IBeacon(json.iBeacon.uuid, json.iBeacon.major, json.iBeacon.minor);
+    poi.floorID = parseInt(json.floorID);
+    poi.ibeacon = IBeacon.fromJSON(json.ibeacon);
     poi.media = json.media;
     
     $.each(json.storyPoint, function(i, sp) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
     });
     
-    nodeList.push(ppp);
+    nodeList.push(poi);
     
     return poi;
 };
@@ -115,25 +192,57 @@ POT.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
-    pot.label = json.label;//LanguageText.fromJSON(json.label);
-    pot.floorID = json.floorID; 
+    pot.ID = parseInt(json.id);
+    pot.label = json.label.toLowerCase();
+    pot.floorID = parseInt(json.floorID); 
     
-    nodeList.push(ppp);
+    nodeList.push(pot);
     
     return pot;
 };
 
 Edge.fromJSON = function(json) {
 
-    var e = new Edge(json.startNode, json.endNode);
+    var start = findNodeByID(json.startNode);
+    var end = findNodeByID(json.endNode);
+
+    var e = new Edge(start, end);
     
     return e;
 };
 
+IBeacon.fromJSON = function(json) {
+    
+    var ib = new IBeacon(json.uuid, json.major, json.minor);
+  
+    return ib;
+};
+
+function findNodeByID(id){
+    var found;
+    $.each(POIList, function(i, poi) {
+       if(poi.ID === id){
+           found = poi;
+       } 
+    });
+    
+    $.each(POTList, function(i, pot) {
+       if(pot.ID === id){
+           found = pot;
+       } 
+    });
+    
+    return found;
+}
+
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-    s.ID = json.ID;
+    if(parseInt(json.id) !== undefined)
+        s.ID = parseInt(json.id);
+    else if(parseInt(json.ID) !== undefined){
+        s.ID = parseInt(json.ID);
+    }
     s.title = json.title;//LanguageText.fromJSON(json.title);
     s.description = json.description;//LanguageText.fromJSON(json.description);
     s.path = json.path;

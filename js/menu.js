@@ -2,7 +2,11 @@
     This JavaScript file contains all scripts relate to operation of the menus
 */
 
-var current_tool = "none"
+// The current POT tool (none, stair, ramp, etc.)
+var current_tool = "none";
+
+// The node editing tool (place point, create edge, move point, etc.)
+var current_node_tool = "point";
 
 $(document).ready(function(){
     // Set the click event on the POTs to change the current tool
@@ -23,11 +27,20 @@ function showFloorsMenu()
     $("#floorEditorMenu").show();
     hidePOTMenu();
 
+    // Reset selected node editing tool
+    updateNodeEditorTool($("#placeNodeButton"));
+
     nodeEditingMode = false;
 }
 
 function showNodesMenu()
 {
+    if(floorList.length == 0){
+        bootbox.alert("Please create a floor first.", function() {
+        });
+        return;
+    }
+
     $("#floorEditorMenu").hide();
     $("#MapLayoutMainMenu").hide();
     $("#nodeEditorMenu").show();
@@ -43,6 +56,9 @@ function showMainMenu()
     $("#nodeEditorMenu").hide();
     $("#MapLayoutMainMenu").show();
     hidePOTMenu();
+
+    // Reset selected node editing tool
+    updateNodeEditorTool($("#placeNodeButton"));
 
     // Reset drawing modes
     nodeEditingMode = false;
@@ -83,7 +99,7 @@ function showPOTMenu() {
     jQuery.each( $("#POTMenu > #POTIconsContainer > .btn"), function( i, btn ) {
 
         // Don't animate the first button for spacing reasons
-        if(i == 0) {
+        if(i === 0) {
             return true;
         }
 
@@ -108,4 +124,73 @@ function hidePOTMenu() {
         $("#POTMenu").css("margin-top", 0);
     });
 
+}
+
+// Click on a node editor tool
+function changeNodeEditorTool(btn)
+{
+    var previousTool = current_node_tool;
+    
+    updateNodeEditorTool(btn);
+    
+    // If switching between point or omni tools or vice-versa, don't reanimate the POT menu
+    if(_.intersection([$(btn).data("node-tool"), previousTool], ["point", "omniTool"]).length === 2)
+    {
+        return;
+    }
+    
+    if(current_node_tool === "point" || current_node_tool === "omniTool")
+    {
+        showPOTMenu();
+    }
+    else
+    {
+        hidePOTMenu();
+    }
+}
+
+// Switch to a node editor tool
+function updateNodeEditorTool(btn)
+{
+    // Don't do anything if the tool is already selected
+    if($(btn).data("node-tool") === current_node_tool)
+    {
+        return false;
+    }
+
+    // Remove the active button
+    $("#nodeEditorMenu .btn").removeClass("active");
+
+    // Make the clicked button active
+    $(btn).addClass("active");
+
+    // Cancel anything the current tool is doing
+    cancelOperations();
+
+    // Change the tool
+    current_node_tool = $(btn).data("node-tool");
+}
+
+function deleteActiveStoryline(){
+    bootbox.confirm("Deleting this storyline will delete all data associated with it, including StoryPoint information. Are you sure you want to delete this storyline?", function(result) {
+                if(!result){
+                    return;
+                }
+                else{
+                    deleteStoryLine();
+                }
+                return result;
+            });
+}
+
+function deleteCurrentFloor(){
+    bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
+        if(!result){
+            return;
+        }
+        else{
+            deleteFloor();
+        }
+            return result;
+        });
 }

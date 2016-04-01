@@ -30,7 +30,8 @@
     <script src="js/storylines.js"></script>
     <script src="js/alert.js"></script>
     <script src="js/underscore-min.js"></script>
-
+    <script src="js/bootbox.min.js"></script>
+    <script src="js/Sortable.min.js"></script>
 </head>
 
 <body>
@@ -49,11 +50,18 @@
         </div>
         <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-5">
+                <div id="floorListHolder">
+                <div class="floorListTitle">Floor List</div>
+                    <div class="scrollListContainer">   
+                            <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation"   style="float:left">
+                              <div class="well sidebar-nav scrollListContainer">
+                                    <ul id="floorList" class="nav list-group">
+                                    </ul>
+                            </div><!--/.well -->
+                        </div><!--/span-->
+                </div><!--/scrollListContainer-->
+                </div>
                 <div id="sidebarMenu">
-                    <div>Floor List:</div>
-                    <ul id="floorList" class="nav nav-pills nav-stacked">
-                    </ul>
-
                     <div id="mainMenu">
                         <!-- MAIN MENU -->
                         <ul class="nav nav-tabs">
@@ -62,18 +70,23 @@
                         </ul>
                         <!-- STORYLINES MENU -->
                         <div id="StorylinesMenu">
+                            <ul class="nav nav-pills nav-stacked">
+                            <li id = "editPOIButton" onclick="setCreatePOIid()"><a href="#">Edit Point of Interest</a></li>
+                            </ul>
                             <ul id="StorylinesList"class="nav nav-pills nav-stacked">
                             </ul>
                             <ul class="nav nav-pills nav-stacked">
-                                <li>
+                                <li id="storylineFormInfo">
                                     <a>
                                         <input id="storylineField" type="text" placeholder="Add New Storyline Title" /></br>
                                         <input id="storylineDescription" type="text" placeholder="Add New Storyline Description" />
                                     </a> <!-- change field-->
                                 </li>
                                 <li id = "submitButton" onclick="addNewStoryLine()"><a href="#">Submit</a></li>
-                                <li id = "editButton" onclick="editStoryLine()"><a href="#">Edit</a></li>
-                                <li onclick="setCreatePOIid()"><a href="#">Edit a Point of Interest</a></li>
+                            <li><ul id="activeButtonsList" class="nav nav-pills nav-stacked hidden">
+                                <li id = "editButton" onclick="editStoryLine()"><a href="#">Edit Active Storyline</a></li>
+                                <li id = "deleteStorylineButton" onclick="deleteActiveStoryline()"><a href="#">Delete Active Storyline</a></li>
+                        </ul></li>
                             </ul>
                         </div>
                         <!-- MAP LAYOUT MENU -->
@@ -92,7 +105,7 @@
                                 <div class="btn btn-default btn-file">Load Map<input type="file" id="inputFile"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                                 <!-- TODO: offer the user to name the file? -->
-                                <div class="btn btn-default" onclick="download('mapData.json',createJSON())">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <div id="JSONsave" class="btn btn-default" onclick="confirmSave()">Save Map to File<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 </div>
                             </div>
                             <div id="floorEditorMenu">
@@ -112,9 +125,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="fileUpload">Floor map svg image</label>
-                                        <input id="fileUpload" type="file" accept=".svg" />
+                                        <input id="fileUpload" type="file" type="file" accept=".svg" />
                                     </div>
-                                    <input type="submit" class="btn btn-default" value="Add Floor" />
+                                    <div id="newFloorAddButton" class="btn btn-default">Add Floor</div>
+                                    <br><br>
+                                    <div id="deletecurrentfloor" class="btn btn-danger" onclick="deleteCurrentFloor()">Delete CurrentFloor</div>
                                 </form>
                             </div>
                             <div id="nodeEditorMenu">
@@ -125,17 +140,25 @@
                                 </ol>
                                 <div class="btn btn-default" onclick="showMainMenu()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>Map Layout Menu</div>
                                 </br>
-
-                                Click map to add points!</br>
-                                <div id="placeNodeButton" class="btn btn-default disabled"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
                                 </br>
-                                <div class="btn btn-default disabled"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                                <div id="placeNodeButton" class="btn btn-default active" onclick="changeNodeEditorTool(this)" data-node-tool="point"><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Point placer</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="edge"><span class="glyphicon glyphicon-resize-full" aria-hidden="true"></span> Edge creator</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="move"><span class="glyphicon glyphicon-move" aria-hidden="true"></span> Point mover</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="nodeDelete"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> Node Delete tool</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="edgeDelete"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Edge Delete tool</div>
+                                </br>
+                                <div class="btn btn-default" onclick="changeNodeEditorTool(this)" data-node-tool="omniTool"><span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span> Auto edge tool</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-7" id="floorPlanContainer">
+                <img id="default_img" src="floor_plans/default.png">
                 <div id="POTMenu">
                     <div id="POTIconsContainer">
                         <div class="btn btn-default active" data-pot-type="none" data-toggle="tooltip" data-placement="bottom" title="None">
@@ -175,6 +198,7 @@
             <span id="infoEditingFormTitle"></span>
             <div id="infoEditingFormClose" class="btn btn-danger pull-right">x</div>
         </div>
+        <div id="infoEditingFormContent">
         <div class="form-group input-group">
             <span class="input-group-addon">Title</span>
             <input type="text" id="spTitle" class="form-control" placeholder="Title Here">
@@ -194,6 +218,14 @@
             <span class="input-group-addon">iBeacon ID</span>
             <input type="text" id="spBeaconID" class="form-control" placeholder="iBeacon ID here">
         </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Major</span>
+            <input type="text" id="spBeaconMajor" class="form-control" placeholder="Major here">
+        </div>
+        <div class="form-group input-group">
+            <span class="input-group-addon">Minor</span>
+            <input type="text" id="spBeaconMinor" class="form-control" placeholder="Minor here">
+        </div>
         <!-- HTML EDITOR -->
         <div class="form-group">
             <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
@@ -207,8 +239,11 @@
             <div type="button" id="attachADoc" class="btn btn-default">Attach Doc</div>
             <input id="uploadFile" type="file" multiple />
         </div>
+</div>
         <div class="form-group">
             <div type="button" class="btn btn-success pull-right" id="SaveStoryPointInfo">Save</div>
+            <div type="button" class="btn btn-danger" id="DeletePOIButton">Delete Point Of Interest</div>
+            <div type="button" class="btn btn-warning" id="DeleteStoryPointButton">Delete StoryPoint</div>
             <span>&nbsp;</span>
         </div>
     </div>
