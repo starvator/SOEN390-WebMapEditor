@@ -79,9 +79,8 @@ function deleteFloor(){
             deleteNode(nodeList[val]);
         }
     }
-    
     //remove the floor fromt he floorlist
-    floorList = removeFromList(floorList[current_floor], floorList.slice());
+    delete floorList[current_floor];
     loadFloorsFromList();
     for (var val=0; floorList.length>val;val++){
         try {
