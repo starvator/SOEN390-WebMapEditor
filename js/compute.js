@@ -110,3 +110,23 @@ function findShortestPath(origin, destination) {
 function edgePointArray(edge) {
     return [edge.origin, edge.destination];
 }
+
+// Function for moving elements in an array
+// Based off http://stackoverflow.com/questions/5306680/move-an-array-element-from-one-array-position-to-another
+function moveInArray(array, old_index, new_index)
+{
+    while (old_index < 0) {
+        old_index += array.length;
+    }
+    while (new_index < 0) {
+        new_index += array.length;
+    }
+    if (new_index >= array.length) {
+        var k = new_index - array.length;
+        while ((k--) + 1) {
+            array.push(undefined);
+        }
+    }
+    array.splice(new_index, 0, array.splice(old_index, 1)[0]);
+    return array; // for testing purposes
+}

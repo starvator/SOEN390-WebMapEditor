@@ -170,3 +170,27 @@ function updateNodeEditorTool(btn)
     // Change the tool
     current_node_tool = $(btn).data("node-tool");
 }
+
+function deleteActiveStoryline(){
+    bootbox.confirm("Deleting this storyline will delete all data associated with it, including StoryPoint information. Are you sure you want to delete this storyline?", function(result) {
+				if(!result){
+					return;
+				}
+				else{
+					deleteStoryLine();
+				}
+				return result;
+			});
+}
+
+function deleteCurrentFloor(){
+    bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
+				if(!result){
+					return;
+				}
+				else{
+					deleteFloor();
+				}
+				return result;
+			});
+}

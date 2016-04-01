@@ -31,7 +31,7 @@
     <script src="js/alert.js"></script>
     <script src="js/underscore-min.js"></script>
 	<script src="js/bootbox.min.js"></script>
-
+    <script src="js/Sortable.min.js"></script>
 </head>
 
 <body>
@@ -70,18 +70,23 @@
                         </ul>
                         <!-- STORYLINES MENU -->
                         <div id="StorylinesMenu">
+                            <ul class="nav nav-pills nav-stacked">
+                            <li id = "editPOIButton" onclick="setCreatePOIid()"><a href="#">Edit Point of Interest</a></li>
+                            </ul>
                             <ul id="StorylinesList"class="nav nav-pills nav-stacked">
                             </ul>
                             <ul class="nav nav-pills nav-stacked">
-                                <li>
+                                <li id="storylineFormInfo">
                                     <a>
                                         <input id="storylineField" type="text" placeholder="Add New Storyline Title" /></br>
                                         <input id="storylineDescription" type="text" placeholder="Add New Storyline Description" />
                                     </a> <!-- change field-->
                                 </li>
                                 <li id = "submitButton" onclick="addNewStoryLine()"><a href="#">Submit</a></li>
-                                <li id = "editButton" onclick="editStoryLine()"><a href="#">Edit</a></li>
-                                <li id = "editPOIButton" onclick="setCreatePOIid()"><a href="#">Edit a Point of Interest</a></li>
+                            <li><ul id="activeButtonsList" class="nav nav-pills nav-stacked hidden">
+                                <li id = "editButton" onclick="editStoryLine()"><a href="#">Edit Active Storyline</a></li>
+                                <li id = "deleteStorylineButton" onclick="deleteActiveStoryline()"><a href="#">Delete Active Storyline</a></li>
+                        </ul></li>
                             </ul>
                         </div>
                         <!-- MAP LAYOUT MENU -->
@@ -123,6 +128,8 @@
                                         <input id="fileUpload" type="file" type="file" accept=".svg" />
                                     </div>
                                     <input type="submit" class="btn btn-default" value="Add Floor" />
+                                    <br><br>
+                                    <div id="deletecurrentfloor" class="btn btn-danger" onclick="deleteCurrentFloor()">Delete CurrentFloor</div>
                                 </form>
                             </div>
                             <div id="nodeEditorMenu">
