@@ -32,7 +32,6 @@ function confirmSave(){
     //check if the graph is valid
     for(var n=0; nodeList.length>n;n++){
         var idOfNode = nodeList[n].point.id;
-        //alert(idOfNode);
         var hasEdge = false;
         forEachEdge:
         for (var val in edgeList){
@@ -49,7 +48,6 @@ function confirmSave(){
             return false;
         }
     }
-
     var result = false;
     bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
     saveButton.show("Confirm result: "+result);
