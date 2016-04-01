@@ -9,6 +9,14 @@ $(function(){
             showErrorAlert("You must enter a floor number.");
             return false;
         }
+        if ($("#floorNumUpload").val()<1){
+            showErrorAlert("Floor numbers must be greater than 0.");
+            return false;
+        }
+        if ($("#floorNumUpload").val()>99){
+            showErrorAlert("Floor numbers must be less than 100.");
+            return false;
+        }
         //if no file selected
         if (!$("#fileUpload")[0].files[0]){
             showErrorAlert("You must select a file.");
