@@ -57,7 +57,7 @@ function Media(){
 function File(type) {
     this.type = type;
     this.path = "";
-    this.language = "";
+    this.language = currentLanguage;
     this.caption = "";
 }
 
