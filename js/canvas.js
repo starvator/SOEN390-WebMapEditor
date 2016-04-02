@@ -125,6 +125,15 @@ function FloorPlan() {
     this.imagePath = "";
     this.imageWidth = 0;
     this.imageHeight = 0;
+    
+    this.toJSON = function() {
+        return {
+            floorID: this.floorID,
+            imagePath: "/floor_plans/"+this.imagePath,
+            imageWidth: this.imageWidth,
+            imageHeight: this.imageHeight
+        };
+    };
 }
 
 function Storyline(){
@@ -1027,6 +1036,10 @@ function resizeCanvas(){
 
 //resize the canvas whenever its container is resized.
 $(window).on('resize', function(){
-    resizeCanvas();
-    redraw();
+    recenter();
 });
+
+function recenter(){
+	resizeCanvas();
+    redraw();
+}

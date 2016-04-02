@@ -23,6 +23,31 @@ function confirmSave(){
         });
         return false;
     }
+    
+    if((edgeList.length == 0)){
+        bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
+        });
+        return false;
+    }
+    //check if the graph is valid
+    for(var n=0; nodeList.length>n;n++){
+        var idOfNode = nodeList[n].point.id;
+        var hasEdge = false;
+        forEachEdge:
+        for (var val in edgeList){
+            if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
+            }
+            else{
+                hasEdge = true;
+                break forEachEdge;
+            }
+        }
+        if(!hasEdge){
+            bootbox.alert("Whoops! One of your points isn't connected. Please review your map before saving.", function() {
+            });
+            return false;
+        }
+    }
     var result = false;
     bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
     saveButton.show("Confirm result: "+result);
@@ -34,8 +59,8 @@ function confirmSave(){
           value: "mapData",
           callback: function(result) {
             if (result === null) {
-              name = "mapData.json";
-              download(name,createJSON());
+                bootbox.alert("You have not saved the map data.", function() {
+                });
             } else {
             name = result.concat(".json");
             download(name,createJSON());
@@ -85,6 +110,11 @@ function loadFromJSON() {
             floorList[eval(fp.floorID)] = (FloorPlan.fromJSON(fp));
         }
     });
+    //remove the path from the url of the floorplan
+    for (var val in floorList){
+        var tempPath = floorList[val].imagePath.split("/");
+        floorList[val].imagePath = tempPath[tempPath.length-1];
+    }
 
     //storylineList
     $.each(jsonMap.storyline, function(i, sl) {

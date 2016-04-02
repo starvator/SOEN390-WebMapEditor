@@ -110,3 +110,9 @@
 .draggable_ghost a {
     visibility:hidden;
 }
+
+#resetButton{
+	position:absolute;
+	bottom:5%;
+	right:5%;
+}
