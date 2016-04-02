@@ -102,7 +102,8 @@
     background: #C8EBFB;
     color: #C8EBFB;
     height:30px;
-
+}
+	
 .draggable_ghost .glyphicon {
     display: none;
 }
