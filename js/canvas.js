@@ -195,6 +195,21 @@ function LanguageText(message) {
 	this.addPair = function(lang, value) {
 		this.values[lang] = value;
 	}
+	
+	this.toJSON = function(){
+		var jsonValues = this.values;
+		var string = [];
+		if(this.contentType === "title"){
+			$.each(Object.keys(this.values), function(i, e){
+				string.push({"language":e, "title":jsonValues[e]});
+			});
+		}else if(this.contentType === "description"){
+			$.each(Object.keys(this.values), function(i, e){
+				string.push({"language":e, "description":jsonValues[e]});
+			});
+		}
+		return string;
+	}
 }
 
 // End Classes
