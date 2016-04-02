@@ -191,7 +191,8 @@ function deleteCurrentFloor(){
 		deleteFloor();
 	}
 	return result;
-});
+	});
+}
 
 function changeLanguage() {
     currentLanguage = $("#languageDropdown :selected").val();
