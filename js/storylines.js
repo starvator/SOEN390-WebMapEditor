@@ -104,7 +104,7 @@ function editStoryLine(){
             storyline = storylineList[i];
         }
     }
-    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description +'" /></a>');
+    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.get() +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.get() +'" /></a>');
     $("#submitButton").hide();
     $("#editButton").html('<a href="#">Save Changes</a>');
     $("#editButton").attr("onclick","saveStoryLine()");
@@ -128,8 +128,8 @@ function saveStoryLine(){
     name = $("#storylineField").val();
     description = $("#storylineDescription").val();
     $("#"+active_id).html('<a href="#">'+ name +'</br>' + description +'</a>');
-    storyline.title.set(name);//.setByLanguage("en", name);
-    storyline.description.set(description);//.setByLanguage("en", description);
+    storyline.title.set(name);
+    storyline.description.set(description);
     $("#storylineField").val("");
     $("#storylineDescription").val("");
     $("#editButton").html('<a href="#">Edit Active Storyline</a>');
