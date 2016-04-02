@@ -47,12 +47,12 @@ function addNewStoryLine(){
 
 function buildStorylineMenuFromList(){
     jQuery.each(storylineList, function(i, s){
-        if(s.description.get()){
-        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.get() +'</br>' + s.description.get() +'</a></li>' +
+        if(s.description){
+        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</br>' + s.description +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         else{
-        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.get() +'</a></li>' +
+        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         
@@ -104,7 +104,7 @@ function editStoryLine(){
             storyline = storylineList[i];
         }
     }
-    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.get() +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.get() +'" /></a>');
+    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description +'" /></a>');
     $("#submitButton").hide();
     $("#editButton").html('<a href="#">Save Changes</a>');
     $("#editButton").attr("onclick","saveStoryLine()");

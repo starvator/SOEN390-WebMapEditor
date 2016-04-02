@@ -182,6 +182,10 @@ function LanguageText(message) {
     this.set = function(value) {
         this.values[currentLanguage] = value;
     }
+	
+	this.addPair = function(lang, value) {
+		this.values[lang] = value;
+	}
 }
 
 // End Classes
