@@ -18,6 +18,10 @@ $(document).ready(function(){
 
     // Enable tooltips
     $("#POTMenu > #POTIconsContainer > .btn").tooltip();
+    
+    $("#languageDropdown").change(function() {
+        changeLanguage();
+    });
 });
 
 function showFloorsMenu()
