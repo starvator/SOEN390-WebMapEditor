@@ -93,13 +93,17 @@
     cursor:ns-resize;
 }
 
+#languageDropdownContainer {
+    padding-top:5px;
+}
+
 .draggable_ghost {
     opacity: .5;
     background: #C8EBFB;
     color: #C8EBFB;
     height:30px;
 }
-
+	
 .draggable_ghost .glyphicon {
     display: none;
 }
