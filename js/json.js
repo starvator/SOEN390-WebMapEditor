@@ -95,6 +95,8 @@ function createJSON() {
 }
 
 function loadFromJSON() {
+    var tempPath;
+    
     $("#deletecurrentfloor").show();
 
     floorList = [];
@@ -112,7 +114,7 @@ function loadFromJSON() {
     });
     //remove the path from the url of the floorplan
     for (var val in floorList){
-        var tempPath = floorList[val].imagePath.split("/");
+        tempPath = floorList[val].imagePath.split("/");
         floorList[val].imagePath = tempPath[tempPath.length-1];
     }
 
@@ -129,6 +131,36 @@ function loadFromJSON() {
             POIList.push(POI.fromJSON(poi));
         }
     });
+    // change the media extensions for the POIs
+    for (var i in POIList){
+        for (var j in POIList[i].media.audio){
+            tempPath = POIList[i].media.audio[j].path.split("/");
+            POIList[i].media.audio[j].path = "/media_files/"+tempPath[tempPath.length-1];
+        }
+        for (var j in POIList[i].media.image){
+            tempPath = POIList[i].media.image[j].path.split("/");
+            POIList[i].media.image[j].path = "/media_files/"+tempPath[tempPath.length-1];
+        }
+        for (var j in POIList[i].media.video){
+            tempPath = POIList[i].media.video[j].path.split("/");
+            POIList[i].media.video[j].path = "/media_files/"+tempPath[tempPath.length-1];
+        }
+        //change the media extensions for the storypoints
+        for (var k in POIList[i].storyPoint){
+            for (var j in POIList[i].storyPoint[k].media.audio){
+                tempPath = POIList[i].storyPoint[k].media.audio[j].path.split("/");
+                POIList[i].storyPoint[k].media.audio[j].path = "/media_files/"+tempPath[tempPath.length-1];
+            }
+            for (var j in POIList[i].storyPoint[k].media.image){
+                tempPath = POIList[i].storyPoint[k].media.image[j].path.split("/");
+                POIList[i].storyPoint[k].media.image[j].path = "/media_files/"+tempPath[tempPath.length-1];
+            }
+            for (var j in POIList[i].storyPoint[k].media.video){
+                tempPath = POIList[i].storyPoint[k].media.video[j].path.split("/");
+                POIList[i].storyPoint[k].media.video[j].path = "/media_files/"+tempPath[tempPath.length-1];
+            }
+        }
+    }
      
     //POT
     $.each(jsonMap.node.pot, function(i, pot) {
