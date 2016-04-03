@@ -87,8 +87,8 @@ function POI(point) {
             id: this.ID,
             title: this.title,
             description: this.description,
-            x:this.point.x,
-            y:this.point.y,
+            x:~~this.point.x,
+            y:~~this.point.y,
             floorID:this.floorID,
             ibeacon:this.ibeacon,
             media:this.media, //TODO
@@ -121,8 +121,8 @@ function POT(point, label) {
         return {
             id: this.ID,
             label: this.label, // TODO: make language text
-            x:this.point.x,
-            y:this.point.y,
+            x:~~this.point.x,
+            y:~~this.point.y,
             floorID:this.floorID
         };
     };
