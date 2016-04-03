@@ -54,9 +54,9 @@ function Media(){
     };
 }
 
-function File(type) {
+function File(type,fileName) {
     this.type = type;
-    this.path = "";
+    this.path = "/media_files/"+fileName;
     this.language = currentLanguage;
     this.caption = "";
 }
