@@ -48,11 +48,11 @@ function addNewStoryLine(){
 function buildStorylineMenuFromList(){
     jQuery.each(storylineList, function(i, s){
         if(s.description){
-        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</br>' + s.description +'</a></li>' +
+        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.get() +'</br>' + s.description.get() +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         else{
-        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title +'</a></li>' +
+        $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.get() +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
         

@@ -246,8 +246,8 @@ Storyline.fromJSON = function(json) {
 	else if(parseInt(json.ID) !== undefined){
 		s.ID = parseInt(json.ID);
 	}
-    s.title = json.title;
-    s.description = json.description;
+    s.title = LanguageText.fromJSON(json.title, "title");
+    s.description = LanguageText.fromJSON(json.description, "description");
     s.path = json.path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;

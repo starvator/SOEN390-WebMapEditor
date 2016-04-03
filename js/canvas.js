@@ -82,7 +82,7 @@ function POI(point) {
             x:this.point.x,
             y:this.point.y,
             floorID:this.floorID,
-            iBeacon:this.ibeacon,
+            ibeacon:this.ibeacon,
             media:this.media, //TODO
             storyPoint:this.storyPoint, //TODO
             autoOn:this.isAutoOn
