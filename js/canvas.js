@@ -59,6 +59,14 @@ function File(type,fileName) {
     this.path = "/media_files/"+fileName;
     this.language = currentLanguage;
     this.caption = "";
+    
+    this.toJSON = function() {
+        return {
+            path: this.path,
+            language: this.language,
+            caption: this.caption
+        };
+    };
 }
 
 function POI(point) {

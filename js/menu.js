@@ -82,6 +82,9 @@ function showMapLayoutMenu()
 
 function showStorylinesMenu()
 {
+    //hide the inactive storylines
+    hideInactiveStoryLines();
+    
     //Reset any menus on the map layout menu
     showMainMenu();
 

@@ -86,8 +86,17 @@ function createJSON() {
         edge
         storyline
     */
+    
+    //clean the floorlist to get rid of null
+    var floorListToExport = [];
+    for (var i in floorList){
+        if (floorList[i]){
+            floorListToExport.push(floorList[i]);
+        }
+    }
+    
     return JSON.stringify({
-        floorPlan:floorList,
+        floorPlan:floorListToExport,
         node:{'poi':POIList, 'pot':POTList},
         edge:edgeList,
         storyline:storylineList
@@ -124,6 +133,11 @@ function loadFromJSON() {
             storylineList.push(Storyline.fromJSON(sl));
         }
     });
+    
+    //fix for other teams floorscovered as an int
+    for (var val in storylineList){
+        storylineList[val].floorsCovered = [];
+    }
     
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
@@ -196,7 +210,10 @@ StoryPoint.fromJSON = function(json) {
     sp.storylineID = parseInt(json.storylineID);
     sp.title = LanguageText.fromJSON(json.title, "title");
     sp.description = LanguageText.fromJSON(json.description, "description");
-    sp.media = json.media;
+    sp.media = new Media();
+    sp.media.audio = json.media.audio;
+    sp.media.image = json.media.image;
+    sp.media.video = json.media.video;
     
     return sp;
 };
@@ -211,7 +228,10 @@ POI.fromJSON = function(json) {
     poi.description = LanguageText.fromJSON(json.description, "description");
     poi.floorID = parseInt(json.floorID);
     poi.ibeacon = IBeacon.fromJSON(json.ibeacon);
-    poi.media = json.media;
+    poi.media = new Media();
+    poi.media.audio = json.media.audio;
+    poi.media.image = json.media.image;
+    poi.media.video = json.media.video;
 	poi.isSet = true;
     
     $.each(json.storyPoint, function(i, sp) {
