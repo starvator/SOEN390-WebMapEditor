@@ -86,8 +86,17 @@ function createJSON() {
         edge
         storyline
     */
+    
+    //clean the floorlist to get rid of null
+    var floorListToExport = [];
+    for (var i in floorList){
+        if (floorList[i]){
+            floorListToExport.push(floorList[i]);
+        }
+    }
+    
     return JSON.stringify({
-        floorPlan:floorList,
+        floorPlan:floorListToExport,
         node:{'poi':POIList, 'pot':POTList},
         edge:edgeList,
         storyline:storylineList
