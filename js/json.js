@@ -1,5 +1,35 @@
 var jsonMap;
 
+function confirmSave(){
+	var saveButton = $('#JSONsave');
+	var result = false;
+	bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
+	saveButton.show("Confirm result: "+result);
+	if(result == true){
+		var name = "mapData";
+		
+		bootbox.prompt({
+		  title: "Please name the export file:",
+		  value: "mapData",
+		  callback: function(result) {
+			if (result === null) {
+			  name = "mapData.json";
+			  download(name,createJSON());
+			} else {
+			name = result.concat(".json");
+			download(name,createJSON());
+			}
+		  }
+		});
+	}
+	else {
+		bootbox.alert("You have not saved the map data.", function() {
+		saveButton.show("cancel");
+		}); 
+	}
+	}); 
+}
+
 function createJSON() {
     /*
     JSON File Outline, as specified and agreed upon by team leaders
@@ -25,7 +55,7 @@ function loadFromJSON() {
     POTList = [];
     nodeList = [];
     edgeList = [];
-    
+
     //floorList
     $.each(jsonMap.floorPlan, function(i, fp) {
         if(fp !== null) {
@@ -91,7 +121,7 @@ POI.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
-    poi.id = json.id;
+    poi.ID = json.id;
     poi.title = json.title;
     poi.description = json.description;
     
@@ -99,14 +129,14 @@ POI.fromJSON = function(json) {
     //poi.title = LanguageText.fromJSON(json.title);
     //poi.description = LanguageText.fromJSON(json.description);
     poi.floorID = json.floorID;
-    poi.ibeacon = new IBeacon(json.iBeacon.uuid, json.iBeacon.major, json.iBeacon.minor);
+    poi.ibeacon = IBeacon.fromJSON(json.iBeacon);
     poi.media = json.media;
     
     $.each(json.storyPoint, function(i, sp) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
     });
     
-    nodeList.push(ppp);
+    nodeList.push(poi);
     
     return poi;
 };
@@ -115,20 +145,48 @@ POT.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
+    pot.ID = json.id;
     pot.label = json.label;//LanguageText.fromJSON(json.label);
     pot.floorID = json.floorID; 
     
-    nodeList.push(ppp);
+    nodeList.push(pot);
     
     return pot;
 };
 
 Edge.fromJSON = function(json) {
 
-    var e = new Edge(json.startNode, json.endNode);
+    var start = findNodeByID(json.startNode);
+    var end = findNodeByID(json.endNode);
+
+    var e = new Edge(start, end);
     
     return e;
 };
+
+IBeacon.fromJSON = function(json) {
+    
+    var ib = new IBeacon(json.uuid, json.major, json.minor);
+  
+    return ib;
+};
+
+function findNodeByID(id){
+    var found;
+    $.each(POIList, function(i, poi) {
+       if(poi.ID === id){
+           found = poi;
+       } 
+    });
+    
+    $.each(POTList, function(i, pot) {
+       if(pot.ID === id){
+           found = pot;
+       } 
+    });
+    
+    return found;
+}
 
 Storyline.fromJSON = function(json) {
 
