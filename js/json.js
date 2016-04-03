@@ -125,6 +125,11 @@ function loadFromJSON() {
         }
     });
     
+    //fix for other teams floorscovered as an int
+    for (var val in storylineList){
+        storylineList[val].floorsCovered = [];
+    }
+    
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
         if(poi !== null) {
