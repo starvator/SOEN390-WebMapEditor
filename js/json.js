@@ -1,33 +1,79 @@
 var jsonMap;
 
 function confirmSave(){
-	var saveButton = $('#JSONsave');
-	var result = false;
-	bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
-	saveButton.show("Confirm result: "+result);
-	if(result == true){
-		var name = "mapData";
-		
-		bootbox.prompt({
-		  title: "Please name the export file:",
-		  value: "mapData",
-		  callback: function(result) {
-			if (result === null) {
-			  name = "mapData.json";
-			  download(name,createJSON());
-			} else {
-			name = result.concat(".json");
-			download(name,createJSON());
-			}
-		  }
-		});
-	}
-	else {
-		bootbox.alert("You have not saved the map data.", function() {
-		saveButton.show("cancel");
-		}); 
-	}
-	}); 
+    if(floorList.length == 0){
+        bootbox.alert("Please create a map first, or import your work from a previous session.", function() {
+        });
+        return;
+    }
+    var saveButton = $('#JSONsave');
+    var hasFloor = false;
+    for (var val=0; floorList.length>val;val++){
+        try {
+            if (floorList[val].floorID != null){
+                hasFloor = true;
+                break;
+            }
+        }
+        catch(err){
+        }
+    }
+    if(!hasFloor){
+        bootbox.alert("An empty project cannot be saved. Please create a floor or import a floor plan", function() {
+        });
+        return false;
+    }
+    
+    if((edgeList.length == 0)){
+        bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
+        });
+        return false;
+    }
+    //check if the graph is valid
+    for(var n=0; nodeList.length>n;n++){
+        var idOfNode = nodeList[n].point.id;
+        var hasEdge = false;
+        forEachEdge:
+        for (var val in edgeList){
+            if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
+            }
+            else{
+                hasEdge = true;
+                break forEachEdge;
+            }
+        }
+        if(!hasEdge){
+            bootbox.alert("Whoops! One of your points isn't connected. Please review your map before saving.", function() {
+            });
+            return false;
+        }
+    }
+    var result = false;
+    bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
+    saveButton.show("Confirm result: "+result);
+    if(result == true){
+        var name = "mapData";
+        
+        bootbox.prompt({
+          title: "Please name the export file:",
+          value: "mapData",
+          callback: function(result) {
+            if (result === null) {
+                bootbox.alert("You have not saved the map data.", function() {
+                });
+            } else {
+            name = result.concat(".json");
+            download(name,createJSON());
+            }
+          }
+        });
+    }
+    else {
+        bootbox.alert("You have not saved the map data.", function() {
+        saveButton.show("cancel");
+        }); 
+    }
+    }); 
 }
 
 function createJSON() {
@@ -40,8 +86,17 @@ function createJSON() {
         edge
         storyline
     */
+    
+    //clean the floorlist to get rid of null
+    var floorListToExport = [];
+    for (var i in floorList){
+        if (floorList[i]){
+            floorListToExport.push(floorList[i]);
+        }
+    }
+    
     return JSON.stringify({
-        floorPlan:floorList,
+        floorPlan:floorListToExport,
         node:{'poi':POIList, 'pot':POTList},
         edge:edgeList,
         storyline:storylineList
@@ -49,6 +104,10 @@ function createJSON() {
 }
 
 function loadFromJSON() {
+    var tempPath;
+    
+    $("#deletecurrentfloor").show();
+
     floorList = [];
     storylineList = [];
     POIList = [];
@@ -62,6 +121,11 @@ function loadFromJSON() {
             floorList[eval(fp.floorID)] = (FloorPlan.fromJSON(fp));
         }
     });
+    //remove the path from the url of the floorplan
+    for (var val in floorList){
+        tempPath = floorList[val].imagePath.split("/");
+        floorList[val].imagePath = tempPath[tempPath.length-1];
+    }
 
     //storylineList
     $.each(jsonMap.storyline, function(i, sl) {
@@ -70,12 +134,47 @@ function loadFromJSON() {
         }
     });
     
+    //fix for other teams floorscovered as an int
+    for (var val in storylineList){
+        storylineList[val].floorsCovered = [];
+    }
+    
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
         if(poi !== null) {
             POIList.push(POI.fromJSON(poi));
         }
     });
+    // change the media extensions for the POIs
+    for (var i in POIList){
+        for (var j in POIList[i].media.audio){
+            tempPath = POIList[i].media.audio[j].path.split("/");
+            POIList[i].media.audio[j].path = "/media_files/"+tempPath[tempPath.length-1];
+        }
+        for (var j in POIList[i].media.image){
+            tempPath = POIList[i].media.image[j].path.split("/");
+            POIList[i].media.image[j].path = "/media_files/"+tempPath[tempPath.length-1];
+        }
+        for (var j in POIList[i].media.video){
+            tempPath = POIList[i].media.video[j].path.split("/");
+            POIList[i].media.video[j].path = "/media_files/"+tempPath[tempPath.length-1];
+        }
+        //change the media extensions for the storypoints
+        for (var k in POIList[i].storyPoint){
+            for (var j in POIList[i].storyPoint[k].media.audio){
+                tempPath = POIList[i].storyPoint[k].media.audio[j].path.split("/");
+                POIList[i].storyPoint[k].media.audio[j].path = "/media_files/"+tempPath[tempPath.length-1];
+            }
+            for (var j in POIList[i].storyPoint[k].media.image){
+                tempPath = POIList[i].storyPoint[k].media.image[j].path.split("/");
+                POIList[i].storyPoint[k].media.image[j].path = "/media_files/"+tempPath[tempPath.length-1];
+            }
+            for (var j in POIList[i].storyPoint[k].media.video){
+                tempPath = POIList[i].storyPoint[k].media.video[j].path.split("/");
+                POIList[i].storyPoint[k].media.video[j].path = "/media_files/"+tempPath[tempPath.length-1];
+            }
+        }
+    }
      
     //POT
     $.each(jsonMap.node.pot, function(i, pot) {
@@ -90,7 +189,6 @@ function loadFromJSON() {
             edgeList.push(Edge.fromJSON(e));
         }
     });
-
 }
 
 // Atomic from-JSON Constructors for Each Class
@@ -98,7 +196,7 @@ function loadFromJSON() {
 FloorPlan.fromJSON = function(json) {
 
     var fp = new FloorPlan();
-    fp.floorID = json.floorID;
+    fp.floorID = parseInt(json.floorID);
     fp.imagePath = json.imagePath;
     fp.imageWidth = json.imageWidth;
     fp.imageHeight = json.imageHeight;
@@ -109,10 +207,13 @@ FloorPlan.fromJSON = function(json) {
 StoryPoint.fromJSON = function(json) {
 
     var sp = new StoryPoint();
-    sp.storylineID = json.storylineID;
-    sp.title = json.title;//LanguageText.fromJSON(json.title);
-    sp.description = json.description;//LanguageText.fromJSON(json.description);
-    sp.media = json.media;
+    sp.storylineID = parseInt(json.storylineID);
+    sp.title = LanguageText.fromJSON(json.title, "title");
+    sp.description = LanguageText.fromJSON(json.description, "description");
+    sp.media = new Media();
+    sp.media.audio = json.media.audio;
+    sp.media.image = json.media.image;
+    sp.media.video = json.media.video;
     
     return sp;
 };
@@ -121,16 +222,17 @@ POI.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
-    poi.ID = json.id;
-    poi.title = json.title;
-    poi.description = json.description;
-    
-    //TODO: LanguageText formats?
-    //poi.title = LanguageText.fromJSON(json.title);
-    //poi.description = LanguageText.fromJSON(json.description);
-    poi.floorID = json.floorID;
-    poi.ibeacon = IBeacon.fromJSON(json.iBeacon);
-    poi.media = json.media;
+    poi.ID = parseInt(json.id);
+
+    poi.title = LanguageText.fromJSON(json.title, "title");
+    poi.description = LanguageText.fromJSON(json.description, "description");
+    poi.floorID = parseInt(json.floorID);
+    poi.ibeacon = IBeacon.fromJSON(json.ibeacon);
+    poi.media = new Media();
+    poi.media.audio = json.media.audio;
+    poi.media.image = json.media.image;
+    poi.media.video = json.media.video;
+	poi.isSet = true;
     
     $.each(json.storyPoint, function(i, sp) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
@@ -145,9 +247,14 @@ POT.fromJSON = function(json) {
 
     var ppp = new Point(json.x, json.y, json.floorID);
     var pot = new POT(ppp);
-    pot.ID = json.id;
-    pot.label = json.label;//LanguageText.fromJSON(json.label);
-    pot.floorID = json.floorID; 
+    pot.ID = parseInt(json.id);
+    pot.label = json.label.toLowerCase();
+    
+    if(!_.contains(POTLabels, pot.label)) {
+        pot.label = "none"
+    }
+    
+    pot.floorID = parseInt(json.floorID); 
     
     nodeList.push(pot);
     
@@ -191,9 +298,13 @@ function findNodeByID(id){
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-    s.ID = json.ID;
-    s.title = json.title;//LanguageText.fromJSON(json.title);
-    s.description = json.description;//LanguageText.fromJSON(json.description);
+	if(parseInt(json.id) !== undefined)
+		s.ID = parseInt(json.id);
+	else if(parseInt(json.ID) !== undefined){
+		s.ID = parseInt(json.ID);
+	}
+    s.title = LanguageText.fromJSON(json.title, "title");
+    s.description = LanguageText.fromJSON(json.description, "description");
     s.path = json.path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;
@@ -202,17 +313,21 @@ Storyline.fromJSON = function(json) {
     return s;
 };
 
-/** TODO: LanguageText Story
-LanguageText.fromJSON = function(json) {
+LanguageText.fromJSON = function(json, type) {
 
-    var lt = new LanguageText();
-    $.each(json, function(i, pair) {
-        lt.addPair(pair.language, pair.value);
-    });
-    
+    var lt = new LanguageText(type);
+	if(type === "title"){
+		$.each(json, function(i, pair) {
+			lt.addPair(pair.language, pair.title);
+		});
+	}else if (type === "description") {
+		$.each(json, function(i, pair) {
+			lt.addPair(pair.language, pair.description);
+		});		
+	}
     return lt;
 };
-**/
+
 
 $(document).on('change', '.btn-file :file', function() {
     var input = $(this);

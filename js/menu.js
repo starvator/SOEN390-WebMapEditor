@@ -18,6 +18,10 @@ $(document).ready(function(){
 
     // Enable tooltips
     $("#POTMenu > #POTIconsContainer > .btn").tooltip();
+    
+    $("#languageDropdown").change(function() {
+        changeLanguage();
+    });
 });
 
 function showFloorsMenu()
@@ -35,6 +39,12 @@ function showFloorsMenu()
 
 function showNodesMenu()
 {
+    if(floorList.length == 0){
+        bootbox.alert("Please create a floor first.", function() {
+        });
+        return;
+    }
+
     $("#floorEditorMenu").hide();
     $("#MapLayoutMainMenu").hide();
     $("#nodeEditorMenu").show();
@@ -72,6 +82,9 @@ function showMapLayoutMenu()
 
 function showStorylinesMenu()
 {
+    //hide the inactive storylines
+    hideInactiveStoryLines();
+    
     //Reset any menus on the map layout menu
     showMainMenu();
 
@@ -163,4 +176,35 @@ function updateNodeEditorTool(btn)
 
     // Change the tool
     current_node_tool = $(btn).data("node-tool");
+}
+
+function deleteActiveStoryline(){
+    bootbox.confirm("Deleting this storyline will delete all data associated with it, including StoryPoint information. Are you sure you want to delete this storyline?", function(result) {
+                if(!result){
+                    return;
+                }
+                else{
+                    deleteStoryLine();
+                }
+                return result;
+            });
+}
+
+function deleteCurrentFloor(){
+	bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
+	if(!result){
+		return;
+	}else{
+		deleteFloor();
+	}
+	return result;
+	});
+}
+
+function changeLanguage() {
+    currentLanguage = $("#languageDropdown :selected").val();
+    
+    // Reset the storylines sidebar
+    $("#StorylinesList").empty();
+    buildStorylineMenuFromList();
 }
