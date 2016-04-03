@@ -48,8 +48,18 @@ function loadFloor(){
     var floor = new FloorPlan();
     floor.floorID = $("#floorNumUpload").val();
     floor.imagePath = $("#fileUpload")[0].files[0].name;
-    floor.imageWidth = $("#fileUpload")[0].files[0].width;
-    floor.imageHeight = $("#fileUpload")[0].files[0].height;
+
+    var fr = new FileReader;
+    fr.onload = function() {
+        var img = new Image;
+        img.onload = function() {
+            floor.imageWidth = img.width;
+            floor.imageHeight = img.height;
+        };
+        img.src = fr.result;
+    };
+    fr.readAsDataURL($("#fileUpload")[0].files[0]);
+
     floorList[$("#floorNumUpload").val()] = floor;
     //add floor list from array
     $("#floorList").empty();
