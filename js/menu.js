@@ -18,7 +18,7 @@ $(document).ready(function(){
 
     // Enable tooltips
     $("#POTMenu > #POTIconsContainer > .btn").tooltip();
-    
+
     $("#languageDropdown").change(function() {
         changeLanguage();
     });
@@ -84,7 +84,7 @@ function showStorylinesMenu()
 {
     //hide the inactive storylines
     hideInactiveStoryLines();
-    
+
     //Reset any menus on the map layout menu
     showMainMenu();
 
@@ -137,15 +137,15 @@ function hidePOTMenu() {
 function changeNodeEditorTool(btn)
 {
     var previousTool = current_node_tool;
-    
+
     updateNodeEditorTool(btn);
-    
+
     // If switching between point or omni tools or vice-versa, don't reanimate the POT menu
     if(_.intersection([$(btn).data("node-tool"), previousTool], ["point", "omniTool"]).length === 2)
     {
         return;
     }
-    
+
     if(current_node_tool === "point" || current_node_tool === "omniTool")
     {
         showPOTMenu();
@@ -191,19 +191,19 @@ function deleteActiveStoryline(){
 }
 
 function deleteCurrentFloor(){
-	bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
-	if(!result){
-		return;
-	}else{
-		deleteFloor();
-	}
-	return result;
-	});
+    bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
+    if(!result){
+        return;
+    }else{
+        deleteFloor();
+    }
+    return result;
+    });
 }
 
 function changeLanguage() {
     currentLanguage = $("#languageDropdown :selected").val();
-    
+
     // Reset the storylines sidebar
     $("#StorylinesList").empty();
     buildStorylineMenuFromList();

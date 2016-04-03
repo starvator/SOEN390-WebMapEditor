@@ -69,7 +69,7 @@ $(document).ready(function(){
                             POIList[val].media.video = removeFromList(POIList[val].media.video[i], POIList[val].media.video.slice());
                         }
                     }
-                    
+
                     if (fileNamesText[0]!=""){
                     for (var val2 in fileNamesText){
                         fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -130,8 +130,8 @@ $(document).ready(function(){
                             currentPOI.media.video = removeFromList(currentPOI.media.video[i], currentPOI.media.video.slice());
                         }
                     }
-                
-                
+
+
                     if (fileNamesText[0]!=""){
                     for (var val2 in fileNamesText){
                         fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -211,8 +211,8 @@ $(document).ready(function(){
                                     POIList[val].storyPoint[p].media.video = removeFromList(POIList[val].storyPoint[p].media.video[i], POIList[val].storyPoint[p].media.video.slice());
                                 }
                             }
-                            
-                            
+
+
                             if (fileNamesText[0]!=""){
                             for (var val2 in fileNamesText){
                                 fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -267,8 +267,8 @@ $(document).ready(function(){
                                     newStoryPoint.media.video = removeFromList(newStoryPoint.media.video[i], newStoryPoint.media.video.slice());
                                 }
                             }
-                        
-                        
+
+
                             if (fileNamesText[0]!=""){
                             for (var val2 in fileNamesText){
                                 fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -446,7 +446,7 @@ function fillEditor(poi){
                     $("#spBeaconMajor").val(poi.ibeacon.major);
                     $("#spBeaconMinor").val(poi.ibeacon.minor);
                     CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description.get());
-                    
+
                     var stringForDocField ="";
                     var tempFileName;
                     for (var val in currentPOI.storyPoint[p].media.audio){

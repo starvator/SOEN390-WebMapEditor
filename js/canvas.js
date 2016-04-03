@@ -59,7 +59,7 @@ function File(type,fileName) {
     this.path = "/media_files/"+fileName;
     this.language = currentLanguage;
     this.caption = "";
-    
+
     this.toJSON = function() {
         return {
             path: this.path,
@@ -133,7 +133,7 @@ function FloorPlan() {
     this.imagePath = "";
     this.imageWidth = 0;
     this.imageHeight = 0;
-    
+
     this.toJSON = function() {
         return {
             floorID: this.floorID,
@@ -152,7 +152,7 @@ function Storyline(){
     this.thumbnail = "";
     this.walkingTimeInMinutes = ""; //TODO auto generate with math?
     this.floorsCovered = [];
-    
+
     this.toJSON = function() {
         findFloorsCovered(this);
         return {
@@ -179,45 +179,45 @@ function StoryPoint() {
 // Used to store text in multiple languages
 function LanguageText(message) {
     this.values = {};
-    
+
     // What to call this content in the event of an error
     this.contentType = message;
-    
+
     // Get the text, if no text exists for the current language return a message
     this.get = function() {
         if(this.values[currentLanguage] === undefined)
         {
             return "No " + this.contentType + " set for " + languageNames[currentLanguage];
         }
-        else 
+        else
         {
             return this.values[currentLanguage];
-        }        
+        }
     }
-    
+
     // Set the text based on the current language
     this.set = function(value) {
         this.values[currentLanguage] = value;
     }
-	
-	this.addPair = function(lang, value) {
-		this.values[lang] = value;
-	}
-	
-	this.toJSON = function(){
-		var jsonValues = this.values;
-		var string = [];
-		if(this.contentType === "title"){
-			$.each(Object.keys(this.values), function(i, e){
-				string.push({"language":e, "title":jsonValues[e]});
-			});
-		}else if(this.contentType === "description"){
-			$.each(Object.keys(this.values), function(i, e){
-				string.push({"language":e, "description":jsonValues[e]});
-			});
-		}
-		return string;
-	}
+
+    this.addPair = function(lang, value) {
+        this.values[lang] = value;
+    }
+
+    this.toJSON = function(){
+        var jsonValues = this.values;
+        var string = [];
+        if(this.contentType === "title"){
+            $.each(Object.keys(this.values), function(i, e){
+                string.push({"language":e, "title":jsonValues[e]});
+            });
+        }else if(this.contentType === "description"){
+            $.each(Object.keys(this.values), function(i, e){
+                string.push({"language":e, "description":jsonValues[e]});
+            });
+        }
+        return string;
+    }
 }
 
 // End Classes
@@ -459,7 +459,7 @@ function drawNode(anode) {
 
     if(anode.label !== undefined && anode.label !== "none") {
         var currentForecolour = ctx.fillStyle;
-    
+
         // Draw a background
         ctx.beginPath();
         ctx.fillStyle="#e6e6e6";
@@ -720,7 +720,7 @@ function canvasClickNodeEditing(x,y)
         var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
-        
+
         // Create a new edge to the new node
         edgeList.push(new Edge(lastSelectedNode, pot));
         // Set the last selected node to the current node
@@ -735,7 +735,7 @@ function canvasClickNodeEditing(x,y)
         var pot = new POT(point, current_tool);
         nodeList.push(pot);
         POTList.push(pot);
-        
+
         // Set it as the selected node
         lastSelectedNode = pot;
     }
@@ -886,7 +886,7 @@ function highlightEdges()
                 break;
             }
         }
-        
+
 
         // Attempt to find the shortest path between each node
         for(var i = 0; i < storyPoints.length - 1; i++)
@@ -953,7 +953,7 @@ function deleteNode(node){
 
 function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
-    var storypointID = active_id;   
+    var storypointID = active_id;
 
     for(var p in currentPOI.storyPoint){
         if (currentPOI.storyPoint[p].storylineID == active_id){
@@ -1074,6 +1074,6 @@ $(window).on('resize', function(){
 });
 
 function recenter(){
-	resizeCanvas();
+    resizeCanvas();
     redraw();
 }
