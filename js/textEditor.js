@@ -46,11 +46,11 @@ $(document).ready(function(){
             }
             for(var val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
-                    POIList[val].title = $("#spTitle").val();
+                    POIList[val].title.set($("#spTitle").val());
                     POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                     POIList[val].ibeacon.major = $("#spBeaconMajor").val();
                     POIList[val].ibeacon.minor = $("#spBeaconMinor").val();
-                    POIList[val].description = CKEDITOR.instances["editor1"].getData();
+                    POIList[val].description.set(CKEDITOR.instances["editor1"].getData());
                     var fileNamesText = $("#attachedDocName").text().split(", ");
                     var fileNameExtension;
                     var tempFileObject;
@@ -92,11 +92,11 @@ $(document).ready(function(){
                 }
             }
             if(!exists){
-                currentPOI.title = $("#spTitle").val();
+                currentPOI.title.set($("#spTitle").val());
                 currentPOI.ibeacon.uuid = $("#spBeaconID").val();
                 currentPOI.ibeacon.major = $("#spBeaconMajor").val();
                 currentPOI.ibeacon.minor = $("#spBeaconMinor").val();
-                currentPOI.description = CKEDITOR.instances["editor1"].getData();
+                currentPOI.description.set(CKEDITOR.instances["editor1"].getData());
                 var fileNamesText = $("#attachedDocName").text().split(", ");
                     var fileNameExtension;
                     var tempFileObject;
@@ -123,7 +123,6 @@ $(document).ready(function(){
                         currentPOI.media.addMedia(tempFileObject);
                     }
                     }
-        
                 currentPOI.isSet = true;
                 currentPOI.isAutoOn = $("#autoOn").parent().hasClass("active");
                 POIList.push(currentPOI);
@@ -156,11 +155,11 @@ $(document).ready(function(){
                     for(var p in POIList[val].storyPoint){
                         if (POIList[val].storyPoint[p].storylineID == active_id){
                             //Updating sp
-                            POIList[val].storyPoint[p].title = $("#spTitle").val();
+                            POIList[val].storyPoint[p].title.set($("#spTitle").val());
                             POIList[val].ibeacon.uuid = $("#spBeaconID").val();
                             POIList[val].ibeacon.major = $("#spBeaconMajor").val();
                             POIList[val].ibeacon.minor = $("#spBeaconMinor").val();
-                            POIList[val].storyPoint[p].description = CKEDITOR.instances["editor1"].getData();
+                            POIList[val].storyPoint[p].description.set(CKEDITOR.instances["editor1"].getData());
                             var fileNamesText = $("#attachedDocName").text().split(", ");
                             var fileNameExtension;
                             var tempFileObject;
@@ -191,7 +190,7 @@ $(document).ready(function(){
                             POIList[val].isAutoOn = $("#autoOn").parent().hasClass("active");
                             //Adding the point to the storyline list.
                             //get into <a> and change POIList[val].title
-                            $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title);
+                            $("#"+POIList[val].storyPoint[p].ID+"_a").text(POIList[val].storyPoint[p].title.get());
                             spCreated = true;
                         }
                     }
@@ -199,8 +198,8 @@ $(document).ready(function(){
                     if(!spCreated){
                         //Create storypoint
                         var newStoryPoint = new StoryPoint();
-                        newStoryPoint.title = $("#spTitle").val();
-                        newStoryPoint.description = CKEDITOR.instances["editor1"].getData();
+                        newStoryPoint.title.set($("#spTitle").val());
+                        newStoryPoint.description.set(CKEDITOR.instances["editor1"].getData());
                         var fileNamesText = $("#attachedDocName").text().split(", ");
                             var fileNameExtension;
                             var tempFileObject;
@@ -230,7 +229,7 @@ $(document).ready(function(){
                             }
                         POIList[val].storyPoint.push(newStoryPoint);
                         //Adding the point to the storyline list.
-                        $("#"+active_id+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title +'</a></li>');
+                        $("#"+active_id+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + newStoryPoint.ID + '_a"onClick = "openEditorByPointID('+ newStoryPoint.ID +')">'+ newStoryPoint.title.get() +'</a></li>');
                         for (var aid in storylineList){
                             if (storylineList[aid].ID == active_id){
                                 storylineList[aid].path.push(currentPOI.ID);
@@ -313,7 +312,7 @@ function fillEditor(poi){
     }
     if(!spslExists){
         if(poi.isSet){
-            $("#spTitle").val(poi.title);
+            $("#spTitle").val(poi.title.get());
             if(poi.isAutoOn === true){
                 $("#autoOn").click();
             }else if(poi.isAutoOn === false){
@@ -322,7 +321,7 @@ function fillEditor(poi){
             $("#spBeaconID").val(poi.ibeacon.uuid);
             $("#spBeaconMajor").val(poi.ibeacon.major);
             $("#spBeaconMinor").val(poi.ibeacon.minor);
-            CKEDITOR.instances["editor1"].setData(poi.description);
+            CKEDITOR.instances["editor1"].setData(poi.description.get());
             var stringForDocField ="";
             var tempFileName;
             for (var val in poi.media.audio){
@@ -365,7 +364,7 @@ function fillEditor(poi){
             //find the storyPoint associated to the storyline
             for(var p in currentPOI.storyPoint){
                 if (currentPOI.storyPoint[p].storylineID == active_id){
-                    $("#spTitle").val(currentPOI.storyPoint[p].title);
+                    $("#spTitle").val(currentPOI.storyPoint[p].title.get());
                     if(poi.isAutoOn === true){
                         $("#autoOn").click();
                     }else if(poi.isAutoOn === false){
@@ -374,7 +373,7 @@ function fillEditor(poi){
                     $("#spBeaconID").val(currentPOI.ibeacon.uuid);
                     $("#spBeaconMajor").val(poi.ibeacon.major);
                     $("#spBeaconMinor").val(poi.ibeacon.minor);
-                    CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description);
+                    CKEDITOR.instances["editor1"].setData(currentPOI.storyPoint[p].description.get());
                     
                     var stringForDocField ="";
                     var tempFileName;
@@ -395,7 +394,6 @@ function fillEditor(poi){
                         stringForDocField = stringForDocField.substring(0, stringForDocField.length - 2);
                     }
                     $("#attachedDocName").text(stringForDocField);
-                    
                     spFound = true;
                     POIID= poi.ID;
                 }

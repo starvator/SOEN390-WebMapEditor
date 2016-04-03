@@ -23,8 +23,8 @@ function addNewStoryLine(){
         active_id = current_id;
         storyline.ID = current_id;
 
-        storyline.title = name;
-        storyline.description = description;
+        storyline.title.set(name);
+        storyline.description.set(description);
         /** TODO LanguageText Story
         storyline.title.addPair('en', name);
         storyline.floorsCovered.push(current_floor);
@@ -63,7 +63,7 @@ function buildStorylineMenuFromList(){
         $.each(POIList, function(i, poi) {
                 $.each(poi.storyPoint, function(j, sp) {
                     if(sp.storylineID == s.ID) {
-                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title +'</a></li>');
+                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title.get() +'</a></li>');
                     }
                 });
             });
@@ -104,7 +104,7 @@ function editStoryLine(){
             storyline = storylineList[i];
         }
     }
-    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description +'" /></a>');
+    $("#"+active_id).html('<a><input id="storylineField" type="text" placeholder="Edit Title" value="' + storyline.title.get() +'"/></br><input id="storylineDescription" type="text" placeholder="Edit Description" value="' + storyline.description.get() +'" /></a>');
     $("#submitButton").hide();
     $("#editButton").html('<a href="#">Save Changes</a>');
     $("#editButton").attr("onclick","saveStoryLine()");
@@ -128,8 +128,8 @@ function saveStoryLine(){
     name = $("#storylineField").val();
     description = $("#storylineDescription").val();
     $("#"+active_id).html('<a href="#">'+ name +'</br>' + description +'</a>');
-    storyline.title = name;//.setByLanguage("en", name);
-    storyline.description = description;//.setByLanguage("en", description);
+    storyline.title.set(name);
+    storyline.description.set(description);
     $("#storylineField").val("");
     $("#storylineDescription").val("");
     $("#editButton").html('<a href="#">Edit Active Storyline</a>');
@@ -178,6 +178,9 @@ function hideEntireInactiveStoryLines(){
             $("#"+id+"_pointList").show();
         }
     }
+    
+    // Disable language change during this operation
+    $("#languageDropdown").prop( "disabled", true );
 };
 
 function showEntireInactiveStoryLines(){
@@ -192,6 +195,9 @@ function showEntireInactiveStoryLines(){
             $("#"+id+"_pointList").show();
         }
     }
+    
+    // Enabled language change after this operation
+    $("#languageDropdown").prop( "disabled", false );
 };
 
 function findFloorsCovered(storyline){

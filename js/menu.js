@@ -18,6 +18,10 @@ $(document).ready(function(){
 
     // Enable tooltips
     $("#POTMenu > #POTIconsContainer > .btn").tooltip();
+    
+    $("#languageDropdown").change(function() {
+        changeLanguage();
+    });
 });
 
 function showFloorsMenu()
@@ -184,13 +188,16 @@ function deleteActiveStoryline(){
 }
 
 function deleteCurrentFloor(){
-    bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
-        if(!result){
-            return;
-        }
-        else{
-            deleteFloor();
-        }
-            return result;
-        });
+	bootbox.confirm("Deleting a floor will delete all data associated with it, including points, POTs, POIs and StoryPoint information. Are you sure you want to delete this floor?", function(result) {
+	if(!result){
+		return;
+	}else{
+		deleteFloor();
+	}
+	return result;
+	});
+}
+
+function changeLanguage() {
+    currentLanguage = $("#languageDropdown :selected").val();
 }

@@ -162,8 +162,8 @@ StoryPoint.fromJSON = function(json) {
 
     var sp = new StoryPoint();
     sp.storylineID = parseInt(json.storylineID);
-    sp.title = json.title;//LanguageText.fromJSON(json.title);
-    sp.description = json.description;//LanguageText.fromJSON(json.description);
+    sp.title = LanguageText.fromJSON(json.title, "title");
+    sp.description = LanguageText.fromJSON(json.description, "description");
     sp.media = json.media;
     
     return sp;
@@ -174,15 +174,13 @@ POI.fromJSON = function(json) {
     var ppp = new Point(json.x, json.y, json.floorID);
     var poi = new POI(ppp);
     poi.ID = parseInt(json.id);
-    poi.title = json.title;
-    poi.description = json.description;
-    
-    //TODO: LanguageText formats?
-    //poi.title = LanguageText.fromJSON(json.title);
-    //poi.description = LanguageText.fromJSON(json.description);
+
+    poi.title = LanguageText.fromJSON(json.title, "title");
+    poi.description = LanguageText.fromJSON(json.description, "description");
     poi.floorID = parseInt(json.floorID);
     poi.ibeacon = IBeacon.fromJSON(json.ibeacon);
     poi.media = json.media;
+	poi.isSet = true;
     
     $.each(json.storyPoint, function(i, sp) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
@@ -243,13 +241,13 @@ function findNodeByID(id){
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-    if(parseInt(json.id) !== undefined)
-        s.ID = parseInt(json.id);
-    else if(parseInt(json.ID) !== undefined){
-        s.ID = parseInt(json.ID);
-    }
-    s.title = json.title;//LanguageText.fromJSON(json.title);
-    s.description = json.description;//LanguageText.fromJSON(json.description);
+	if(parseInt(json.id) !== undefined)
+		s.ID = parseInt(json.id);
+	else if(parseInt(json.ID) !== undefined){
+		s.ID = parseInt(json.ID);
+	}
+    s.title = json.title;
+    s.description = json.description;
     s.path = json.path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;
@@ -258,17 +256,21 @@ Storyline.fromJSON = function(json) {
     return s;
 };
 
-/** TODO: LanguageText Story
-LanguageText.fromJSON = function(json) {
+LanguageText.fromJSON = function(json, type) {
 
     var lt = new LanguageText();
-    $.each(json, function(i, pair) {
-        lt.addPair(pair.language, pair.value);
-    });
-    
+	if(type === "title"){
+		$.each(json, function(i, pair) {
+			lt.addPair(pair.language, pair.title);
+		});
+	}else if (type === "description") {
+		$.each(json, function(i, pair) {
+			lt.addPair(pair.language, pair.description);
+		});		
+	}
     return lt;
 };
-**/
+
 
 $(document).on('change', '.btn-file :file', function() {
     var input = $(this);
