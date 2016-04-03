@@ -54,7 +54,22 @@ $(document).ready(function(){
                     var fileNamesText = $("#attachedDocName").text().split(", ");
                     var fileNameExtension;
                     var tempFileObject;
-                    POIList[val].media = new Media();
+                    for (var i=POIList[val].media.audio.length-1; i>=0;i--){
+                        if (POIList[val].media.audio[i].language == currentLanguage){
+                            POIList[val].media.audio = removeFromList(POIList[val].media.audio[i], POIList[val].media.audio.slice());
+                        }
+                    }
+                    for (var i=POIList[val].media.image.length-1; i>=0;i--){
+                        if (POIList[val].media.image[i].language == currentLanguage){
+                            POIList[val].media.image = removeFromList(POIList[val].media.image[i], POIList[val].media.image.slice());
+                        }
+                    }
+                    for (var i=POIList[val].media.video.length-1; i>=0;i--){
+                        if (POIList[val].media.video[i].language == currentLanguage){
+                            POIList[val].media.video = removeFromList(POIList[val].media.video[i], POIList[val].media.video.slice());
+                        }
+                    }
+                    
                     if (fileNamesText[0]!=""){
                     for (var val2 in fileNamesText){
                         fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -100,7 +115,23 @@ $(document).ready(function(){
                 var fileNamesText = $("#attachedDocName").text().split(", ");
                     var fileNameExtension;
                     var tempFileObject;
-                    currentPOI.media = new Media();
+                    for (var i=currentPOI.media.audio.length-1; i>=0;i--){
+                        if (currentPOI.media.audio[i].language == currentLanguage){
+                            currentPOI.media.audio = removeFromList(currentPOI.media.audio[i], currentPOI.media.audio.slice());
+                        }
+                    }
+                    for (var i=currentPOI.media.image.length-1; i>=0;i--){
+                        if (currentPOI.media.image[i].language == currentLanguage){
+                            currentPOI.media.image = removeFromList(currentPOI.media.image[i], currentPOI.media.image.slice());
+                        }
+                    }
+                    for (var i=currentPOI.media.video.length-1; i>=0;i--){
+                        if (currentPOI.media.video[i].language == currentLanguage){
+                            currentPOI.media.video = removeFromList(currentPOI.media.video[i], currentPOI.media.video.slice());
+                        }
+                    }
+                
+                
                     if (fileNamesText[0]!=""){
                     for (var val2 in fileNamesText){
                         fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -118,6 +149,7 @@ $(document).ready(function(){
                         }
                         //not supported
                         else {
+                            showErrorAlert(fileNamesText[val2] + " is not of a supported file type. It was automatically discarded.");
                             break;
                         }
                         currentPOI.media.addMedia(tempFileObject);
@@ -150,6 +182,7 @@ $(document).ready(function(){
                     }
                 }
             }
+
             for(val in POIList){
                 if(POIList[val].ID === currentPOI.ID){
                     for(var p in POIList[val].storyPoint){
@@ -163,7 +196,23 @@ $(document).ready(function(){
                             var fileNamesText = $("#attachedDocName").text().split(", ");
                             var fileNameExtension;
                             var tempFileObject;
-                            POIList[val].media = new Media();
+                            for (var i=POIList[val].storyPoint[p].media.audio.length-1; i>=0;i--){
+                                if (POIList[val].storyPoint[p].media.audio[i].language == currentLanguage){
+                                    POIList[val].storyPoint[p].media.audio = removeFromList(POIList[val].storyPoint[p].media.audio[i], POIList[val].storyPoint[p].media.audio.slice());
+                                }
+                            }
+                            for (var i=POIList[val].storyPoint[p].media.image.length-1; i>=0;i--){
+                                if (POIList[val].storyPoint[p].media.image[i].language == currentLanguage){
+                                    POIList[val].storyPoint[p].media.image = removeFromList(POIList[val].storyPoint[p].media.image[i], POIList[val].storyPoint[p].media.image.slice());
+                                }
+                            }
+                            for (var i=POIList[val].storyPoint[p].media.video.length-1; i>=0;i--){
+                                if (POIList[val].storyPoint[p].media.video[i].language == currentLanguage){
+                                    POIList[val].storyPoint[p].media.video = removeFromList(POIList[val].storyPoint[p].media.video[i], POIList[val].storyPoint[p].media.video.slice());
+                                }
+                            }
+                            
+                            
                             if (fileNamesText[0]!=""){
                             for (var val2 in fileNamesText){
                                 fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -203,7 +252,23 @@ $(document).ready(function(){
                         var fileNamesText = $("#attachedDocName").text().split(", ");
                             var fileNameExtension;
                             var tempFileObject;
-                            newStoryPoint.media = new Media();
+                            for (var i=newStoryPoint.media.audio.length-1; i>=0;i--){
+                                if (newStoryPoint.media.audio[i].language == currentLanguage){
+                                    newStoryPoint.media.audio = removeFromList(newStoryPoint.media.audio[i], newStoryPoint.media.audio.slice());
+                                }
+                            }
+                            for (var i=newStoryPoint.media.image.length-1; i>=0;i--){
+                                if (newStoryPoint.media.image[i].language == currentLanguage){
+                                    newStoryPoint.media.image = removeFromList(newStoryPoint.media.image[i], newStoryPoint.media.image.slice());
+                                }
+                            }
+                            for (var i=newStoryPoint.media.video.length-1; i>=0;i--){
+                                if (newStoryPoint.media.video[i].language == currentLanguage){
+                                    newStoryPoint.media.video = removeFromList(newStoryPoint.media.video[i], newStoryPoint.media.video.slice());
+                                }
+                            }
+                        
+                        
                             if (fileNamesText[0]!=""){
                             for (var val2 in fileNamesText){
                                 fileNameExtension = fileNamesText[val2].split(".")[1];
@@ -240,6 +305,7 @@ $(document).ready(function(){
                     }
                 }
             }
+
         }
             //close the window
             $("#infoEditingForm").hide();
@@ -325,16 +391,22 @@ function fillEditor(poi){
             var stringForDocField ="";
             var tempFileName;
             for (var val in poi.media.audio){
+                if (poi.media.audio[val].language == currentLanguage){
                 tempFileName = poi.media.audio[val].path.split("/");
                 stringForDocField += tempFileName[tempFileName.length-1]+", ";
+                }
             }
             for (var val in poi.media.image){
+                if (poi.media.image[val].language == currentLanguage){
                 tempFileName = poi.media.image[val].path.split("/");
                 stringForDocField += tempFileName[tempFileName.length-1]+", ";
+                }
             }
             for (var val in poi.media.video){
+                if (poi.media.video[val].language == currentLanguage){
                 tempFileName = poi.media.video[val].path.split("/");
                 stringForDocField += tempFileName[tempFileName.length-1]+", ";
+                }
             }
 
             if(stringForDocField.length!=0){
@@ -378,16 +450,22 @@ function fillEditor(poi){
                     var stringForDocField ="";
                     var tempFileName;
                     for (var val in currentPOI.storyPoint[p].media.audio){
+                        if (currentPOI.storyPoint[p].media.audio[val].language == currentLanguage){
                         tempFileName = currentPOI.storyPoint[p].media.audio[val].path.split("/");
                         stringForDocField += tempFileName[tempFileName.length-1]+", ";
+                        }
                     }
                     for (var val in currentPOI.storyPoint[p].media.image){
+                        if (currentPOI.storyPoint[p].media.image[val].language == currentLanguage){
                         tempFileName = currentPOI.storyPoint[p].media.image[val].path.split("/");
                         stringForDocField += tempFileName[tempFileName.length-1]+", ";
+                        }
                     }
                     for (var val in currentPOI.storyPoint[p].media.video){
+                        if (currentPOI.storyPoint[p].media.video[val].language == currentLanguage){
                         tempFileName = currentPOI.storyPoint[p].media.video[val].path.split("/");
                         stringForDocField += tempFileName[tempFileName.length-1]+", ";
+                        }
                     }
 
                     if(stringForDocField.length!=0){
