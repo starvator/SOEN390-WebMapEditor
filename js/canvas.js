@@ -263,12 +263,23 @@ var POTtypes = {
     "emergency-exit": 0x6d
 };
 
+var POTLabels = [
+    "none",
+    "ramp",
+    "stairs",
+    "elevator",
+    "washroom",
+    "exit",
+    "entrance",
+    "emergency-exit"
+];
+
 var languageNames = {
     "EN": "English",
     "FR": "French",
     "ES": "Spanish",
     "DE": "German"
-}
+};
 
 $(function(){
     canvas = document.getElementById('floorPlan');
