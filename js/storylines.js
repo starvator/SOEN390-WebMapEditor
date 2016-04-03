@@ -63,7 +63,7 @@ function buildStorylineMenuFromList(){
         $.each(POIList, function(i, poi) {
                 $.each(poi.storyPoint, function(j, sp) {
                     if(sp.storylineID == s.ID) {
-                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title.get() +'</a></li>');
+                        $("#"+s.ID+"_pointList").append('<li class="draggable_story_point list-group-item"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span><a id = "' + sp.ID + '_a"onClick = "openEditorByPointID('+ sp.ID +')">'+ sp.title.get() +'</a></li>');
                     }
                 });
             });
