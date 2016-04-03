@@ -258,7 +258,7 @@ Storyline.fromJSON = function(json) {
 
 LanguageText.fromJSON = function(json, type) {
 
-    var lt = new LanguageText();
+    var lt = new LanguageText(type);
 	if(type === "title"){
 		$.each(json, function(i, pair) {
 			lt.addPair(pair.language, pair.title);
