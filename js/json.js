@@ -249,6 +249,11 @@ POT.fromJSON = function(json) {
     var pot = new POT(ppp);
     pot.ID = parseInt(json.id);
     pot.label = json.label.toLowerCase();
+    
+    if(!_.contains(POTLabels, pot.label)) {
+        pot.label = "none"
+    }
+    
     pot.floorID = parseInt(json.floorID); 
     
     nodeList.push(pot);
