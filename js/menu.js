@@ -200,4 +200,8 @@ function deleteCurrentFloor(){
 
 function changeLanguage() {
     currentLanguage = $("#languageDropdown :selected").val();
+    
+    // Reset the storylines sidebar
+    $("#StorylinesList").empty();
+    buildStorylineMenuFromList();
 }
