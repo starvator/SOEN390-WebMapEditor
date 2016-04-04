@@ -25,18 +25,13 @@ function addNewStoryLine(){
 
         storyline.title.set(name);
         storyline.description.set(description);
-        /** TODO LanguageText Story
-        storyline.title.addPair('en', name);
-        storyline.floorsCovered.push(current_floor);
-        storyline.description.addPair('en', description);
-        **/
 
         $("#storylineField").val("");
         $("#storylineDescription").val("");
         storylineList.push(storyline);
         storylineClicked($("#"+current_id));
         current_id++;
-        
+
         // Add a sortable list to the storyline so that we can re-arrange storypoints
         addSortableToStoryline(storyline);
     }
@@ -55,9 +50,9 @@ function buildStorylineMenuFromList(){
         $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.get() +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
-        
-        
-        
+
+
+
         current_id++;
 
         $.each(POIList, function(i, poi) {
@@ -67,7 +62,7 @@ function buildStorylineMenuFromList(){
                     }
                 });
             });
-        
+
         // Add a sortable list to the storyline so that we can re-arrange storypoints
         addSortableToStoryline(s);
     });
@@ -178,7 +173,7 @@ function hideEntireInactiveStoryLines(){
             $("#"+id+"_pointList").show();
         }
     }
-    
+
     // Disable language change during this operation
     $("#languageDropdown").prop( "disabled", true );
 };
@@ -195,7 +190,7 @@ function showEntireInactiveStoryLines(){
             $("#"+id+"_pointList").show();
         }
     }
-    
+
     // Enabled language change after this operation
     $("#languageDropdown").prop( "disabled", false );
 };

@@ -47,7 +47,7 @@ function findPaths(traversed, current, target)
         if(_.contains(edgePointArray(validNeighbouringEdges[i]), target))
         {
             var goodPath = traversed.slice();
-            goodPath.push(validNeighbouringEdges[i])
+            goodPath.push(validNeighbouringEdges[i]);
             foundPaths.push(goodPath);
         }
         else

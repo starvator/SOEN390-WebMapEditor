@@ -1,7 +1,7 @@
 var jsonMap;
 
 function confirmSave(){
-    if(floorList.length == 0){
+    if(floorList.length === 0){
         bootbox.alert("Please create a map first, or import your work from a previous session.", function() {
         });
         return;
@@ -23,8 +23,8 @@ function confirmSave(){
         });
         return false;
     }
-    
-    if((edgeList.length == 0)){
+
+    if((edgeList.length === 0)){
         bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
         });
         return false;
@@ -35,9 +35,7 @@ function confirmSave(){
         var hasEdge = false;
         forEachEdge:
         for (var val in edgeList){
-            if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
-            }
-            else{
+            if (!((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id))){
                 hasEdge = true;
                 break forEachEdge;
             }
@@ -51,9 +49,9 @@ function confirmSave(){
     var result = false;
     bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
     saveButton.show("Confirm result: "+result);
-    if(result == true){
+    if(result){
         var name = "mapData";
-        
+
         bootbox.prompt({
           title: "Please name the export file:",
           value: "mapData",
@@ -71,9 +69,9 @@ function confirmSave(){
     else {
         bootbox.alert("You have not saved the map data.", function() {
         saveButton.show("cancel");
-        }); 
+        });
     }
-    }); 
+    });
 }
 
 function createJSON() {
@@ -86,7 +84,7 @@ function createJSON() {
         edge
         storyline
     */
-    
+
     //clean the floorlist to get rid of null
     var floorListToExport = [];
     for (var i in floorList){
@@ -94,7 +92,7 @@ function createJSON() {
             floorListToExport.push(floorList[i]);
         }
     }
-    
+
     return JSON.stringify({
         floorPlan:floorListToExport,
         node:{'poi':POIList, 'pot':POTList},
@@ -105,7 +103,7 @@ function createJSON() {
 
 function loadFromJSON() {
     var tempPath;
-    
+
     $("#deletecurrentfloor").show();
 
     floorList = [];
@@ -133,12 +131,12 @@ function loadFromJSON() {
             storylineList.push(Storyline.fromJSON(sl));
         }
     });
-    
+
     //fix for other teams floorscovered as an int
     for (var val in storylineList){
         storylineList[val].floorsCovered = [];
     }
-    
+
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
         if(poi !== null) {
@@ -175,14 +173,14 @@ function loadFromJSON() {
             }
         }
     }
-     
+
     //POT
     $.each(jsonMap.node.pot, function(i, pot) {
         if(pot !== null) {
             POTList.push(POT.fromJSON(pot));
         }
     });
-       
+
     //edgeList
     $.each(jsonMap.edge, function(i, e) {
         if(e !== null) {
@@ -200,7 +198,7 @@ FloorPlan.fromJSON = function(json) {
     fp.imagePath = json.imagePath;
     fp.imageWidth = json.imageWidth;
     fp.imageHeight = json.imageHeight;
-    
+
     return fp;
 };
 
@@ -214,7 +212,7 @@ StoryPoint.fromJSON = function(json) {
     sp.media.audio = json.media.audio;
     sp.media.image = json.media.image;
     sp.media.video = json.media.video;
-    
+
     return sp;
 };
 
@@ -232,14 +230,14 @@ POI.fromJSON = function(json) {
     poi.media.audio = json.media.audio;
     poi.media.image = json.media.image;
     poi.media.video = json.media.video;
-	poi.isSet = true;
-    
+    poi.isSet = true;
+
     $.each(json.storyPoint, function(i, sp) {
         poi.storyPoint.push(StoryPoint.fromJSON(sp));
     });
-    
+
     nodeList.push(poi);
-    
+
     return poi;
 };
 
@@ -249,15 +247,15 @@ POT.fromJSON = function(json) {
     var pot = new POT(ppp);
     pot.ID = parseInt(json.id);
     pot.label = json.label.toLowerCase();
-    
+
     if(!_.contains(POTLabels, pot.label)) {
         pot.label = "none"
     }
-    
-    pot.floorID = parseInt(json.floorID); 
-    
+
+    pot.floorID = parseInt(json.floorID);
+
     nodeList.push(pot);
-    
+
     return pot;
 };
 
@@ -267,14 +265,14 @@ Edge.fromJSON = function(json) {
     var end = findNodeByID(json.endNode);
 
     var e = new Edge(start, end);
-    
+
     return e;
 };
 
 IBeacon.fromJSON = function(json) {
-    
+
     var ib = new IBeacon(json.uuid, json.major, json.minor);
-  
+
     return ib;
 };
 
@@ -283,48 +281,48 @@ function findNodeByID(id){
     $.each(POIList, function(i, poi) {
        if(poi.ID === id){
            found = poi;
-       } 
+       }
     });
-    
+
     $.each(POTList, function(i, pot) {
        if(pot.ID === id){
            found = pot;
-       } 
+       }
     });
-    
+
     return found;
 }
 
 Storyline.fromJSON = function(json) {
 
     var s = new Storyline();
-	if(parseInt(json.id) !== undefined)
-		s.ID = parseInt(json.id);
-	else if(parseInt(json.ID) !== undefined){
-		s.ID = parseInt(json.ID);
-	}
+    if(parseInt(json.id) !== undefined)
+        s.ID = parseInt(json.id);
+    else if(parseInt(json.ID) !== undefined){
+        s.ID = parseInt(json.ID);
+    }
     s.title = LanguageText.fromJSON(json.title, "title");
     s.description = LanguageText.fromJSON(json.description, "description");
     s.path = json.path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;
     s.floorsCovered = json.floorsCovered;
-    
+
     return s;
 };
 
 LanguageText.fromJSON = function(json, type) {
 
     var lt = new LanguageText(type);
-	if(type === "title"){
-		$.each(json, function(i, pair) {
-			lt.addPair(pair.language, pair.title);
-		});
-	}else if (type === "description") {
-		$.each(json, function(i, pair) {
-			lt.addPair(pair.language, pair.description);
-		});		
-	}
+    if(type === "title"){
+        $.each(json, function(i, pair) {
+            lt.addPair(pair.language, pair.title);
+        });
+    }else if (type === "description") {
+        $.each(json, function(i, pair) {
+            lt.addPair(pair.language, pair.description);
+        });
+    }
     return lt;
 };
 
@@ -332,7 +330,7 @@ LanguageText.fromJSON = function(json, type) {
 $(document).on('change', '.btn-file :file', function() {
     var input = $(this);
     input.trigger('fileselect', [input.get(0).files[0]]);
-})
+});
 
 $(document).ready( function() {
     $('.btn-file :file').on('fileselect', function(event, file) {
