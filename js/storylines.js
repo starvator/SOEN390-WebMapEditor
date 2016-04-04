@@ -25,11 +25,6 @@ function addNewStoryLine(){
 
         storyline.title.set(name);
         storyline.description.set(description);
-        /** TODO LanguageText Story
-        storyline.title.addPair('en', name);
-        storyline.floorsCovered.push(current_floor);
-        storyline.description.addPair('en', description);
-        **/
 
         $("#storylineField").val("");
         $("#storylineDescription").val("");

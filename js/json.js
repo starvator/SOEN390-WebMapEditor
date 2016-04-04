@@ -1,7 +1,7 @@
 var jsonMap;
 
 function confirmSave(){
-    if(floorList.length == 0){
+    if(floorList.length === 0){
         bootbox.alert("Please create a map first, or import your work from a previous session.", function() {
         });
         return;
@@ -15,8 +15,6 @@ function confirmSave(){
                 break;
             }
         }
-        catch(err){
-        }
     }
     if(!hasFloor){
         bootbox.alert("An empty project cannot be saved. Please create a floor or import a floor plan", function() {
@@ -24,7 +22,7 @@ function confirmSave(){
         return false;
     }
 
-    if((edgeList.length == 0)){
+    if((edgeList.length === 0)){
         bootbox.alert("A project must contain at least two nodes and one edge in order to be valid. Please review your map.", function() {
         });
         return false;
@@ -35,9 +33,7 @@ function confirmSave(){
         var hasEdge = false;
         forEachEdge:
         for (var val in edgeList){
-            if ((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
-            }
-            else{
+            if (!(idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
                 hasEdge = true;
                 break forEachEdge;
             }
@@ -51,7 +47,7 @@ function confirmSave(){
     var result = false;
     bootbox.confirm("Please confirm that you have reviewed your Storylines before saving:", function(result) {
     saveButton.show("Confirm result: "+result);
-    if(result == true){
+    if(result){
         var name = "mapData";
 
         bootbox.prompt({
@@ -332,7 +328,7 @@ LanguageText.fromJSON = function(json, type) {
 $(document).on('change', '.btn-file :file', function() {
     var input = $(this);
     input.trigger('fileselect', [input.get(0).files[0]]);
-})
+});
 
 $(document).ready( function() {
     $('.btn-file :file').on('fileselect', function(event, file) {

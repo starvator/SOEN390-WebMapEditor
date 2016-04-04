@@ -468,7 +468,7 @@ function fillEditor(poi){
                         }
                     }
 
-                    if(stringForDocField.length!=0){
+                    if(stringForDocField.length!==0){
                         stringForDocField = stringForDocField.substring(0, stringForDocField.length - 2);
                     }
                     $("#attachedDocName").text(stringForDocField);

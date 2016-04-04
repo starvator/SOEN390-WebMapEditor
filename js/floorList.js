@@ -89,14 +89,11 @@ function loadFloorsFromList(){
                 break;
             }
         }
-        catch(err){
-        }
     }
     if(hasFloor){
         $("#floorListHolder").show();
         $("#default_img").hide();
         $("#resetButton").show();
-        var cfloor = floorList[floorList.length - 1];
         for (var val=0; floorList.length>val;val++){
             try {
                 if (floorList[val].floorID != null){
@@ -104,8 +101,6 @@ function loadFloorsFromList(){
                     deleteShown = true;
                     break;
                 }
-            }
-            catch(err){
             }
         }
     }
@@ -167,8 +162,6 @@ function deleteFloor(){
                 deleteShown = true;
                 break;
             }
-        }
-        catch(err){
         }
     }
     if(!deleteShown){

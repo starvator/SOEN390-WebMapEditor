@@ -87,12 +87,12 @@ function POI(point) {
             id: this.ID,
             title: this.title,
             description: this.description,
-            x:~~this.point.x,
-            y:~~this.point.y,
+            x:parseInt(this.point.x),
+            y:parseInt(this.point.y),
             floorID:this.floorID,
             ibeacon:this.ibeacon,
-            media:this.media, //TODO
-            storyPoint:this.storyPoint, //TODO
+            media:this.media,
+            storyPoint:this.storyPoint,
             autoOn:this.isAutoOn
         };
     };
@@ -120,9 +120,9 @@ function POT(point, label) {
     this.toJSON = function() {
         return {
             id: this.ID,
-            label: this.label, // TODO: make language text
-            x:~~this.point.x,
-            y:~~this.point.y,
+            label: this.label,
+            x:parseInt(this.point.x),
+            y:parseInt(this.point.y),
             floorID:this.floorID
         };
     };
@@ -193,16 +193,16 @@ function LanguageText(message) {
         {
             return this.values[currentLanguage];
         }
-    }
+    };
 
     // Set the text based on the current language
     this.set = function(value) {
         this.values[currentLanguage] = value;
-    }
+    };
 
     this.addPair = function(lang, value) {
         this.values[lang] = value;
-    }
+    };
 
     this.toJSON = function(){
         var jsonValues = this.values;
@@ -217,7 +217,7 @@ function LanguageText(message) {
             });
         }
         return string;
-    }
+    };
 }
 
 // End Classes
@@ -356,8 +356,6 @@ $(function(){
                 break;
             }
         }
-        catch(err){
-        }
     }
     if(!hasInitialFloor){
         //do not draw anything yet
@@ -486,7 +484,7 @@ function drawNodeEditingCursor() {
     // Draw a temporary point at the cursor's location when over empty space and not creating an edge
     if(!lastSelectedNode && !mouseOnNode)
     {
-        if(current_node_tool === "point")
+        if(current_node_tool === "point" || current_node_tool === "omniTool")
         {
             if(current_tool === "none")
             {
@@ -531,24 +529,6 @@ function drawNodeEditingCursor() {
             ctx.fillStyle= nodeColor;
             // Draw the selected tool
             ctx.fillText(String.fromCharCode(0xe014), mouseLocation.x - 10,mouseLocation.y + 10);
-        }
-        else if (current_node_tool === "omniTool")
-        {
-            if(current_tool === "none")
-            {
-                // Draw a point
-                ctx.beginPath();
-                ctx.fillStyle= nodeColor;
-                ctx.arc(mouseLocation.x,mouseLocation.y,9,0,2*Math.PI);
-                ctx.fill();
-            }
-            else
-            {
-                ctx.font = '20px souvlaki-font-1';
-                ctx.fillStyle= nodeColor;
-                // Draw the selected tool
-                ctx.fillText(String.fromCharCode(POTtypes[current_tool]), mouseLocation.x - 10,mouseLocation.y + 10);
-            }
         }
     }
     // When creating an edge and the mouse is in empty space, create a line to the cursor with a temporary point
@@ -953,7 +933,6 @@ function deleteNode(node){
 
 function deleteStoryPoint(){
     var poiID = currentPOI.ID; //delete this from storyline[].path
-    var storypointID = active_id;
 
     for(var p in currentPOI.storyPoint){
         if (currentPOI.storyPoint[p].storylineID == active_id){
