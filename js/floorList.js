@@ -89,6 +89,8 @@ function loadFloorsFromList(){
                 break;
             }
         }
+        catch(err){
+        }
     }
     if(hasFloor){
         $("#floorListHolder").show();
@@ -101,6 +103,8 @@ function loadFloorsFromList(){
                     deleteShown = true;
                     break;
                 }
+            }
+            catch(err){
             }
         }
     }
@@ -162,6 +166,8 @@ function deleteFloor(){
                 deleteShown = true;
                 break;
             }
+        }
+        catch(err){
         }
     }
     if(!deleteShown){

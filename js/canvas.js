@@ -356,6 +356,8 @@ $(function(){
                 break;
             }
         }
+        catch(err){
+        }
     }
     if(!hasInitialFloor){
         //do not draw anything yet

@@ -15,6 +15,8 @@ function confirmSave(){
                 break;
             }
         }
+        catch(err){
+        }
     }
     if(!hasFloor){
         bootbox.alert("An empty project cannot be saved. Please create a floor or import a floor plan", function() {
