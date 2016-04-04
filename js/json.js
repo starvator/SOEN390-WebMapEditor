@@ -35,7 +35,7 @@ function confirmSave(){
         var hasEdge = false;
         forEachEdge:
         for (var val in edgeList){
-            if (!(idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id)){
+            if (!((idOfNode != edgeList[val].origin.point.id) && (idOfNode != edgeList[val].destination.point.id))){
                 hasEdge = true;
                 break forEachEdge;
             }
