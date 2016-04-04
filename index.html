@@ -4,34 +4,34 @@
 <head>
     <title>Map Editor</title>
     <link rel="shortcut icon" href="dog-silhouette.ico">
-    <script src="js/jquery-2.2.0.min.js"></script>
+    <script src="utilities/js/util/jquery-2.2.0.min.js"></script>
 
     <!-- Bootstrap includes -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/bootstrap.override.css">
-    <link rel="stylesheet" href="css/textEditor.css">
+    <script src="utilities/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="utilities/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="utilities/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="utilities/css/bootstrap.override.css">
+    <link rel="stylesheet" href="utilities/css/textEditor.css">
 
-    <link rel="stylesheet" href="css/stylesheet.css">
-    <link rel="stylesheet" href="css/canvas.css">
+    <link rel="stylesheet" href="utilities/css/stylesheet.css">
+    <link rel="stylesheet" href="utilities/css/canvas.css">
 
     <!-- Custom font for icons -->
-    <link rel="stylesheet" href="css/souvlaki-font-1.css">
+    <link rel="stylesheet" href="utilities/css/souvlaki-font-1.css">
 
-    <script src="js/compute.js"></script>
-    <script src="js/canvas.js"></script>
-    <script src="js/json.js"></script>
-    <script src="js/floorList.js"></script>
-    <script src="js/menu.js"></script>
-    <script src="ckeditor/ckeditor.js"></script>
-    <script src="js/panAndZoom.js"></script>
-    <script src="js/textEditor.js"></script>
-    <script src="js/storylines.js"></script>
-    <script src="js/alert.js"></script>
-    <script src="js/underscore-min.js"></script>
-    <script src="js/bootbox.min.js"></script>
-    <script src="js/Sortable.min.js"></script>
+    <script src="utilities/js/core/graph/compute.js"></script>
+    <script src="utilities/js/core/graph/canvas.js"></script>
+    <script src="utilities/js/json_mapper/json.js"></script>
+    <script src="utilities/js/core/map/floorList.js"></script>
+    <script src="utilities/js/presentation_logic/menu.js"></script>
+    <script src="utilities/js/util/ckeditor/ckeditor.js"></script>
+    <script src="utilities/js/core/map/panAndZoom.js"></script>
+    <script src="utilities/js/core/storylines/textEditor.js"></script>
+    <script src="utilities/js/core/storylines/storylines.js"></script>
+    <script src="utilities/js/presentation_logic/alert.js"></script>
+    <script src="utilities/js/util/underscore-min.js"></script>
+    <script src="utilities/js/util/bootbox.min.js"></script>
+    <script src="utilities/js/util/Sortable.min.js"></script>
 </head>
 
 <body>
@@ -170,7 +170,7 @@
                 </div>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-7" id="floorPlanContainer">
-                <img id="default_img" src="floor_plans/default.png">
+                <img id="default_img" src="utilities/default.png">
                 <div id="POTMenu">
                     <div id="POTIconsContainer">
                         <div class="btn btn-default active" data-pot-type="none" data-toggle="tooltip" data-placement="bottom" title="None">
