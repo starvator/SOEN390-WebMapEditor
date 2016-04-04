@@ -1,0 +1,62 @@
+#infoEditingForm {
+	width:410px;
+	background-color:lightgrey;
+	padding:2px;
+	border:1px solid black;
+    position: fixed;
+    top:75px;
+    left:calc(50% - 205px);
+    z-index:6;
+    height: calc(100% - 100px);
+}
+
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+#modal {
+    background-color:rgba(0,0,0,0.5);
+    position:fixed;
+    top:0px;
+    left:0px;
+    z-index:5;
+    width: 100%;
+    height: 100%;
+}
+
+.input-group-addon {
+    min-width:188px;
+    text-align:left;
+}
+
+#infoEditingFormTitle {
+    font-size: 18pt;
+    padding: 3px;
+    -webkit-margin-before: 1.33em;
+    -webkit-margin-after: 1.33em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    font-weight: bold;
+}
+
+#uploadFile{
+    display: none;
+}
+#attachedDocName {
+    width:200px;
+    max-width: 200px;
+    overflow-x: auto;
+}
+
+#infoEditingFormContent {
+    max-height: calc(100% - 95px);
+    margin-bottom: 10px;
+    overflow-y: scroll;
+}
+
+
