@@ -992,6 +992,7 @@ function deleteStoryLine(){
             $("#"+active_id+"_pointList").remove();
             active_id = -2;
             $('#activeButtonsList').addClass("hidden");
+            setCreatePOIid();
             break;
         }
     }
