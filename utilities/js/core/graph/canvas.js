@@ -325,7 +325,18 @@ $(function(){
                 return false;
             }
             var result = false;
-            bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Are you sure you want to delete this point?", function(result) {
+			
+			var numOfStoryPoints = 0;
+			//count StoryPoints
+			for (var storyLineVal in storylineList){
+				//loop through the path
+				for (var val= storylineList[storyLineVal].path.length-1;val>=0;val--){
+					if (storylineList[storyLineVal].path[val] === lastSelectedNode.ID){
+						numOfStoryPoints++;
+					}
+				}
+			}
+            bootbox.confirm("Deleting this point will delete all data associated with it, including edges and StoryPoint information. Caution! This point is currently used in "+numOfStoryPoints+" Storylines. Are you sure you want to delete this point?", function(result) {
                 if(!result){
                     return;
                 }
