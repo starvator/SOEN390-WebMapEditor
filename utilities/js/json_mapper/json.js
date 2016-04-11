@@ -350,3 +350,26 @@ $(document).ready( function() {
         reader.readAsText(file);
     });
 });
+
+function buildStorylinePath(path)
+{
+    var out = [];
+    for(var i = 0; i < path.length - 1; i++)
+    {
+        out.push(path[i]);
+        var start = findNodeByID(path[i]);
+        var end = findNodeByID(path[i + 1]);
+        var edges = findShortestPath(start, end);
+       
+        
+        var inbetweens = _.map(_.uniq(_.reject(_.flatten(_.map(edges, function(item) {
+            return edgePointArray(item); // Flatten the array of points included in the edge
+        })), function(item) { return item === start || item === end; })), function (item) { return item.ID; });
+        
+        out = out.concat(inbetweens);
+    }
+    
+    out.push(path[path.length - 1]);
+    
+    return out;
+}
