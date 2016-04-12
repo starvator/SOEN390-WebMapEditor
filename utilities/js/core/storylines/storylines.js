@@ -50,10 +50,7 @@ function buildStorylineMenuFromList(){
         $("#StorylinesList").append('<li id="'+ s.ID +'" onclick="storylineClicked(this)"><a href="#">'+ s.title.get() +'</a></li>' +
         '<ul id="'+ s.ID +'_pointList" class="list-group"></ul>');
         }
-
-
-
-        current_id++;
+        
 
         $.each(POIList, function(i, poi) {
                 $.each(poi.storyPoint, function(j, sp) {
@@ -66,6 +63,9 @@ function buildStorylineMenuFromList(){
         // Add a sortable list to the storyline so that we can re-arrange storypoints
         addSortableToStoryline(s);
     });
+    
+    // set the current storyline ID
+    current_id = _.max(_.map(storylineList, function(item) {return item.ID;})) + 1;
 }
 
 function addSortableToStoryline(storyline)
