@@ -125,18 +125,6 @@ function loadFromJSON() {
         floorList[val].imagePath = tempPath[tempPath.length-1];
     }
 
-    //storylineList
-    $.each(jsonMap.storyline, function(i, sl) {
-        if(sl !== null) {
-            storylineList.push(Storyline.fromJSON(sl));
-        }
-    });
-
-    //fix for other teams floorscovered as an int
-    for (var val in storylineList){
-        storylineList[val].floorsCovered = [];
-    }
-
     //POI
     $.each(jsonMap.node.poi, function(i, poi) {
         if(poi !== null) {
@@ -187,6 +175,21 @@ function loadFromJSON() {
             edgeList.push(Edge.fromJSON(e));
         }
     });
+	
+	//storylineList
+    $.each(jsonMap.storyline, function(i, sl) {
+        if(sl !== null) {
+			var newSL = Storyline.fromJSON(sl);
+			if(newSL !== undefined){
+				storylineList.push(newSL);
+			}
+        }
+    });
+
+    //fix for other teams floorscovered as an int
+    for (var val in storylineList){
+        storylineList[val].floorsCovered = [];
+    }
 }
 
 // Atomic from-JSON Constructors for Each Class
@@ -303,7 +306,23 @@ Storyline.fromJSON = function(json) {
     }
     s.title = LanguageText.fromJSON(json.title, "title");
     s.description = LanguageText.fromJSON(json.description, "description");
-    s.path = json.path;
+	
+	var path = [];
+	var add = true;
+	var addID = -1;
+	$.each(json.path, function(i, id) {
+		add = true;
+		$.each(POTList, function(j, pot){
+			if(pot.ID == id){
+				add = false;
+				return false;
+			}
+		});
+		if(add){
+			path.push(id);			
+		}
+    });
+    s.path = path;
     s.thumbnail = json.thumbnail;
     s.walkingTimeInMinutes = json.walkingTimeInMinutes;
     s.floorsCovered = json.floorsCovered;
