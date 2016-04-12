@@ -159,7 +159,7 @@ function Storyline(){
             id: this.ID,
             title: this.title,
             description: this.description,
-            path: this.path,
+            path: buildStorylinePath(this.path),
             thumbnail: this.thumbnail,
             walkingTimeInMinutes: this.walkingTimeInMinutes,
             floorsCovered: this.floorsCovered
