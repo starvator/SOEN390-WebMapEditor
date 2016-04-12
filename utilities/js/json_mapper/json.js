@@ -309,7 +309,6 @@ Storyline.fromJSON = function(json) {
 	
 	var path = [];
 	var add = true;
-	var addID = -1;
 	$.each(json.path, function(i, id) {
 		add = true;
 		$.each(POTList, function(j, pot){
